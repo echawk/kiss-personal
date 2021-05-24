@@ -1,0 +1,29 @@
+#!/bin/sh -e
+# The first patch is to fix compilation on go 1.15
+patch -Np1 < f1170f982c414ec53ebf35ad3b250226ec18a952.patch
+patch -Np1 < disable-document-generation.patch
+export CGO_CPPFLAGS="$CPPFLAGS"
+export CGO_CFLAGS="$CFLAGS"
+export CGO_CXXFLAGS="$CXXFLAGS"
+export CGO_LDFLAGS="$LDFLAGS"
+export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
+make
+#make man-pages # Disable the document generation; causes a failure in building
+make PREFIX="$1"/usr install
+install -Dm644 LICENSE "$1"/usr/share/licenses/hub/LICENSE;
+
+# if any of the shells that support completion are installed, install the completions
+if kiss l bash
+then
+	install -Dm644 etc/hub.bash_completion.sh "$1"/usr/share/bash-completion/completions/hub
+fi
+
+if kiss l fish
+then
+	install -Dm644 etc/hub.fish_completion "$1"/usr/share/fish/vendor_completions.d/hub.fish
+fi
+
+if kiss l zsh
+then
+	install -Dm644 etc/hub.zsh_completion "$1"/usr/share/zsh/site-functions/_hub
+fi
