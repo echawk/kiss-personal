@@ -1,0 +1,9 @@
+#!/bin/sh -e
+export CGO_CPPFLAGS="$CPPFLAGS"
+export CGO_CFLAGS="$CFLAGS"
+export CGO_CXXFLAGS="$CXXFLAGS"
+export CGO_LDFLAGS="$LDFLAGS"
+
+make build
+
+install -Dm755 bin/gocloc "$1/usr/bin/gocloc"
