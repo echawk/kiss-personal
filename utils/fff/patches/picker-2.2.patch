@@ -1,0 +1,18 @@
+--- fff	2020-09-17 05:15:31.000000000 -0500
++++ fff	2021-01-12 03:25:01.230119907 -0600
+@@ -614,6 +614,15 @@
+                 # 'nohup':  Make the process immune to hangups.
+                 # '&':      Send it to the background.
+                 # 'disown': Detach it from the shell.
++
++                # If 'fff' was opened as a file picker, save the opened
++                # file in a file called 'opened_file'.
++                ((file_picker == 1)) && {
++                    printf '%s\n' "$1" > \
++                        "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/opened_file"
++                    exit
++                }
++
+                 nohup "${FFF_OPENER:-${opener:-xdg-open}}" "$1" &>/dev/null &
+                 disown
+             ;;
