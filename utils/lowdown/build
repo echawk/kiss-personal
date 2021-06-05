@@ -1,4 +1,8 @@
 #!/bin/sh -e
-./configure
+./configure PREFIX=/usr MANDIR=/usr/share/man
+cat >> Makefile.configure <<-EOF
+CFLAGS += ${CFLAGS}
+LDFLAGS += ${LDFLAGS}
+EOF
 make
-make DESTDIR=$1 PREFIX=/usr install
+make DESTDIR=$1  install
