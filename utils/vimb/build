@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+sed -i -E "s~^EXTLDFLAGS.*~EXTLDFLAGS  = \$(shell pkg-config --libs webkit2gtk-webextension-4.0) -shared~" config.mk
+
+make PREFIX=/usr
+make DESTDIR=$1 PREFIX=/usr install
