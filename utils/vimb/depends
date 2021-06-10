@@ -1,0 +1,9 @@
+atk
+cairo
+gdk-pixbuf
+glib
+graphite-harfbuzz
+gtk+3
+libsoup
+pango
+webkit2gtk
