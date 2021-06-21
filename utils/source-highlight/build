@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+patch -p1 < source-highlight-gcc11.patch
+
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--with-bash-completion=/usr/share/bash-completion/completions
+
+make
+
+make \
+	prefix="$1/usr" \
+	bash_completiondir="$1/usr/share/bash-completion/completions" \
+	install
+
