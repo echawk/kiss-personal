@@ -9,4 +9,5 @@ CFLAGS="$CFLAGS -no-pie" ./configure \
   --with-gmp \
   --with-system-libffi
 make
+make compiler
 make DESTDIR="$1" install
