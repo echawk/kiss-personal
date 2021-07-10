@@ -1,0 +1,35 @@
+#!/bin/sh -e
+cd src
+
+export CFLAGS="$CFLAGS -fcommon"
+
+
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--with-c-flags="$CFLAGS -fPIC"
+
+#sed -i "s=/usr/bin/install -c=/usr/bin/install=" Makefile
+
+make
+
+make install \
+	INSTALL_DIR=$1/usr/share/gprolog \
+	LINKS_DIR=$1/usr/bin \
+	DOC_DIR=$1/usr/share/gprolog/doc \
+	HTML_DIR=$1/usr/share/gprolog/doc/Html \
+	EXAMPLES_DIR=$1/usr/share/gprolog \
+	sysconfdir=$1/etc \
+	localstatedir=$1/var
+cd $1/usr/bin
+rm *
+
+ln -s /usr/share/gprolog/bin/fd2c
+ln -s /usr/share/gprolog/bin/gplc
+ln -s /usr/share/gprolog/bin/gprolog
+ln -s /usr/share/gprolog/bin/hexgplc
+ln -s /usr/share/gprolog/bin/ma2asm
+ln -s /usr/share/gprolog/bin/pl2wam
+ln -s /usr/share/gprolog/bin/wam2ma
+
