@@ -1,0 +1,7 @@
+#!/bin/sh -e
+sed -i '1i#include <sys/types.h>' pax.h
+export LIBS="-lfts"
+
+sh Build.sh -r -tpax
+install -D -m755 pax -t "$1/usr/bin"
+install -D -m655 pax.1 -t "$1/usr/bin"
