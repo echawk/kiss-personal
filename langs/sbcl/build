@@ -1,0 +1,3 @@
+#!/bin/sh -e
+./make.sh --xc-host=ecl --prefix=/usr
+INSTALL_ROOT="$1" ./install.sh
