@@ -1,0 +1,10 @@
+#!/bin/sh -e
+yarn
+yarn run compile
+
+install -d $1/usr/lib/bash-language-server/
+cp -a server/* $1/usr/lib/bash-language-server/
+
+install -d $1/usr/bin
+ln -s /usr/lib/bash-language-server/bin/main.js $1/usr/bin/bash-language-server
+
