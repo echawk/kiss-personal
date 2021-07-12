@@ -1,0 +1,5 @@
+#!/bin/sh -e
+mv typescript-*.tgz?no-extract typescript.tgz
+npm install -g --prefix "$1/usr" typescript.tgz
+
+chmod -R u=rwX,go=rX $1
