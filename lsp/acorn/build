@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+mv acorn-*.tgz?no-extract acorn.tgz
+npm install -g --prefix "$1/usr" acorn.tgz
+
+chmod -R u=rwX,go=rX $1
