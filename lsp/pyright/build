@@ -1,0 +1,5 @@
+#!/bin/sh -e
+mv pyright-*.tgz?no-extract pyright.tgz
+npm install -g --prefix "$1/usr" pyright.tgz
+
+chmod -R u=rwX,go=rX $1
