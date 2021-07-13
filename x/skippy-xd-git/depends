@@ -1,7 +1,0 @@
-giflib
-libjpeg
-libXcomposite
-libXft
-libXinerama
-xorg-server
-git make
