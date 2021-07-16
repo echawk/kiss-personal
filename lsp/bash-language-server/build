@@ -1,10 +1,5 @@
 #!/bin/sh -e
-yarn
-yarn run compile
+mv bash-language-server-*.tgz?no-extract bash-language-server.tgz
+npm install -g --prefix "$1/usr" bash-language-server.tgz
 
-install -d $1/usr/lib/bash-language-server/
-cp -a server/* $1/usr/lib/bash-language-server/
-
-install -d $1/usr/bin
-ln -s /usr/lib/bash-language-server/bin/main.js $1/usr/bin/bash-language-server
-
+chmod -R u=rwX,go=rX $1
