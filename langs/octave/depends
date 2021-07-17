@@ -1,0 +1,13 @@
+bzip2
+curl
+expat
+glu
+gnuplot
+lapack
+ncurses
+pcre
+readline
+zlib
+autoconf 	make
+automake 	make
+libtool 	make
