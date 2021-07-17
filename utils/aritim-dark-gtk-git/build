@@ -1,0 +1,3 @@
+#!/bin/sh -e
+mkdir -p $1/usr/share/themes/Aritim-Dark
+cp -r GTK/* $1/usr/share/themes/Aritim-Dark
