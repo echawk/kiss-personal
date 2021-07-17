@@ -1,0 +1,6 @@
+gcc
+glib
+gmime
+talloc
+xapian
+zlib
