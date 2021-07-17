@@ -1,0 +1,13 @@
+#!/bin/sh
+
+mkdir lapack_build
+cd lapack_build
+
+cmake ../
+make
+make DESTDIR="$1" install
+
+mv "$1/usr/local/lib64" "$1/usr/lib"
+rmdir "$1/usr/local"
+sed -i 's|/usr/local|/usr|g' "$1/usr/lib/pkgconfig/blas.pc" "$1/usr/lib/pkgconfig/lapack.pc"
+sed -i 's|lib64|lib|g' "$1/usr/lib/pkgconfig/blas.pc" "$1/usr/lib/pkgconfig/lapack.pc"
