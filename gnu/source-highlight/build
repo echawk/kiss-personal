@@ -9,8 +9,8 @@ patch -p1 < source-highlight-gcc11.patch
 
 make
 
-make \
-	prefix="$1/usr" \
-	bash_completiondir="$1/usr/share/bash-completion/completions" \
+make DESTDIR=$1 \
+	prefix="/usr" \
+	bash_completiondir="/usr/share/bash-completion/completions" \
 	install
 
