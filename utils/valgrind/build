@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -fno-stack-protector -no-pie"
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --mandir=/usr/share/man \
+    --infodir=/usr/share/info \
+    --localstatedir=/var \
+    --without-mpicc \
+    --enable-lto=yes
+
+make
+make DESTDIR="$1" install
