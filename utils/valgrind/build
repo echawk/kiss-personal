@@ -1,5 +1,13 @@
 #!/bin/sh -e
 
+# Disable stripping
+:> nostrip
+
+patch -p1 < valgrind-3.13.0-malloc.patch
+
+# Bypass ccache
+export CC="/usr/bin/cc"
+export CXX="/usr/bin/c++"
 export CFLAGS="$CFLAGS -fno-stack-protector -no-pie"
 
 ./configure \
