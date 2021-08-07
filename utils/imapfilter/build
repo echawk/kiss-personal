@@ -6,4 +6,4 @@ mk() {
 		$@
 }
 mk
-mk DESTDIR=$1  install
+mk DESTDIR="$1"  install
