@@ -3,4 +3,4 @@ echo "#include <sys/time.h>" >> socket.h
 ./configure \
 	--prefix=/usr
 make
-make DESTDIR=$1 install
+make DESTDIR="$1" install
