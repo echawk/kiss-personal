@@ -1,0 +1,13 @@
+#!/bin/sh -e
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--with-libsystemd=no \
+	--with-libcap-ng=no \
+	--with-smartdscriptdir=/usr/share/smartmontools \
+	--with-smartdplugindir=/usr/share/smartmontools/smartd_warning.d
+make
+make DESTDIR="$1" install
+rm -rf "$1/etc/rc.d"
+mkdir "$1/etc/conf.d/"
+echo 'SMARTD_ARGS=""' > "$1/etc/conf.d/smartd"
