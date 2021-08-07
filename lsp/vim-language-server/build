@@ -2,4 +2,4 @@
 mv vim-language-server-*.tgz?no-extract vim-language-server.tgz
 npm install -g --prefix "$1/usr" vim-language-server.tgz
 
-chmod -R u=rwX,go=rX $1
+chmod -R u=rwX,go=rX "$1"
