@@ -1,6 +1,5 @@
 #!/bin/sh -e
 make CC=cc amdgpu=1
-mkdir -pv $1/usr/bin
-mkdir -pv $1/usr/share/man/man1
-cp -vf radeontop $1/usr/bin/radeontop
-cp -vf radeontop.1 $1/usr/share/man/man1/radeontop.1
+mkdir -pv "$1/usr/bin" "$1/usr/share/man/man1"
+cp -vf radeontop "$1/usr/bin/radeontop"
+cp -vf radeontop.1 "$1/usr/share/man/man1/radeontop.1"
