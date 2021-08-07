@@ -2,4 +2,4 @@
 mv bash-language-server-*.tgz?no-extract bash-language-server.tgz
 npm install -g --prefix "$1/usr" bash-language-server.tgz
 
-chmod -R u=rwX,go=rX $1
+chmod -R u=rwX,go=rX "$1"
