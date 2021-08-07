@@ -3,6 +3,11 @@ cat >> Makefile <<EOF
 CFLAGS += ${CFLAGS}
 LDFLAGS += ${LDFLAGS}
 EOF
-make prefix=/usr
-make DESTDIR=$1 prefix=/usr install
+mk() {
+	make \
+		prefix=/usr \
+		$@
+}
+mk
+mk DESTDIR="$1" install
 chmod 644 "$1"/usr/lib/quickjs/*.a
