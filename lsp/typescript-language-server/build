@@ -3,4 +3,4 @@
 mv typescript-*.tgz?no-extract typescript-language-server.tgz
 npm install -g --prefix "$1/usr" typescript-language-server.tgz
 
-chmod -R u=rwX,go=rX $1
+chmod -R u=rwX,go=rX "$1"
