@@ -5,4 +5,4 @@ CFLAGS += ${CFLAGS}
 LDFLAGS += ${LDFLAGS}
 EOF
 make
-make DESTDIR=$1  install
+make DESTDIR="$1"  install
