@@ -6,7 +6,7 @@ EOF
 mk() {
 	make \
 		prefix=/usr \
-		$@
+		"$@"
 }
 mk
 mk DESTDIR="$1" install
