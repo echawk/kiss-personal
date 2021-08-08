@@ -7,4 +7,4 @@ sed -i -E "s~^EXTLDFLAGS.*~EXTLDFLAGS  = \$(shell pkg-config --libs webkit2gtk-w
 sed -i -E "s~(setting_add\(c, \"hint-keys\", TYPE_CHAR, &\")0123456789~\1asdfghjkl~" src/setting.c
 
 make PREFIX=/usr
-make DESTDIR=$1 PREFIX=/usr install
+make DESTDIR="$1" PREFIX=/usr install
