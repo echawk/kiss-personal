@@ -1,5 +1,4 @@
 #!/bin/sh -e
-echo "#include <sys/time.h>" >> socket.h
 ./configure \
 	--prefix=/usr
 make
