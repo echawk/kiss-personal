@@ -1,4 +1,4 @@
 #!/bin/sh -e
 make
-install -Dm 755 wyebab $1/usr/bin/wyebab
-install -Dm 755 adblock.so $1/usr/lib/wyebrowser/adblock.so
+install -Dm 755 wyebab "$1"/usr/bin/wyebab
+install -Dm 755 adblock.so "$1"/usr/lib/wyebrowser/adblock.so
