@@ -1,0 +1,11 @@
+#!/bin/sh -e
+! kiss l openssl && {
+	export NOSSL=1
+}
+make
+make test
+mkdir -pv \
+	$DESTDIR/usr/bin/ \
+	$DESTDIR/usr/share/trealla/
+cp tpl $DESTDIR/usr/bin/tpl
+cp -r library $DESTDIR/usr/share/trealla/
