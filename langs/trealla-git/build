@@ -3,9 +3,10 @@
 	export NOSSL=1
 }
 make
-make test
+make test # failed tests don't cause the build to fail
+          # so it's safe to call
 mkdir -pv \
-	$DESTDIR/usr/bin/ \
-	$DESTDIR/usr/share/trealla/
-cp tpl $DESTDIR/usr/bin/tpl
-cp -r library $DESTDIR/usr/share/trealla/
+	"$DESTDIR"/usr/bin/ \
+	"$DESTDIR"/usr/share/trealla/
+cp tpl "$DESTDIR"/usr/bin/tpl
+cp -r library "$DESTDIR"/usr/share/trealla/
