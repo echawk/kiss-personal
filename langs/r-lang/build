@@ -1,0 +1,94 @@
+#!/bin/sh -e
+
+for patch in *.patch; do
+    patch -Np1 -i "$patch"
+done
+
+# CXXFLAGS is propagated to /etc/R/Makeconf that is read when building
+# additional R modules. -D__MUSL__ is needed for some modules like Rcpp.
+# htps://github.com/RcppCore/Rcpp/issues/448
+export CXXFLAGS="$CXXFLAGS -D__MUSL__"
+#export CFLAGS="$CFLAGS"
+
+rm -rf po
+
+# R refuses to build without these files which is weird considering that
+# they are not included in the source tarball
+(
+    cd doc
+    touch NEWS.rds
+    touch NEWS.2.rds
+    touch NEWS.3.rds
+)
+
+kiss l cairo && {
+    cairoflag="--with-cairo"
+}
+
+kiss l openblas && {
+    blasflag="--with-blas"
+}
+
+kiss l lapack && {
+    lapackflag="--with-lapack"
+}
+
+kiss l libpng && {
+    libpngflag="--with-libpng"
+}
+
+kiss l tiff && {
+    tiffflag="--with-tiff"
+}
+
+kiss l libjpeg-turbo && {
+    libjpegflag="--with-jpeglib"
+}
+
+kiss l libX11 && {
+    xorgflag="--with-x"
+}
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc/R \
+    --localstatedir=/var \
+    --libdir=/usr/lib \
+    rhome=/usr  \
+    rdocdir=/usr/share/doc/R \
+    rincludedir=/usr/include/R \
+    rsharedir=/usr/share/R \
+    --disable-nls \
+    --enable-R-shlib \
+    --disable-java \
+    --with-recommended-packages \
+    ${blasflag:---without-blas} \
+    ${cairoflag:---without-cairo} \
+    --without-ICU \
+    --without-docs \
+    ${libjpegflag:---without-jpeglib} \
+    ${lapackflag:---without-lapack} \
+    ${libpngflag:---without-libpng} \
+    ${tiffflag:---without-tiff} \
+    --without-tcltk \
+    ${xorgflag:---without-x} \
+    gcc=gfortran \
+    LIBnn=Lib
+
+make DESTDIR=""
+make DESTDIR="$1" install
+
+# Install libRmath.so.
+make -C src/nmath/standalone
+make DESTDIR="$1" -C src/nmath/standalone install
+
+# Fixup R wrapper script (taken from Arch).
+ln -sf "/usr/bin/R" "$1/usr/lib/R/bin/R"
+
+# Remove some useless files (COPYING is duplicated, it will be
+# in -doc, don't worry).
+rm "$1/usr/lib/R/COPYING" "$1/usr/lib/R/SVN-REVISION"
+
+rm -rf "$1/usr/lib/R/library/translations"
+rm -rf "$1/usr/share/R/licenses"
+rm -rf "$1/usr/share/doc"
