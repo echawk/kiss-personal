@@ -1,4 +1,8 @@
 #!/bin/sh -e
-./configure --prefix=/usr --sysconfdir=/etc
+:> nostrip
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--program-suffix=3
 make
-make DESTDIR="$1" install
+make install
