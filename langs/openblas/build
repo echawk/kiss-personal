@@ -22,8 +22,8 @@ make PREFIX=/usr NUM_THREADS=64 MAJOR_VERSION=3 install
 rm -f "$DESTDIR"/usr/include/cblas.h "$DESTDIR"/usr/include/lapack*
 
 cd "$DESTDIR"/usr/lib/
-ln -s libopenblasp-r$ver.so libblas.so
-ln -s libopenblasp-r$ver.so libblas.so.3
+ln -s "libopenblasp-r$ver.so" libblas.so
+ln -s "libopenblasp-r$ver.so" libblas.so.3
 sed -i -e "s%$DESTDIR%%" "$DESTDIR"/usr/lib/cmake/openblas/OpenBLASConfig.cmake
 sed -i -e "s%$DESTDIR%%" "$DESTDIR"/usr/lib/pkgconfig/openblas.pc
 ln -s openblas.pc "$DESTDIR"/usr/lib/pkgconfig/blas.pc
