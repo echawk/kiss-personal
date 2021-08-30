@@ -12,7 +12,8 @@ export CFLAGS="$CFLAGS -fno-semantic-interposition"
 export CXXFLAGS="$CXXFLAGS -fno-semantic-interposition"
 export LDFLAGS="$LDFLAGS -fno-semantic-interposition"
 
-patch -p1 < python3-always-pip.patch
+sed -E 's/(args = \["install"\,)/\1 "-I", /' Lib/ensurepip/__init__.py > _
+mv _ Lib/ensurepip/__init__.py
 
 ./configure \
     --prefix=/usr \
