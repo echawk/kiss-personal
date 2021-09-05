@@ -1,0 +1,9 @@
+#!/bin/sh -e
+./otp_build autoconf
+./configure \
+	--prefix=/usr \
+	--disable-hipe
+sed -i -e '/LDFLAGS =/s/=/+=/' lib/odbc/c_src/*/Makefile
+make
+make install
+#make install-docs
