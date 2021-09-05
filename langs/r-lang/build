@@ -21,33 +21,16 @@ rm -rf po
     touch NEWS.3.rds
 )
 
-kiss l cairo && {
-    cairoflag="--with-cairo"
-}
-
-kiss l openblas && {
-    blasflag="--with-blas"
-}
-
-kiss l lapack && {
-    lapackflag="--with-lapack"
-}
-
-kiss l libpng && {
-    libpngflag="--with-libpng"
-}
-
-kiss l tiff && {
-    tiffflag="--with-tiff"
-}
-
-kiss l libjpeg-turbo && {
-    libjpegflag="--with-jpeglib"
-}
-
-kiss l libX11 && {
-    xorgflag="--with-x"
-}
+conf_flags=""
+for p in cairo lapack libpng tiff openblas libjpeg-turbo libX11
+do
+    case $p in
+        openblas)      kiss l $p 1>/dev/null && conf_flags="$conf_flags --with-blas" ;;
+        libjpeg-turbo) kiss l $p 1>/dev/null && conf_flags="$conf_flags --with-jpeglib" ;;
+        libX11)        kiss l $p 1>/dev/null && conf_flags="$conf_flags --with-x" ;;
+        *)             kiss l $p 1>/dev/null && conf_flags="$conf_flags --with-$p" ;;
+    esac
+done
 
 ./configure \
     --prefix=/usr \
@@ -62,16 +45,10 @@ kiss l libX11 && {
     --enable-R-shlib \
     --disable-java \
     --with-recommended-packages \
-    ${blasflag:---without-blas} \
-    ${cairoflag:---without-cairo} \
     --without-ICU \
     --without-docs \
-    ${libjpegflag:---without-jpeglib} \
-    ${lapackflag:---without-lapack} \
-    ${libpngflag:---without-libpng} \
-    ${tiffflag:---without-tiff} \
     --without-tcltk \
-    ${xorgflag:---without-x} \
+    $conf_flags \
     gcc=gfortran \
     LIBnn=Lib
 
