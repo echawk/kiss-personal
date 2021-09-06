@@ -12,7 +12,7 @@ export CFLAGS="$CFLAGS -fno-semantic-interposition"
 export CXXFLAGS="$CXXFLAGS -fno-semantic-interposition"
 export LDFLAGS="$LDFLAGS -fno-semantic-interposition"
 
-sed -E 's/(args = \["install"\,)/\1 "-I", /' Lib/ensurepip/__init__.py > _
+sed -E 's/(args = \["install"\,)/\1 "-I",/' Lib/ensurepip/__init__.py > _
 mv _ Lib/ensurepip/__init__.py
 
 ./configure \
