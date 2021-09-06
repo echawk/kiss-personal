@@ -1,4 +1,4 @@
 #!/bin/sh -e
 cargo build --release
-mkdir -p "$1"/usr/bin/
-cp target/release/texlab "$1"/usr/bin/texlab
+mkdir -p "$1/usr/bin/"
+cp target/release/texlab "$1/usr/bin/"
