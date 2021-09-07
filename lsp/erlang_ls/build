@@ -1,0 +1,5 @@
+#!/bin/sh -e
+export HOME="."
+make
+mkdir -p "$1/usr/bin/"
+cp _build/default/bin/erlang_ls "$1/usr/bin/"
