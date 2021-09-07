@@ -1,0 +1,13 @@
+#!/bin/sh -e
+sed "/^%/d" man.md > _
+mv _ man.md
+sed "s/pandoc.*/lowdown -s -Tman -M'author:Raheman Vaiya' -M'section:1' -M'title:keyd' man.md | gzip > keyd.1.gz/" Makefile > _
+mv _ Makefile
+
+make
+make man
+mkdir -p \
+	"$1/usr/bin" \
+	"$1/usr/share/man/man1"
+cp bin/keyd  "$1/usr/bin"
+cp keyd.1.gz "$1/usr/share/man/man1"
