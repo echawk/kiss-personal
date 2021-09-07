@@ -1,7 +1,10 @@
 #!/bin/sh -e
-sed -i '1i#include <sys/types.h>' pax.h
-export LIBS="-lfts"
+./configure \
+	--prefix=/usr
 
-sh Build.sh -r -tpax
-install -D -m755 pax -t "$1/usr/bin"
-install -D -m655 pax.1 -t "$1/usr/share/man/man1"
+make pax LDFLAGS="$LDFLAGS -static"
+mkdir -p "$1/usr/bin"
+cp pax "$1/usr/bin"
+
+#ln -s pax "$1/usr/bin/tar"
+#ln -s pax "$1/usr/bin/cpio
