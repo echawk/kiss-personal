@@ -1,0 +1,4 @@
+#!/bin/sh -e
+HOME="." ./bootstrap
+mkdir -pv "$1/usr/bin/"
+cp rebar3 "$1/usr/bin/"
