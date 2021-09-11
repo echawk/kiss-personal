@@ -1,0 +1,29 @@
+#!/bin/sh -e
+
+read -r ver _ < "${0%/*}/version"
+
+KMVER=${ver%%.*}
+KmVER=${ver#*.}
+KmVER=${KmVER%%.*}
+KpVER=${ver##*.}
+
+patch -p1 < kernel-no-perl.patch
+
+# Kernel versions greater than 5.12 have this issue
+if [ $KMVER -ge 5 ] && [ $KmVER -gt 12 ]
+then
+	sed -i '/<stdlib.h>/a #include <linux/stddef.h>' \
+		tools/objtool/arch/x86/decode.c
+fi
+
+cp config .config
+
+make olddefconfig # update the provided config to be comatible with the new
+                  # kernel release
+
+make -j$(nproc)  # force build with all cores
+
+mkdir -pv $1/boot
+install -Dm644 "arch/x86/boot/bzImage" "$1/boot/vmlinuz-$ver"
+install -Dm644 "System.map"            "$1/boot/System.map-$ver"
+install -Dm644 ".config"               "$1/boot/Config-$ver"

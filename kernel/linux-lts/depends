@@ -1,0 +1,4 @@
+# if you have build troubles, try installing the below packages
+#diffutils make
+#findutils make
+#gtar      make
