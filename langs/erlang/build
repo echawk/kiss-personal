@@ -1,4 +1,6 @@
 #!/bin/sh -e
+export CFLAGS="$CFLAGS -w "
+export CXXFLAGS="$CXXFLAGS -w "
 ./otp_build autoconf
 ./configure \
 	--prefix=/usr \
