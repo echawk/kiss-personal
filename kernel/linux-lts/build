@@ -10,7 +10,7 @@ KpVER=${ver##*.}
 patch -p1 < kernel-no-perl.patch
 
 # Kernel versions greater than 5.12 have this issue
-if [ $KMVER -ge 5 ] && [ $KmVER -gt 12 ]
+if [ "$KMVER" -ge 5 ] && [ "$KmVER" -gt 12 ]
 then
 	sed -i '/<stdlib.h>/a #include <linux/stddef.h>' \
 		tools/objtool/arch/x86/decode.c
@@ -21,9 +21,17 @@ cp config .config
 make olddefconfig # update the provided config to be comatible with the new
                   # kernel release
 
-make -j$(nproc)  # force build with all cores
+# if mold is the system linker, switch it out
+if [ "$(kiss owns /usr/bin/ld)" = "mold" ]
+then
+	kiss a | grep '/usr/bin/ld' | kiss a -
+	make -j"$(nproc)"  # force build with all cores
+	kiss a mold '/usr/bin/ld'
+else
+	make -j"$(nproc)"  # force build with all cores
+fi
 
-mkdir -pv $1/boot
+mkdir -pv "$1/boot"
 install -Dm644 "arch/x86/boot/bzImage" "$1/boot/vmlinuz-$ver"
 install -Dm644 "System.map"            "$1/boot/System.map-$ver"
 install -Dm644 ".config"               "$1/boot/Config-$ver"
