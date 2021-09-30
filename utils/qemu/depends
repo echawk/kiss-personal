@@ -1,4 +1,5 @@
 cmake         make
+glib
 libffi
 linux-headers make
 meson         make
@@ -8,4 +9,3 @@ pkgconf       make
 python        make
 samurai       make
 sdl2
-glib

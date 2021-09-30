@@ -4,10 +4,11 @@ for patch in *.patch; do
     patch -p1 < "$patch"
 done
 
-sed -i "/#include <linux\/errqueue.h>/a #include <linux/sockios.h>" linux-user/syscall.c
+sed "/#include <linux\/errqueue.h>/a #include <linux/sockios.h>" \
+    linux-user/syscall.c > _ ; mv -f _ linux-user/syscall.c
 
 # Remove bash dependency
-sed -i 's/bash/sh/g' Makefile
+sed 's/bash/sh/g' Makefile > _ ; mv -f _ Makefile
 
 # The check for glib doesn't interact with our specified
 # CFLAGS, so we just comandeer the ones used by configure.

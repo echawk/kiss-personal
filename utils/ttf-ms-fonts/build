@@ -3,7 +3,7 @@
 mkdir -p "$1/usr/share/fonts/TTF"
 for f in *
 do
-	cabextract "$f" -d "$1/usr/share/fonts/TTF"
+    cabextract "$f" -d "$1/usr/share/fonts/TTF"
 done
 
 rm -v "$1"/usr/share/fonts/TTF/*.exe "$1"/usr/share/fonts/TTF/*.inf

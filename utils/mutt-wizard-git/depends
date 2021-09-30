@@ -1,8 +1,8 @@
-neomutt
-isync
-msmtp
-pass
-notmuch
-lynx
 #abook
 #urlview
+isync
+lynx
+msmtp
+neomutt
+notmuch
+pass

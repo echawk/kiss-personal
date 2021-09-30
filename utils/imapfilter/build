@@ -1,9 +1,9 @@
 #!/bin/sh -e
 mk() {
-	make \
-		PREFIX=/usr \
-		MANDIR=/usr/share/man \
-		"$@"
+    make \
+        PREFIX=/usr \
+        MANDIR=/usr/share/man \
+        "$@"
 }
 mk
 mk DESTDIR="$1"  install

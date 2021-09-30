@@ -7,7 +7,8 @@ ln -s /usr/bin/pigz "$PWD/bin/gunzip"
 export PATH="$PWD/bin:$PATH"
 
 # Remove mandatory gettext dependency.
-sed -i 's/^/#/' src/nvim/po/CMakeLists.txt
+sed 's/^/#/' src/nvim/po/CMakeLists.txt > _
+mv -f _ src/nvim/po/CMakeLists.txt
 
 make \
     CMAKE_BUILD_TYPE=Release \
