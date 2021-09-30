@@ -1,8 +1,8 @@
 #!/bin/sh -e
 :> nostrip
 ./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--program-suffix=3
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --program-suffix=3
 make
 make install

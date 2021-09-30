@@ -3,14 +3,14 @@
 patch -p1 < source-highlight-gcc11.patch
 
 ./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--with-bash-completion=/usr/share/bash-completion/completions
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --with-bash-completion=/usr/share/bash-completion/completions
 
 make
 
 make DESTDIR="$1" \
-	prefix="/usr" \
-	bash_completiondir="/usr/share/bash-completion/completions" \
-	install
+    prefix="/usr" \
+    bash_completiondir="/usr/share/bash-completion/completions" \
+    install
 
