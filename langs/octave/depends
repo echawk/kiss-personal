@@ -1,13 +1,13 @@
+autoconf 	make
+automake 	make
 bzip2
 curl
 expat
 glu
 gnuplot
 lapack
+libtool 	make
 ncurses
 pcre
 readline
 zlib
-autoconf 	make
-automake 	make
-libtool 	make

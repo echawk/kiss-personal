@@ -1,12 +1,10 @@
-#!/bin/sh
-
-#autoreconf -vif
+#!/bin/sh -e
 
 ./configure \
-	--prefix=/usr \
-	--localstatedir=/var \
-	--sysconfdir=/etc \
-	--enable-static
+    --prefix=/usr \
+    --localstatedir=/var \
+    --sysconfdir=/etc \
+    --enable-static
 
 make
 make DESTDIR="$1" install

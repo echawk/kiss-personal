@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 
-mkdir lapack_build
+mkdir -p lapack_build
 cd lapack_build || exit 1
 
 cmake ../
@@ -9,5 +9,8 @@ make DESTDIR="$1" install
 
 mv "$1/usr/local/lib64" "$1/usr/lib"
 rmdir "$1/usr/local"
-sed -i 's|/usr/local|/usr|g' "$1/usr/lib/pkgconfig/blas.pc" "$1/usr/lib/pkgconfig/lapack.pc"
-sed -i 's|lib64|lib|g' "$1/usr/lib/pkgconfig/blas.pc" "$1/usr/lib/pkgconfig/lapack.pc"
+for f in "$1/usr/lib/pkgconfig/blas.pc" "$1/usr/lib/pkgconfig/lapack.pc"
+do
+    sed 's|/usr/local|/usr|g' "$f" > _ ; mv -f _ "$f"
+    sed 's|lib64|lib|g'       "$f" > _ ; mv -f _ "$f"
+done

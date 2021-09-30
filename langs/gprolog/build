@@ -5,23 +5,21 @@ export CFLAGS="$CFLAGS -fcommon"
 
 
 ./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--with-c-flags="$CFLAGS -fPIC"
-
-#sed -i "s=/usr/bin/install -c=/usr/bin/install=" Makefile
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --with-c-flags="$CFLAGS -fPIC"
 
 make
 
 make install \
-	INSTALL_DIR="$1/usr/share/gprolog" \
-	LINKS_DIR="$1/usr/bin" \
-	DOC_DIR="$1/usr/share/gprolog/doc" \
-	HTML_DIR="$1/usr/share/gprolog/doc/Html" \
-	EXAMPLES_DIR="$1/usr/share/gprolog" \
-	sysconfdir="$1/etc" \
-	localstatedir="$1/var"
+    INSTALL_DIR="$1/usr/share/gprolog" \
+    LINKS_DIR="$1/usr/bin" \
+    DOC_DIR="$1/usr/share/gprolog/doc" \
+    HTML_DIR="$1/usr/share/gprolog/doc/Html" \
+    EXAMPLES_DIR="$1/usr/share/gprolog" \
+    sysconfdir="$1/etc" \
+    localstatedir="$1/var"
 cd "$1/usr/bin"
 rm -- *
 

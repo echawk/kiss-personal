@@ -4,9 +4,9 @@ CFLAGS += ${CFLAGS}
 LDFLAGS += ${LDFLAGS}
 EOF
 mk() {
-	make \
-		prefix=/usr \
-		"$@"
+    make \
+        prefix=/usr \
+        "$@"
 }
 mk
 mk DESTDIR="$1" install
