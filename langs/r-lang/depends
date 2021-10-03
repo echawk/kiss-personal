@@ -1,4 +1,4 @@
-gcc-multilib
+gfortran # or equivalent
 ncurses
 pcre2
 perl make
