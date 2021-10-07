@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+echo "EXTRA_CFLAGS += -Wno-error=array-parameter" >> Mmake.params
+
+./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --enable-shared-libs \
+    --enable-libgrades="hlc.gc" \
+    --disable-inefficient-grades
+
+make PARALLEL="$MAKEFLAGS"
+
+make INSTALL_PREFIX="$1"/usr \
+    INSTALL_MAN_DIR="$1"/usr/share/man \
+    INSTALL_INFO_DIR="$1"/usr/share/info \
+    MERCURY_COMPILER="$1"/usr/bin/mercury_compile \
+    MERCURY_CONFIG_DIR="$1"/usr/lib/mercury \
+    PARALLEL="$MAKEFLAGS" \
+    LIBGRADES=asm_fast.gc \
+    install
