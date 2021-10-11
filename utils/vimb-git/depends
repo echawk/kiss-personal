@@ -1,8 +1,8 @@
 atk
 cairo
+freetype-harfbuzz
 gdk-pixbuf
 glib
-graphite-harfbuzz
 gtk+3
 libsoup
 pango
