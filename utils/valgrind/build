@@ -10,6 +10,13 @@ export CC="/usr/bin/cc"
 export CXX="/usr/bin/c++"
 export CFLAGS="$CFLAGS -fno-stack-protector -no-pie"
 
+if [ "$(kiss owns /usr/bin/ld)" = "mold" ]
+then
+    lto=no
+else
+    lto=yes
+fi
+
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -17,7 +24,7 @@ export CFLAGS="$CFLAGS -fno-stack-protector -no-pie"
     --infodir=/usr/share/info \
     --localstatedir=/var \
     --without-mpicc \
-    --enable-lto=yes
+    --enable-lto="$lto"
 
 make
-make DESTDIR="$1" install
+make install
