@@ -1,8 +1,8 @@
 #!/bin/sh -e
 ./configure PREFIX=/usr MANDIR=/usr/share/man
 cat >> Makefile.configure <<-EOF
-CFLAGS += ${CFLAGS}
-LDFLAGS += ${LDFLAGS}
+CFLAGS += ${CFLAGS} -static
+LDFLAGS += ${LDFLAGS} -static
 EOF
 make
 make DESTDIR="$1"  install
