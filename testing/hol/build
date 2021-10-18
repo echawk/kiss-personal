@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+poly --script tools/smart-configure.sml
+
+bin/build
+bin/build cleanForReloc
+
+mkdir -p "$1/opt/hol"
+cp -r . "$1/opt/hol"
+mkdir -p "$1/usr/bin"
+
+for b in "/opt/hol/bin/hol" "/opt/hol/bin/hol.noquote" "/opt/hol/bin/Holmake"
+do
+    ln -s "$b" "$1/usr/bin/$(basename "$b")"
+done
