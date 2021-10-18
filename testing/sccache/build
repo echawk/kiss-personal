@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+cargo build --release
+
+cargo install \
+    --root "$DESTDIR/usr" \
+    --features all \
+    --path sccache
