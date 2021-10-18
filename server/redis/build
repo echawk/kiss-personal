@@ -6,5 +6,5 @@ make \
 
 make PREFIX=/usr INSTALL_BIN=$1/usr/bin install
 mkdir -p \
-    "$1/etc" \
+    "$1/etc"
 cp redis.conf "$1/etc/"
