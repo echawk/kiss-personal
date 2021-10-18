@@ -1,0 +1,40 @@
+#!/bin/sh -e
+
+dmd="$PWD/dmd/src/dmd"
+
+mk(){
+    make -f posix.mak \
+        DMD="$dmd" \
+        TARGET_CPU=X86 \
+        RELEASE=1 \
+        INSTALL_DIR="$temp_install" \
+        $@
+}
+
+for p in patches/*; do
+    patch -p0 < "$p"
+done
+
+temp_install="junk"
+mkdir -p "$temp_install"
+for d in dmd druntime phobos
+do
+    cd "$d"
+    mk ; mk install
+    cd "$OLDPWD"
+done
+
+tree "$temp_install"
+
+mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/etc/" "$1/usr/include/dmd/"
+
+mv "$temp_install/linux/bin/64/dmd" "$1/usr/bin/dmd"
+cat > "$1/etc/dmd.conf" <<- EOF
+[Environment]
+DFLAGS=-I/usr/include/dlang/dmd -L-L/usr/lib -L--export-dynamic
+EOF
+mv "$temp_install/linux/lib64/"*        "$1/usr/lib/"
+mv "$temp_install/src/druntime/import/" "$1/usr/include/dmd/druntime"
+mv "$temp_install/src/phobos/"          "$1/usr/include/dmd/phobos/"
+chmod +x "$1/usr/bin/dmd"
+
