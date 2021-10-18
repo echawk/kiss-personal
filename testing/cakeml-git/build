@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+cd HOL
+poly --script tools/smart-configure.sml
+bin/build
+cd "$OLDPWD"
+
+# This will take a LONG time.
+HOL/bin/Holmake
+
