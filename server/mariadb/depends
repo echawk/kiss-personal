@@ -1,0 +1,9 @@
+bzip2
+curl
+gcc make
+libedit
+ncurses
+openssl
+pcre2
+xz
+zlib
