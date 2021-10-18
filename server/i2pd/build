@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -w -fpermissive"
+export CXXFLAGS="$CXXFLAGS -w -fpermissive"
+
+cmake -B build \
+    -S build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_SHARED_LIBS=ON \
+    -DWITH_UPNP=OFF \
+    -Wno-dev
+
+make -C build
+make -C build install
+
+
