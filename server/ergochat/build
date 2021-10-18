@@ -1,0 +1,23 @@
+#!/bin/sh -e
+sed \
+    -e "s~ergo.motd~/var/lib/ergochat/ircd.motd~" \
+    -e "s~fullchain.pem~/var/lib/ergochat/fullchain.pem~" \
+    -e "s~privkey.pem~/var/lib/ergochat/privkey.pem~" \
+    -e "s~ircdb.db~/var/lib/ergochat/ircdb~" \
+    -e "s~languages~/usr/share/ergochat/i18n/~" \
+    default.yaml > _
+mv -f _ default.yaml
+
+go build \
+    -trimpath \
+    -buildmode=pie \
+    -v \
+    .
+mkdir -p \
+    "$1/usr/bin" \
+    "$1/usr/share/ergochat/i18n"
+
+cp ergo           "$1/usr/bin"
+cp -r languages/* "$1/usr/share/ergochat/i18n/"
+cp default.yaml   "$1/usr/share/ergochat/"
+cp ergo.motd      "$1/usr/share/ergochat/default.motd"
