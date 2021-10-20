@@ -12,7 +12,8 @@ done
     --bindir /usr/bin \
     --libdir /usr/lib/ocaml \
     --mandir /usr/share/man \
-    --disable-force-safe-string
+    --disable-force-safe-string \
+    --with-pic
 
 make world.opt
 make install
