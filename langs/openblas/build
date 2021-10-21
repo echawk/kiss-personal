@@ -1,33 +1,17 @@
 #!/bin/sh -e
 
-read -r ver _ < "${0%/*}/version"
+mk() {
+    make \
+        PREFIX=/usr \
+        USE_OPENMP=0 \
+        NO_LAPACK=0 \
+        NO_AFFINITY=1 \
+        NO_STATIC=1 \
+        INTERFACE64=1 \
+        NUM_THREADS="$(nproc)" \
+        MAJOR_VERSION=3 \
+        "$@"
+}
 
-export DESTDIR=$1
-
-make \
-    NO_STATIC=1 \
-    NO_LAPACK=1 \
-    NO_LAPACKE=1 \
-    NO_CBLAS=1 \
-    NO_AFFINITY=1 \
-    USE_OPENMP=1 \
-    CFLAGS="$CFLAGS" \
-    TARGET=CORE2 \
-    DYNAMIC_ARCH=1 \
-    NUM_THREADS=64 \
-    MAJOR_VERSION=3 \
-    libs shared
-
-make PREFIX=/usr NUM_THREADS=64 MAJOR_VERSION=3 install
-rm -f "$DESTDIR"/usr/include/cblas.h "$DESTDIR"/usr/include/lapack*
-
-cd "$DESTDIR"/usr/lib/
-ln -s "libopenblasp-r$ver.so" libblas.so
-ln -s "libopenblasp-r$ver.so" libblas.so.3
-sed -e "s%$DESTDIR%%" "$DESTDIR"/usr/lib/cmake/openblas/OpenBLASConfig.cmake > _
-mv -f _ "$DESTDIR"/usr/lib/cmake/openblas/OpenBLASConfig.cmake
-sed -e "s%$DESTDIR%%" "$DESTDIR"/usr/lib/pkgconfig/openblas.pc > _
-mv -f _ "$DESTDIR"/usr/lib/pkgconfig/openblas.pc
-ln -s openblas.pc "$DESTDIR"/usr/lib/pkgconfig/blas.pc
-
-rmdir "$DESTDIR"/usr/bin
+CFLAGS='' mk CFLAGS="$CPPFLAGS $CFLAGS"
+mk install
