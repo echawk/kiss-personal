@@ -1,7 +1,8 @@
 #!/bin/sh -e
 
-# enable building with netbsd-curses
-sed -i 's/tinfow tinfo/tinfow tinfo terminfo/g' auto.def
+# Enable building with netbsd-curses.
+sed 's/tinfow tinfo/tinfow tinfo terminfo/g' auto.def > _
+mv -f _ auto.def
 
 ./configure \
     --prefix=/usr \
@@ -19,7 +20,7 @@ mv _ Makefile
 
 make
 make docs/neomuttrc docs/neomutt.1 docs/neomuttrc.5
-make DESTDIR="$1" install
+make install
 
 # Install the man pages and /etc/neomuttrc.
 mkdir -p \
