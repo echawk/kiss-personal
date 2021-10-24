@@ -1,0 +1,6 @@
+appstream-glib
+gpgme
+libarchive
+libsoup
+ostree
+python-pyparsing
