@@ -4,7 +4,7 @@ make \
     BUILD_TLS=yes \
     USE_SYSTEMD=no
 
-make PREFIX=/usr INSTALL_BIN=$1/usr/bin install
+make PREFIX=/usr INSTALL_BIN="$1/usr/bin" install
 mkdir -p \
     "$1/etc"
 cp redis.conf "$1/etc/"
