@@ -4,17 +4,17 @@
     cd csources
 
     # Build nim source files
-    ./build.sh
+    sh ./build.sh
 )
 
 # Build a release version of the "koch" maintenance program
-bin/nim compile -d:release koch
+bin/nim compile --skipUserCfg --skipParentCfg --hints:off koch
 
 # Build a release version of the nim compiler
-./koch boot -d:release -d:danger
+./koch boot -d:release --skipUserCfg --skipParentCfg --hints:off
 
 # Build nimsuggest, nimgrep, and nimpretty
-./koch tools
+./koch tools --skipUserCfg --skipParentCfg --hints:off
 
 # Build nimrtl.nim
 (
@@ -38,8 +38,7 @@ install -Dm 755 bin/*    -t "$1"/usr/bin
 # Workaround Nim's nonstandard header file placement
 # (https://bugs.archlinux.org/task/50252)
 mkdir -p "$1/usr/include"
-cp -a "$1/usr/lib/nim/"*.h "$1"/usr/include
-ln -s lib/nim/*.h          "$1"/usr/include/
+cp -dpR "$1/usr/lib/nim/"*.h "$1"/usr/include/
 
 
 # Nimble looks for nimscriptapi.nim in /usr/bin/nimblepkg/, of all places
@@ -50,4 +49,3 @@ cp -r dist/nimble/src/nimblepkg "$1/usr/share/nimble"
 
 # Link the two folders
 ln -s "/usr/share/nimble/" "$1/usr/bin/nimblepkg"
-
