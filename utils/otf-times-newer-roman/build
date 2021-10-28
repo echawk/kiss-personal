@@ -1,0 +1,4 @@
+#!/bin/sh -e
+unzip *?no-extract
+mkdir -p "$1/usr/share/fonts/OTF/"
+cp *.otf "$1/usr/share/fonts/OTF/"
