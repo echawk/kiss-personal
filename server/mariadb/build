@@ -1,12 +1,5 @@
 #!/bin/sh -e
-
-# If mold is the system linker, switch it.
-if [ "$(kiss owns /usr/bin/ld)" = "mold" ]
-then
-    kiss a | grep '/usr/bin/ld' | kiss a -
-    sl=1
-fi
-
+mk() {
 cmake -B build \
     -DBUILD_CONFIG=mysql_release \
     -DCMAKE_BUILD_TYPE=MinSizeRel \
@@ -78,6 +71,17 @@ cmake -B build \
 
 cmake --build   build
 cmake --install build
+}
+
+# If mold is the system linker, switch it.
+if [ "$(kiss owns /usr/bin/ld)" = "mold" ]
+then
+    kiss a | grep '/usr/bin/ld' | kiss a -
+    mk
+    kiss a mold '/usr/bin/ld'
+else
+    mk
+fi
 
 mkdir -p "$1/etc/my.cnf.d"
 mkdir -p "$1/var/lib/mysql"
@@ -143,6 +147,3 @@ skip-networking
 # use this group for options that older servers don't understand
 [mariadb-10.5]
 EOF
-
-# If we switched the linker, switch back to mold.
-[ -n "$sl" ] && kiss a | grep '/usr/bin/ld' | kiss a -
