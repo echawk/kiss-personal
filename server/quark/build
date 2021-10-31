@@ -1,0 +1,8 @@
+#!/bin/sh -e
+sed -E \
+    -e "s~(PREFIX =).*~\1 /usr~" \
+    -e "s~-Os~$CFLAGS~" \
+    config.mk > _
+mv -f _ config.mk
+make
+make install
