@@ -1,0 +1,8 @@
+fontconfig
+freetype-harfbuzz
+libX11
+libXScrnSaver
+libXext
+libXft
+tcl
+zlib
