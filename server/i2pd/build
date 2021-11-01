@@ -11,5 +11,5 @@ cmake -B build \
     -DWITH_UPNP=OFF \
     -Wno-dev
 
-make -C build
-make -C build install
+cmake --build   build
+cmake --install build
