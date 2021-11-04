@@ -1,0 +1,17 @@
+#!/bin/sh -e
+sed "s,/etc/mail,/etc/smtpd,g" usr.sbin/smtpd/smtpd.conf
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc/smtpd \
+    --sbindir=/usr/bin \
+    --libexecdir=/usr/lib/smtpd \
+    --with-path-mbox=/var/spool/mail \
+    --with-path-empty=/var/empty \
+    --with-path-socket=/run \
+    --with-path-CAfile=/etc/ssl/cert.pem\
+    --with-user-smtpd=smtpd \
+    --with-user-queue=smtpq \
+    --with-group-queue=smtpq
+
+make
+make install
