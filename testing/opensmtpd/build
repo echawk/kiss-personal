@@ -1,5 +1,6 @@
 #!/bin/sh -e
-sed "s,/etc/mail,/etc/smtpd,g" usr.sbin/smtpd/smtpd.conf
+sed "s,/etc/mail,/etc/smtpd,g" usr.sbin/smtpd/smtpd.conf > _
+mv -f _ usr.sbin/smtpd/smtpd.conf
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc/smtpd \
