@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCONFDIR=/etc/rspamd \
+    -DDBDIR=/var/lib/rspamd \
+    -DLOGDIR=/var/log/rspamd \
+    -DRUNDIR=/run/rspamd \
+    -DRSPAMD_USER=rspamd \
+    -DWANT_SYSTEMD_UNITS=OFF \
+    -DENABLE_HYPERSCAN=OFF \
+    -DENABLE_JEMALLOC=OFF \
+    -DENABLE_OPTIMIZATION=ON
+
+cmake --build   build
+cmake --install build
