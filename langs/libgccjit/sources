@@ -1,0 +1,2 @@
+https://gcc.gnu.org/pub/gcc/releases/gcc-VERSION/gcc-VERSION.tar.xz gcc
+patches/gccjit-musl-fix.patch
