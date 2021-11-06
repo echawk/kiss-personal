@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+CF=""
+
+kiss l postgresql && CF="$CF --with-pgsql"
+kiss l mariadb    && CF="$CF --with-mysql"
+kiss l zstd       && CF="$CF --with-zstd"
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --sbindir=/usr/bin \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/dovecot \
+    --with-rundir=/run/dovecot \
+    --with-moduledir=/usr/lib/dovecot/modules \
+    --disable-static \
+    --with-sqlite \
+    --with-ssldir=/etc/ssl \
+    --with-zlib \
+    $CF
+
+make
+make install
+
+rm -rf "$1/etc"
+cp doc/mkcert.sh "$1/usr/lib/dovecot/mkcert.sh"
