@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+export LDFLAGS="$LDFLAGS -static"
+
+./configure \
+    --prefix=/usr \
+    --enable-single-binary=symlinks \
+    --with-packager="$(grep '^NAME="' /etc/os-release | cut -d'"' -f2)" \
+    --without-libgmp \
+    --disable-libcap \
+    --disable-nls
+
+make
+make install
