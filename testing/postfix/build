@@ -34,7 +34,6 @@ CFLAGS="$CFLAGS
 
 make makefiles \
     DEBUG='' \
-    pie=yes \
     shared=yes \
     dynamicmaps=yes \
     CCARGS="$CFLAGS" \
@@ -44,3 +43,4 @@ make makefiles \
 
 make
 
+sh postfix-install -non-interactive install_root="$1"
