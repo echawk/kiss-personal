@@ -1,6 +1,10 @@
 #!/bin/sh -e
 
-poly --script tools/smart-configure.sml
+if kiss l polyml ; then
+    poly --script tools/smart-configure.sml
+elif kiss l mosml ; then
+    mosml < tools/smart-configure.sml
+fi
 
 bin/build
 bin/build cleanForReloc
