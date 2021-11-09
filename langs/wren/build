@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+make -C wren/projects/make/
+make -C wren-cli/projects/make/
+
+mkdir -pv \
+    "$1/usr/bin" \
+    "$1/usr/lib" \
+    "$1/usr/include"
+
+cd wren/
+cp lib/libwren.*      "$1/usr/lib"
+cp src/include/wren.h "$1/usr/include"
+cd $OLDPWD
+
+cd wren-cli
+cp bin/wren_cli       "$1/usr/bin/wren"
