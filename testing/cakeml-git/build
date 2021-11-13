@@ -1,9 +1,14 @@
 #!/bin/sh -e
 
-cd HOL
-poly --script tools/smart-configure.sml
-bin/build
-cd "$OLDPWD"
+(
+    cd HOL
+    if kiss l polyml ; then
+        poly --script tools/smart-configure.sml
+    elif kiss l mosml ; then
+        mosml < tools/smart-configure.sml
+    fi
+    bin/build
+)
 
 # This will take a LONG time.
 HOL/bin/Holmake
