@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+cat <<EOF
+If you want to enable the main flatpak repo, run the below command:
+
+# flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+EOF
