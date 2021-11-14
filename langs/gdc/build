@@ -1,0 +1,63 @@
+#!/bin/sh -e
+
+# Make sure gmp is built with generic options.
+cp gcc/gmp/configfsf.guess gcc/gmp/config.guess
+cp gcc/gmp/configfsf.sub   gcc/gmp/config.sub
+
+# Use lib not lib64 by default.
+sed '/m64=/s/lib64/lib/' gcc/gcc/config/i386/t-linux64 > _
+mv -f _ gcc/gcc/config/i386/t-linux64
+sed 's/lib64/lib/' gcc/gcc/config/i386/linux64.h > _
+mv -f _ gcc/gcc/config/i386/linux64.h
+
+# Build must happen outside of gcc source.
+mkdir -p gcc-build
+cd gcc-build
+
+# Grab the system's GCC version.
+IFS=. read -r gcc_version _ 2>/dev/null \
+    < "$KISS_ROOT/var/db/kiss/installed/gcc/version" || gcc_version=null
+
+# Skip the bootstrap process if we are able.
+case $2 in "$gcc_version"*)
+    printf '%s\n' "Minor version difference, disabling bootstrap."
+    bootstrap=--disable-bootstrap
+esac
+
+../gcc/configure \
+    libat_cv_have_ifunc=no \
+    --prefix=/usr \
+    --libexecdir=/usr/lib \
+    --mandir=/usr/share/man \
+    --infodir=/usr/share/info \
+    --disable-multilib \
+    --disable-symvers \
+    --disable-libmpx \
+    --disable-libmudflap \
+    --disable-libsanitizer \
+    --disable-werror \
+    --disable-fixed-point \
+    --disable-libstdcxx-pch \
+    --disable-nls \
+    --enable-checking=release \
+    --enable-__cxa_atexit \
+    --enable-default-pie \
+    --enable-default-ssp \
+    --enable-shared \
+    --enable-threads \
+    --enable-tls \
+    --enable-initfini-array \
+    --enable-languages=d \
+    --without-included-gettext \
+    --with-zstd=no \
+    --with-system-zlib \
+    --build=x86_64-pc-linux-musl \
+    "${bootstrap:---enable-bootstrap}"
+
+make
+make install
+
+# Save 35MB.
+find "$1" -name libgtkpeer.a  -exec rm -f {} +
+find "$1" -name libgjsmalsa.a -exec rm -f {} +
+find "$1" -name libgij.a      -exec rm -f {} +
