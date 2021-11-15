@@ -1,0 +1,14 @@
+#!/bin/sh -e
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc
+sed '/-Werror/d' config.mk > _
+mv -f _ config.mk
+make
+make install
+
+kiss l glibc && libc=""
+kiss l musl && libc="musl/"
+
+printf "repository=https://alpha.de.repo.voidlinux.org/current/%s" "${libc}" \
+    > "$1/usr/share/xbps.d/00-repository-main.conf"
