@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+if kiss l polyml ; then
+    make with-poly
+elif kiss l mosml ; then
+    make with-mosml
+fi
+
+make INSTALLDIR="$1/opt/hamlet" install
+
+mkdir -p "$1/usr/bin/"
+cat <<EOF > "$1/usr/bin/hamlet"
+#!/bin/sh
+/opt/hamlet/hamlet \$@
+EOF
+chmod +x "$1/usr/bin/hamlet"
