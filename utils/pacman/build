@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+meson \
+    --prefix=/usr \
+    --buildtype=plain \
+    -Ddoc=disabled \
+    -Ddoxygen=disabled \
+    -Dscriptlet-shell=/usr/bin/bash \
+    build
+
+ninja -C build
+ninja -C build install
