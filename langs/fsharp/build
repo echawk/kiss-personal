@@ -3,7 +3,7 @@
 # 'Build' msbuild.
 (
     cd msbuild
-    ar vx *.deb
+    ar vx -- *.deb
     tar xf data.tar.xz
     mkdir -p ../junk/usr
     cp -r usr/ ../junk
