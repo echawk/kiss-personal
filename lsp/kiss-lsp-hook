@@ -7,6 +7,9 @@ ownsdir(){
 }
 
 pkgd="$(KISS_HOOK='' kiss s "$2" | sed q)"
+
+kiss l git-extras || exit 0
+
 case $1 in
     pre-source)
         case $2 in
