@@ -1,0 +1,58 @@
+#!/bin/sh -e
+
+cet="https://github.com/llvm/llvm-project/releases/download/llvmorg-VERSION/clang-tools-extra-VERSION.src.tar.xz tools/extra"
+
+ownsdir(){
+    ! [ "$(whoami)" != "$(stat -c "%U" "$1")" ]
+}
+
+pkgd="$(KISS_HOOK='' kiss s "$2" | sed q)"
+case $1 in
+    pre-source)
+        case $2 in
+            clang)
+                (
+                cd "$pkgd"
+                if git rev-parse ; then
+                    if ownsdir "$pkgd" ; then
+                        if ! grep "$cet" sources ; then
+                            echo "$cet" >> sources
+                        fi
+                        KISS_HOOK='' kiss c
+                    else
+                        if ! grep "$cet" sources ; then
+                            $KISS_SU sh -c "echo \"$cet\" >> sources"
+                        fi
+                        $KISS_SU sh -c "KISS_HOOK='' kiss c"
+                    fi
+                fi
+                )
+                ;;
+            rust)
+                (
+                cd "$pkgd"
+                if git rev-parse ; then
+                    if ownsdir "$pkgd" ; then
+                        sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
+                    else
+                        $KISS_SU sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
+                    fi
+                fi
+                )
+                ;;
+        esac
+    ;;
+    post-install)
+        (
+        cd "$pkgd"
+        if git rev-parse ; then
+            if ownsdir "$pkgd" ; then
+                git-clear -f
+            else
+                $KISS_SU git clear -f
+            fi
+        fi
+        )
+    ;;
+esac
+
