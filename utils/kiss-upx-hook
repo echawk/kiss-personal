@@ -1,0 +1,15 @@
+#!/bin/sh
+
+kiss l upx || exit 0
+
+case "$1" in
+    post-build)
+        case "$2" in
+            cmake|texlive-bin)
+                find "$3/usr/bin/" | xargs -P0 -I{} upx {}
+                exit 0
+            ;;
+        esac
+    ;;
+esac
+
