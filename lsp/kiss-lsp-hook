@@ -10,48 +10,52 @@ pkgd="$(KISS_HOOK='' kiss s "$2" | sed q)"
 m="/tmp/kiss-lsp-hook-$2"
 kiss l git-extras 1>/dev/null 2>&1 || exit 0
 
+mod(){
+    cd "$pkgd"
+    if git rev-parse ; then
+        if ownsdir "$pkgd" ; then
+            if ! [ -e "$m" ] ; then
+                $1 ; touch "$m"
+            fi
+        else
+            if ! [ -e "$m" ] ; then
+                $2 ; touch "$m"
+            fi
+        fi
+    fi
+}
+
 case $1 in
     pre-source)
         case $2 in
             clang)
+                f(){
+                    echo "$cet" >> sources
+                    KISS_HOOK='' kiss c
+                }
+                sf(){
+                    $KISS_SU sh -c "echo \"$cet\" >> sources"
+                    $KISS_SU sh -c "KISS_HOOK='' kiss c"
+                }
                 (
-                cd "$pkgd"
-                if git rev-parse ; then
-                    if ownsdir "$pkgd" ; then
-                        if ! [ -e "$m" ] ; then
-                            echo "$cet" >> sources
-                            KISS_HOOK='' kiss c
-                            touch "$m"
-                        fi
-                    else
-                        if ! [ -e "$m" ] ; then
-                            $KISS_SU sh -c "echo \"$cet\" >> sources"
-                            $KISS_SU sh -c "KISS_HOOK='' kiss c"
-                            touch "$m"
-                        fi
-                    fi
-                fi
+                    mod f sf
                 )
                 ;;
             rust)
+                f(){
+                    sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
+                }
+                sf(){
+                    $KISS_SU sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
+                }
                 (
-                cd "$pkgd"
-                if git rev-parse ; then
-                    if ownsdir "$pkgd" ; then
-                        if ! [ -e "$m" ] ; then
-                            sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
-                            touch "$m"
-                        fi
-                    else
-                        if ! [ -e "$m" ] ; then
-                            $KISS_SU sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
-                            touch "$m"
-                        fi
-                    fi
-                fi
+                    mod f sf
                 )
                 ;;
         esac
+    ;;
+    pre-build)
+        rm -- "$m"
     ;;
     post-install)
         (
@@ -64,7 +68,6 @@ case $1 in
             fi
         fi
         )
-        rm -- "$m"
     ;;
 esac
 
