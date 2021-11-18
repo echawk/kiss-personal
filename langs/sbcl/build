@@ -8,6 +8,8 @@ if kiss l sbcl ; then
     ./make.sh --xc-host=sbcl --prefix=/usr
 elif kiss l ccl ; then
     ./make.sh --xc-host=ccl --prefix=/usr
+elif kiss l clisp ; then
+    ./make.sh --xc-host=clisp --prefix=/usr
 else
     ./make.sh --xc-host=ecl --prefix=/usr
 fi
