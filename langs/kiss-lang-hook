@@ -1,0 +1,42 @@
+#!/bin/sh -e
+
+ownsdir(){
+    ! [ "$(whoami)" != "$(stat -c "%U" "$1")" ]
+}
+
+pkgd="$(KISS_HOOK='' kiss s "$2" | sed q)"
+
+kiss l git-extras || exit 0
+
+case $1 in
+    pre-source)
+        case $2 in
+            gcc)
+                # Enables gfortran & gdc.
+                (
+                cd "$pkgd"
+                if git rev-parse ; then
+                    if ownsdir "$pkgd" ; then
+                        sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
+                    else
+                        $KISS_SU sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
+                    fi
+                fi
+                )
+                ;;
+        esac
+    ;;
+    post-install)
+        (
+        cd "$pkgd"
+        if git rev-parse ; then
+            if ownsdir "$pkgd" ; then
+                git-clear -f
+            else
+                $KISS_SU git clear -f
+            fi
+        fi
+        )
+    ;;
+esac
+
