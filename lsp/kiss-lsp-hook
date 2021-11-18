@@ -37,9 +37,7 @@ case $1 in
                     $KISS_SU sh -c "echo \"$cet\" >> sources"
                     $KISS_SU sh -c "KISS_HOOK='' kiss c"
                 }
-                (
-                    mod f sf
-                )
+                mod f sf
                 ;;
             rust)
                 f(){
@@ -48,9 +46,7 @@ case $1 in
                 sf(){
                     $KISS_SU sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
                 }
-                (
-                    mod f sf
-                )
+                mod f sf
                 ;;
         esac
     ;;
@@ -58,7 +54,6 @@ case $1 in
         rm -- "$m"
     ;;
     post-install)
-        (
         cd "$pkgd"
         if git rev-parse ; then
             if ownsdir "$pkgd" ; then
@@ -67,7 +62,6 @@ case $1 in
                 $KISS_SU git-clear -f
             fi
         fi
-        )
     ;;
 esac
 
