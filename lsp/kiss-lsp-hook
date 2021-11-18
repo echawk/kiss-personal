@@ -60,7 +60,7 @@ case $1 in
             if ownsdir "$pkgd" ; then
                 git-clear -f
             else
-                $KISS_SU git clear -f
+                $KISS_SU git-clear -f
             fi
         fi
         )
