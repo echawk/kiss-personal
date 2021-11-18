@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -falign-functions=4"
+export FORCE_UNSAFE_CONFIGURE=1
+
+ulimit -s 16384 2>/dev/null || :
+
+./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --ignore-absence-of-libsigsegv
+
+make -j1
+make -j1 DESTDIR="$1" install
