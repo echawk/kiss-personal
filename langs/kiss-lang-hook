@@ -5,8 +5,8 @@ ownsdir(){
 }
 
 pkgd="$(KISS_HOOK='' kiss s "$2" | sed q)"
-
-kiss l git-extras || exit 0
+m="/tmp/kiss-lang-hook-$2"
+kiss l git-extras 1>/dev/null 2>&1 || exit 0
 
 case $1 in
     pre-source)
@@ -17,9 +17,15 @@ case $1 in
                 cd "$pkgd"
                 if git rev-parse ; then
                     if ownsdir "$pkgd" ; then
-                        sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
+                        if ! [ -e "$m" ] ; then
+                            sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
+                            touch "$m"
+                        fi
                     else
-                        $KISS_SU sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
+                        if ! [ -e "$m" ] ; then
+                            $KISS_SU sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
+                            touch "$m"
+                        fi
                     fi
                 fi
                 )
@@ -37,6 +43,7 @@ case $1 in
             fi
         fi
         )
+        rm -- "$m"
     ;;
 esac
 
