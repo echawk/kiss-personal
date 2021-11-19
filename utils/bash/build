@@ -1,0 +1,29 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -static"
+
+ed "Makefile.in" <<EOF
+/-\$(SIZE) \$(Program)/
+a
+\$(CSOURCES): \$(DEFDIR)/builtext.h
+.
+w
+q
+EOF
+
+ver="$(echo ${2%.*} | tr -d '.')"
+
+for patch in bash${ver}-0??; do
+    patch -p0 < "$patch"
+done
+
+./configure \
+    --prefix=/usr \
+    --without-bash-malloc \
+    --without-installed-readline \
+    --disable-nls
+
+make
+make DESTDIR="$1" install
+
+ln -s bash "$1/usr/bin/sh"
