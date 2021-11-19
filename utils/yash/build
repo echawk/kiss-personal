@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+# LANG variable can often lead to failures in compiling lineedit commands. So we
+# disable it.
+unset LANG
+export LDFLAGS="$LDFLAGS -static"
+
+./configure \
+    --prefix=/usr \
+    --enable-help \
+    --enable-history \
+    --disable-nls \
+    --disable-printf \
+    --enable-socket \
+    --enable-lineedit
+
+make
+make DESTDIR="$1" install
+
+# Remove Japanese man pages.
+rm -rf "$1/usr/share/man/ja"
