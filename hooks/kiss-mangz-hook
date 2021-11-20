@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+case "$1" in
+    post-build)
+        # Compress any man pages that we find. It's safe to always 'succeed'.
+        find "$3/usr/share/man" -type f | xargs -P0 pigz 2>/dev/null ||:
+        ;;
+esac

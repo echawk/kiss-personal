@@ -1,0 +1,45 @@
+#!/bin/sh
+
+TIME_FILE="/tmp/kiss-hook-timebuild-storage-$2"
+
+c1='\033[1;31m' # Red
+c2='\033[1;32m' # Green
+c3='\033[1;33m' # Yellow
+c4='\033[1;34m' # Blue
+c5='\033[m'     # Clear
+
+log_start(){
+    awk 'BEGIN { srand(); print srand() }' > "$TIME_FILE"
+}
+
+print_time_elapsed(){
+    step="$1"
+    read -r stime < "$TIME_FILE"
+    etime=$(awk 'BEGIN { srand(); print srand() }')
+    elapsed_sec=$((etime - stime))
+    elapsed_min=$((elapsed_sec / 60))
+    elapsed_hrs=$((elapsed_min / 60))
+    elapsed_sec=$((elapsed_sec % 60))
+    elapsed_min=$((elapsed_min % 60))
+    printf '%b%s %b%s%b %b(%s)%b %b%sh.%sm.%ss%b\n' \
+        "$c3" "->" \
+        "$c1" "timer" "$c5" \
+        "$c4" "$step" "$c5" \
+        "$c2" "$elapsed_hrs" "$elapsed_min" "$elapsed_sec" "$c5"
+}
+
+case "$1" in
+    pre-extract)
+        log_start
+        ;;
+    pre-build)
+        print_time_elapsed "extract" # Print time it took to extract file.
+        log_start
+        ;;
+    post-build)
+        print_time_elapsed "build" # Print time it took to build package.
+        ;;
+    post-install)
+        rm "$TIME_FILE"
+        ;;
+esac
