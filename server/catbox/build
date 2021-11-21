@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+go build
+mkdir -pv \
+    "$1/usr/bin" \
+    "$1/usr/share/catbox"
+cp catbox "$1/usr/bin"
+cp -r conf "$1/usr/share/catbox/examples"
