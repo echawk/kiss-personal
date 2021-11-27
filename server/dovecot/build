@@ -2,9 +2,9 @@
 
 CF=""
 
-kiss l postgresql && CF="$CF --with-pgsql"
-kiss l mariadb    && CF="$CF --with-mysql"
-kiss l zstd       && CF="$CF --with-zstd"
+kiss list postgresql && CF="$CF --with-pgsql"
+kiss list mariadb    && CF="$CF --with-mysql"
+kiss list zstd       && CF="$CF --with-zstd"
 
 ./configure \
     --prefix=/usr \
