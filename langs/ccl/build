@@ -9,7 +9,7 @@ do
     mv -f _ "$f"
 done
 
-kiss l glibc || {
+kiss list glibc || {
 
 # musl fixes
 
