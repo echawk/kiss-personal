@@ -1,5 +1,5 @@
 #!/bin/sh -e
-! kiss l openssl && {
+! kiss list openssl && {
     export NOSSL=1
 }
 make
