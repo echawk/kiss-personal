@@ -25,10 +25,10 @@ conf_flags=""
 for p in cairo lapack libpng tiff openblas libjpeg-turbo libX11
 do
     case $p in
-        openblas)      kiss list $p 1>/dev/null && conf_flags="$conf_flags --with-blas" ;;
-        libjpeg-turbo) kiss list $p 1>/dev/null && conf_flags="$conf_flags --with-jpeglib" ;;
-        libX11)        kiss list $p 1>/dev/null && conf_flags="$conf_flags --with-x" ;;
-        *)             kiss list $p 1>/dev/null && conf_flags="$conf_flags --with-$p" ;;
+        openblas)      kiss list $p && conf_flags="$conf_flags --with-blas" ;;
+        libjpeg-turbo) kiss list $p && conf_flags="$conf_flags --with-jpeglib" ;;
+        libX11)        kiss list $p && conf_flags="$conf_flags --with-x" ;;
+        *)             kiss list $p && conf_flags="$conf_flags --with-$p" ;;
     esac
 done
 
