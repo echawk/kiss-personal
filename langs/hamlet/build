@@ -1,8 +1,8 @@
 #!/bin/sh -e
 
-if kiss l polyml ; then
+if kiss list polyml ; then
     make with-poly
-elif kiss l mosml ; then
+elif kiss list mosml ; then
     make with-mosml
 fi
 
