@@ -1,0 +1,8 @@
+#!/bin/sh
+for repo in $(echo $KISS_PATH | tr ':' '\n')
+do
+	for pkg in $(ls $repo)
+	do
+		echo "$(basename $repo)/$pkg"
+	done
+done | sort -u | ${KISS_FUZZY:-${FUZZY:-fzf}}

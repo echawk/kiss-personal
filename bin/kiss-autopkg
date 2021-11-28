@@ -1,0 +1,41 @@
+#!/bin/sh -e
+
+# Usage: kiss dir/ pkg list
+
+# desc: automatically updates packages to the latest version on repology.
+
+repodir=$1
+[ -d "$1" ] || exit 1
+shift
+
+repo_pkgs=$*
+
+for pkg in $repo_pkgs
+do
+    [ -d "$repodir/$pkg" ] || exit 1
+done
+
+update(){
+    kiss ou "$repodir" \
+        | grep -E "($(echo "$repo_pkgs" | sed 's/ /|/g'))" \
+        | while read -r LINE
+        do
+            pkg="${LINE%% *}"
+            newver="${LINE##* }"
+            cd "${repodir}/${pkg}"
+            read -r oldver oldrel < version
+            echo "$newver 1" > version
+            if kiss d
+            then
+                kiss c
+                git add .
+                git commit -m "(kiss-autopkg)$pkg: bump to $newver"
+            else
+                echo "$oldver $oldrel" > version
+            fi
+            cd "$OLDPWD"
+        done
+    git push
+}
+
+update

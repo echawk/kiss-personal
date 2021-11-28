@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+# Potentially rename to 'kiss-prune' or 'kiss-cacheprune'
+
+# The main idea is to get rid of accumulated binaries.
+
+kiss_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/kiss/bin/
+
+ff(){
+    find "$kiss_cache_dir" -type f
+}
+
+for f in $(ff | sort -u | cut -d'@' -f1 | uniq -d )
+do
+    tot=$(ff | grep -c "$f")
+    ff | grep "$f" | sort -u | head -n $((tot-1)) | xargs
+done

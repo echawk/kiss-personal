@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Reports the size of all the currently installed packages.
+# '-h' enables human readable
+
+#FIXME: size of system can fluctuate greatly in between runs.
+
+a(){
+    for d in "${KISS_ROOT:-/}var/db/kiss/installed/"*
+    do
+        ( grep -vE "/$" "$d/manifest" 2>&1 ) &
+    done
+    wait
+}
+b(){
+a | xargs -P0 du 2>/dev/null | awk '{sum += $1} END {print sum}'
+}
+if [ $# -ge 1 ] ; then
+    case $1 in
+        -h)
+            kb=$(b)
+            mb=$((kb / 1024))
+            gb=$((mb / 1024))
+            kb=$((kb % 1024))
+            mb=$((mb % 1024))
+            echo "${gb}GB ${mb}MB ${kb}KB"
+            ;;
+    esac
+else
+    b
+fi
