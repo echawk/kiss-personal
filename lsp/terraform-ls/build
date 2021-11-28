@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+export CGO_CPPFLAGS="${CPPFLAGS}"
+export CGO_CFLAGS="${CFLAGS}"
+export CGO_CXXFLAGS="${CXXFLAGS}"
+export CGO_LDFLAGS="${LDFLAGS}"
+export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw -ldflags=-linkmode=external"
+go build -o terraform-ls
+
+mkdir -pv "$1/usr/bin"
+cp terraform-ls "$1/usr/bin/terraform-ls"
