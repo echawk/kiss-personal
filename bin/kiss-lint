@@ -1,0 +1,135 @@
+#!/bin/sh -e
+
+line_aux(){
+    cut -d':' -f1 | xargs | tr ' ' ','
+}
+checkposix(){
+    # basically search a posix shell script for things that aren't posix
+    ( t="$(grep -nE "sed (-[a-zA-Z]*)*-i?[a-zA-Z]*i[a-zA-Z]*i?" "$f" | line_aux)"
+    [ -n "$t" ] && echo "WARNING: 'sed -i' is not portable, use 'sed file > _ ; mv -f _ file' (line(s): $t in $f)" ) &
+
+    ( t="$(grep -v "#" "$f" | grep -nE " ?which " | line_aux)"
+    [ -n "$t" ] && echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $t in $f)" ) &
+}
+
+# Package linter for KISS Linux and derivatives.
+checkpkg(){
+for f in $files
+do
+    if [ -e "$f" ]
+    then
+        case "$f" in
+            version)
+                read -r VER REL < "$f"
+                [ -z "$VER" ] && echo "ERROR: version is not defined"
+                [ -z "$REL" ] && echo "ERROR: release is not defined"
+                ;;
+            depends)
+                base="(baseinit|baselayout|busybox|bzip2|git|kiss|make|musl|zlib|xz|pigz)"
+                if grep -qE "^$base" "$f" ;
+                then
+                    ( t="$(grep -nE "^$base" "$f" | line_aux)"
+                    t="$(grep -E "^$base" "$f" | cut -d' ' -f1 | tr '\n' ',' | rev | cut -d',' -f2- | rev ) is/are implicit deps (line(s): $t in $f)"
+                    echo "WARNING: $t" ) &
+                fi
+
+                buildtools="(meson|cmake|pkgconf|autoconf|automake)"
+                if grep -qE "^$buildtools$" "$f" ;
+                then
+                    ( t="$(grep -nE "^$buildtools" "$f" | line_aux )"
+                    t="$(grep -E "^$buildtools" "$f" | cut -d' ' -f1 | tr '\n' ',' | rev | cut -d',' -f2- | rev ) is/are 'make' deps (line(s): $t in $f)"
+                    echo "WARNING: $t" ) &
+                fi
+
+                ( [ -s "$f" ] || echo "WARNING: '$f' is empty, can be removed" ) &
+
+                ( sort "$f" | diff - "$f" > /dev/null 2>&1 || echo "STYLE: '$f' is not sorted" ) &
+                ;;
+            build|post-install|pre-remove)
+                [ -x "$f" ] || echo "ERROR: '$f' not executable"
+                if head -n 1 "$f" | grep -qE "env sh|bin/sh"
+                then
+                    checkposix
+                    ( t="$(grep -n "mkdir" "$f" | grep -v -- "-p" | line_aux )"
+                    [ -n "$t" ] && echo "WARNING: always use '-p' with 'mkdir' (line(s): $t in $f)" ) &
+
+                    head -n 1 "$f" | grep -q "sh -e" || echo "ERROR: '$f' is missing the '-e' flag in the shebang" &
+
+                    ( t="$(grep -nE "^\ *#\ *[a-z]" "$f" | grep -v "shellcheck" | line_aux)"
+                    [ -n "$t" ] && echo "STYLE: '$f' has a comment that starts with a lower case letter (line(s): $t in $f)" ) &
+
+                    ( t=$(grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux)
+                    [ -n "$t" ] && echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $t in $f)" ) &
+
+                    ( t="$(fold "$f" | diff - "$f" | grep '>' | sed "s/> //" | while read -r l; do grep -n "$l" build; done | line_aux)"
+                    [ -n "$t" ] && echo "STYLE: '$f' has a line(s) that exceed 80 characters (line(s): $t in $f)" ) &
+
+                    ( if grep -qE "^\t" "$f" ; then
+                        tr -d '\t' < "$f" | diff - "$f" > /dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
+                    fi ) &
+                    #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
+                    #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
+                fi
+                ;;
+            sources)
+                [ -x "$f" ] && echo "WARNING: '$f' is executable" &
+
+                [ -n "$VER" ] && {
+
+                    ! [ "$VER" = "git" ] && [ "$KISS" = "1" ] && grep -q "$VER" "$f" && echo "STYLE: can replace '$VER' in '$f' with 'VERSION'" &
+
+                    [ -e checksums ] && {
+                        [ "$VER" = "git" ] && [ "$(wc -l < "$f")" = "1" ] && echo "WARNING: version is '$VER', don't need 'checksums' file" &
+
+                        ! [ "$(grep -cvE "^#|^$|^git\+" "$f")" -eq "$(wc -l < checksums)" ] \
+                            && echo "ERROR: mismatch in the number of line(s) for the '$f' and 'checksums' files" &
+                    }
+                }
+                grep -qE "^http:" "$f" && echo "STYLE: '$f' use https sources when possible"                       &
+
+                grep -qE "(www\.|\.git)" "$f" && echo "STYLE: '$f' drop 'www.' and '.git' if possible"             &
+
+                grep -qE "^http.*patch$" "$f" && echo "STYLE: '$f' avoid remote patches, store them in 'patches/'" &
+
+                ( grep -E "^(files|patches)/" "$f" | cut -d' ' -f1 | while read -r source_f
+                do
+                    [ -e "$source_f" ] || echo "ERROR: '$source_f' does not exist" &
+                done ) &
+                ;;
+        esac
+    else
+        case "$f" in
+            version|build|sources) echo "ERROR: '$f' does not exist" ;;
+            meta) echo "WARNING: '$f' does not exist";;
+            checksums)
+                ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ "$(wc -l < "sources")" = "1" ] && echo "ERROR: '$f' does not exist"  &
+                ;;
+            *) ;;
+        esac
+    fi
+done
+wait
+}
+
+PKGMGR=$(basename "$0")
+PKGMGR=${PKGMGR%%-*}
+files="version build sources checksums depends post-install pre-remove"
+case $PKGMGR in
+    kiss) KISS=1 files="$files README" ;; # Kiss has some extra features that cpt doesn't.
+    cpt)   CPT=1 files="$files meta";;
+esac
+
+
+if [ $# -gt 1 ] ; then
+    for d in "$@"
+    do
+        cd "$d"
+        printf "\n==> %s <==\n" "$d" # Mimic the output format of `head`.
+        checkpkg
+        cd "$OLDPWD"
+    done
+    wait
+else
+    [ $# -eq 1 ] && cd "$1"
+    checkpkg
+fi
