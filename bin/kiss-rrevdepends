@@ -1,7 +1,5 @@
 #!/bin/sh
-
-# kiss-rrevdepends (repo-revdepends)
-# kiss-revdepends, execpt for packages in your $KISS_PATH
+# kiss-revdepends, except also search for packages in your $KISS_PATH
 
 for repo in $(echo "$KISS_PATH:/var/db/kiss/installed" | tr ':' ' ')
 do
