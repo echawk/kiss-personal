@@ -1,8 +1,5 @@
 #!/bin/sh -e
-
-# Potentially rename to 'kiss-prune' or 'kiss-cacheprune'
-
-# The main idea is to get rid of accumulated binaries.
+# Clear the cache directory of out-of-date binaries, keeping the most recent.
 
 kiss_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/kiss/bin/
 
