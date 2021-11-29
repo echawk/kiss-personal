@@ -1,0 +1,35 @@
+#!/bin/sh -e
+
+# Heavily modified version of kiss-steal.
+# Original: https://github.com/jedahan/kiss-repo/blob/main/kiss-steal/files/kiss-steal
+
+d(){
+    curl --output "$1" --retry 3 --silent --fail --location "$2"
+}
+
+pkg=$1
+
+[ -z "$pkg" ] && exit 1
+
+kiss n "$pkg" 1>/dev/null && cd "$pkg"
+
+distros="alpine arch void "
+for distro in $distros ; do
+    case $distro in
+        alpine)
+            for branch in main testing community non-free unmaintained ; do
+                d "alpine-$branch" "https://github.com/alpinelinux/aports/raw/master/$branch/$1/APKBUILD" &
+            done
+            ;;
+        arch)
+            for branch in packages community ; do
+                d "arch-$branch" "https://raw.githubusercontent.com/archlinux/svntogit-$branch/packages/$1/trunk/PKGBUILD" &
+            done
+            d "arch-aur" "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$1" &
+            ;;
+        void)
+            d void "https://github.com/void-linux/void-packages/raw/master/srcpkgs/$1/template" &
+            ;;
+    esac
+done
+wait
