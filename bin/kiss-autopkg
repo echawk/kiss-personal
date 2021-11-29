@@ -1,9 +1,9 @@
 #!/bin/sh -e
+# Automatically updates specified packages in a given repository.
 
-# Usage: kiss dir/ pkg list
-
-# desc: automatically updates packages to the latest version on repology.
-
+if [ -z "$1" ] ; then
+    echo "usage: kiss-autopkg dir/ pkg list"
+fi
 repodir=$1
 [ -d "$1" ] || exit 1
 shift
