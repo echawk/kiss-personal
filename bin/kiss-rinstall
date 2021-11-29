@@ -1,7 +1,6 @@
 #!/bin/sh
-
 # Recursive install for kiss.
-#Useful when installing binaries, as kiss does not install dependencies by default.
+# Useful when installing binaries, as kiss does not install dependencies by default.
 
 get_deps(){
     f="$(kiss s "$1" | sed q)/depends"
