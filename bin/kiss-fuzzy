@@ -1,10 +1,10 @@
 #!/bin/sh
 # Fuzzy search for packages.
 
-for repo in $(echo $KISS_PATH | tr ':' '\n')
+for repo in $(echo "$KISS_PATH" | tr ':' '\n')
 do
-	for pkg in $(ls $repo)
-	do
-		echo "$(basename $repo)/$pkg"
-	done
-done | sort -u | ${KISS_FUZZY:-${FUZZY:-fzf}}
+    for pkg in "$repo"/*
+    do
+        echo "$pkg"
+    done
+done | ${KISS_FUZZY:-${FUZZY:-fzf}}
