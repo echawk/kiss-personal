@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# Package linter for KISS Linux and derivatives.
 
 line_aux(){
     cut -d':' -f1 | xargs | tr ' ' ','
@@ -12,7 +13,6 @@ checkposix(){
     [ -n "$t" ] && echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $t in $f)" ) &
 }
 
-# Package linter for KISS Linux and derivatives.
 checkpkg(){
 for f in $files
 do
