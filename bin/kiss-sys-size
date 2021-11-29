@@ -1,6 +1,6 @@
 #!/bin/sh
-
 # Reports the size of all the currently installed packages.
+
 # '-h' enables human readable
 
 #FIXME: size of system can fluctuate greatly in between runs.
