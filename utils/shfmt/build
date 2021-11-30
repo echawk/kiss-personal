@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+go build ./cmd/shfmt
+
+mkdir -p \
+    "$1/usr/bin/" \
+    "$1/usr/share/man/man1/"
+cp shfmt "$1/usr/bin/"
+
+scdoc < cmd/shfmt/shfmt.1.scd > "$1/usr/share/man/man1/shfmt.1"
