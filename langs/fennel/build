@@ -1,4 +1,5 @@
 #!/bin/sh -e
+kiss list luajit && export LUA='luajit'
 
 make build
 make PREFIX=/usr MAN_DIR=/usr/share/man/man1 install
