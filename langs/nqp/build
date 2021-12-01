@@ -1,0 +1,6 @@
+#!/bin/sh -e
+perl Configure.pl \
+    --prefix=/usr \
+    --backends=moar
+make
+make install
