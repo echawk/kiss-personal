@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+cf=""
+for p in libluv libtommath libffi libatomic_ops ; do
+    kiss list "$p" && cf="$cf --has-$p"
+done
+
+perl Configure.pl \
+    --prefix=/usr \
+    $cf
+
+make
+make install
