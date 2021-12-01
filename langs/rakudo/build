@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+perl Configure.pl \
+    --prefix=/usr \
+    --backends=moar \
+    --rakudo-home=/usr/lib/raku
+
+make
+make install
