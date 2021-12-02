@@ -69,7 +69,7 @@ do
                     fi ) &
                     #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                     #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
-                    #$PKGMGR list shfmt > /dev/null && shfmt -p -i 4 -ci -kp < "$f" | diff "$f" - 1>/dev/null || echo "STYLE: could format script with 'shfmt -i 4 -ci -kp $f'" &
+                    #$PKGMGR list shfmt > /dev/null && shfmt -p -i 4 -ci -kp < "$f" | diff "$f" - 1>/dev/null || echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp $f'" &
                 fi
                 ;;
             sources)
