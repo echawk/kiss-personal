@@ -1,0 +1,20 @@
+#!/bin/sh -e
+d() {
+    echo "$1"
+    exit 1
+}
+for t in merge update extract perl; do
+    ln -sf intltool "intltool-$t"
+done
+export PATH="$PWD:$PATH"
+
+command -v xgettext || d "-> gettext is not available"
+
+./configure \
+    --prefix=/usr \
+    --without-readline
+make
+make install
+
+rm -rf "$1/usr/share/locale"
+rm -rf "$1/usr/share/info"
