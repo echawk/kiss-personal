@@ -1,5 +1,6 @@
 #!/bin/sh -e
 # Package linter for KISS Linux and derivatives.
+KISS_LINT_AUTOEDIT=${KISS_LINT_AUTOEDIT:-0}
 
 line_aux(){
     cut -d':' -f1 | xargs | tr ' ' ','
