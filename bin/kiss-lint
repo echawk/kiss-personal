@@ -62,6 +62,9 @@ do
                     ( t=$(grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux)
                     [ -n "$t" ] && echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $t in $f)" ) &
 
+                    ( t=$(grep -n "kiss a" "$f" | grep -v "kiss alternatives" | line_aux)
+                    [ -n "$t" ] && echo "WARNING: use 'kiss alternatives' instead of 'kiss a' (line(s): $t in $f)" ) &
+
                     ( t="$(fold "$f" | diff - "$f" | grep '>' | sed "s/> //" | while read -r l; do grep -n "$l" build; done | line_aux)"
                     [ -n "$t" ] && echo "STYLE: '$f' has a line(s) that exceed 80 characters (line(s): $t in $f)" ) &
 
