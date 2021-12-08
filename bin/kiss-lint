@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 # Package linter for KISS Linux and derivatives.
 KISS_LINT_AUTOEDIT=${KISS_LINT_AUTOEDIT:-0}
 
