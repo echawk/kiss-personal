@@ -7,15 +7,21 @@ line_aux() {
 }
 checkposix() {
     # basically search a posix shell script for things that aren't posix
-    ( 
+    (
         t="$(grep -nE "sed (-[a-zA-Z]*)*-i?[a-zA-Z]*i[a-zA-Z]*i?" "$f" | line_aux)"
         [ -n "$t" ] && echo "WARNING: 'sed -i' is not portable, use 'sed file > _ ; mv -f _ file' (line(s): $t in $f)"
     ) &
 
-    ( 
+    (
         t="$(grep -v "#" "$f" | grep -nE " ?which " | line_aux)"
         [ -n "$t" ] && echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $t in $f)"
     ) &
+}
+
+run_autoedit(){
+    ! [ "$KISS_LINT_AUTOEDIT" -eq 0 ] && {
+        $1
+    }
 }
 
 checkpkg() {
@@ -46,9 +52,26 @@ checkpkg() {
                         ) &
                     fi
 
-                    ([ -s "$f" ] || echo "WARNING: '$f' is empty, can be removed") &
+                    (
+                        if ! [ -s "$f" ]; then
+                            echo "WARNING: '$f' is empty, can be removed"
+                            a(){
+                                rm -v "$f"
+                            }
+                            run_autoedit a
+                        fi
+                    ) &
 
-                    (sort "$f" | diff - "$f" >/dev/null 2>&1 || echo "STYLE: '$f' is not sorted") &
+                    (
+                        if ! sort "$f" | diff - "$f" >/dev/null 2>&1 ; then
+                            echo "STYLE: '$f' is not sorted"
+                            a(){
+                                sort "$f" >_
+                                mv -f _ "$f"
+                            }
+                            run_autoedit a
+                        fi
+                    ) &
                     ;;
                 build | post-install | pre-remove)
                     [ -x "$f" ] || echo "ERROR: '$f' not executable"
