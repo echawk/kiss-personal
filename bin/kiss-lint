@@ -99,12 +99,26 @@ checkpkg() {
 
                         (
                             t=$(grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux)
-                            [ -n "$t" ] && echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $t in $f)"
+                            if [ -n "$t" ]; then
+                                echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $t in $f)"
+                                fix(){
+                                    sed "s/kiss l/kiss list/" "$f" >_
+                                    mv -f _ "$f"
+                                }
+                                run_autoedit fix
+                            fi
                         ) &
 
                         (
                             t=$(grep -n "kiss a" "$f" | grep -v "kiss alternatives" | line_aux)
-                            [ -n "$t" ] && echo "WARNING: use 'kiss alternatives' instead of 'kiss a' (line(s): $t in $f)"
+                            if [ -n "$t" ]; then
+                                echo "WARNING: use 'kiss alternatives' instead of 'kiss a' (line(s): $t in $f)"
+                                fix(){
+                                    sed "s/kiss a/kiss alternatives/" "$f" >_
+                                    mv -f _ "$f"
+                                }
+                                run_autoedit fix
+                            fi
                         ) &
 
                         (
@@ -112,9 +126,11 @@ checkpkg() {
                             [ -n "$t" ] && echo "STYLE: '$f' has a line(s) that exceed 80 characters (line(s): $t in $f)"
                         ) &
 
-                        (if grep -qE "^\t" "$f"; then
-                            tr -d '\t' <"$f" | diff - "$f" >/dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
-                        fi) &
+                        (
+                            if grep -qE "^\t" "$f"; then
+                                tr -d '\t' <"$f" | diff - "$f" >/dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
+                            fi
+                        ) &
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         #$PKGMGR list shfmt > /dev/null && shfmt -p -i 4 -ci -kp < "$f" | diff "$f" - 1>/dev/null || echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp $f'" &
