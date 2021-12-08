@@ -22,7 +22,7 @@ checkposix() {
             }
             run_autoedit fix
         fi
-    ) &
+    )
 }
 
 run_autoedit() {
@@ -67,7 +67,7 @@ checkpkg() {
                             }
                             run_autoedit fix
                         fi
-                    ) &
+                    )
 
                     (
                         if ! sort "$f" | diff - "$f" >/dev/null 2>&1; then
@@ -78,7 +78,7 @@ checkpkg() {
                             }
                             run_autoedit fix
                         fi
-                    ) &
+                    )
                     ;;
                 build | post-install | pre-remove)
                     (
@@ -89,13 +89,13 @@ checkpkg() {
                             }
                             run_autoedit fix
                         fi
-                    ) &
+                    )
                     if head -n 1 "$f" | grep -qE "env sh|bin/sh"; then
                         checkposix
                         (
                             t="$(grep -n "mkdir" "$f" | grep -v -- "-p" | line_aux)"
                             [ -n "$t" ] && echo "WARNING: always use '-p' with 'mkdir' (line(s): $t in $f)"
-                        ) &
+                        )
 
                         head -n 1 "$f" | grep -q "sh -e" || echo "ERROR: '$f' is missing the '-e' flag in the shebang" &
 
@@ -114,7 +114,7 @@ checkpkg() {
                                 }
                                 run_autoedit fix
                             fi
-                        ) &
+                        )
 
                         (
                             t=$(grep -n "kiss a" "$f" | grep -v "kiss alternatives" | line_aux)
@@ -126,7 +126,7 @@ checkpkg() {
                                 }
                                 run_autoedit fix
                             fi
-                        ) &
+                        )
 
                         (
                             t="$(fold "$f" | diff - "$f" | grep '>' | sed "s/> //" | while read -r l; do grep -n "$l" build; done | line_aux)"
@@ -152,7 +152,7 @@ checkpkg() {
                             }
                             run_autoedit fix
                         fi
-                    ) &
+                    )
 
                     [ -n "$VER" ] && {
 
