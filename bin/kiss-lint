@@ -14,7 +14,14 @@ checkposix() {
 
     (
         t="$(grep -v "#" "$f" | grep -nE " ?which " | line_aux)"
-        [ -n "$t" ] && echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $t in $f)"
+        if [ -n "$t" ]; then
+            echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $t in $f)"
+            fix(){
+                sed -E "s/ ?which / command -v /" >_
+                mv -f _ "$f"
+            }
+            run_autoedit fix
+        fi
     ) &
 }
 
