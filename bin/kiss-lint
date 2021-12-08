@@ -58,7 +58,7 @@ checkpkg() {
                             fix() {
                                 rm -v "$f"
                             }
-                            run_autoedit a
+                            run_autoedit fix
                         fi
                     ) &
 
@@ -69,7 +69,7 @@ checkpkg() {
                                 sort "$f" >_
                                 mv -f _ "$f"
                             }
-                            run_autoedit a
+                            run_autoedit fix
                         fi
                     ) &
                     ;;
