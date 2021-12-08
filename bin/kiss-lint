@@ -18,7 +18,7 @@ checkposix() {
     ) &
 }
 
-run_autoedit(){
+run_autoedit() {
     ! [ "$KISS_LINT_AUTOEDIT" -eq 0 ] && {
         $1
     }
@@ -55,7 +55,7 @@ checkpkg() {
                     (
                         if ! [ -s "$f" ]; then
                             echo "WARNING: '$f' is empty, can be removed"
-                            a(){
+                            fix() {
                                 rm -v "$f"
                             }
                             run_autoedit a
@@ -63,9 +63,9 @@ checkpkg() {
                     ) &
 
                     (
-                        if ! sort "$f" | diff - "$f" >/dev/null 2>&1 ; then
+                        if ! sort "$f" | diff - "$f" >/dev/null 2>&1; then
                             echo "STYLE: '$f' is not sorted"
-                            a(){
+                            fix() {
                                 sort "$f" >_
                                 mv -f _ "$f"
                             }
@@ -74,7 +74,15 @@ checkpkg() {
                     ) &
                     ;;
                 build | post-install | pre-remove)
-                    [ -x "$f" ] || echo "ERROR: '$f' not executable"
+                    (
+                        if ! [ -x "$f" ]; then
+                            echo "ERROR: '$f' not executable"
+                            fix() {
+                                chmod +x "$f"
+                            }
+                            run_autoedit fix
+                        fi
+                    ) &
                     if head -n 1 "$f" | grep -qE "env sh|bin/sh"; then
                         checkposix
                         (
@@ -113,7 +121,15 @@ checkpkg() {
                     fi
                     ;;
                 sources)
-                    [ -x "$f" ] && echo "WARNING: '$f' is executable" &
+                    (
+                        if [ -x "$f" ]; then
+                            echo "WARNING: '$f' is executable"
+                            fix() {
+                                chmod -x "$f"
+                            }
+                            run_autoedit fix
+                        fi
+                    ) &
 
                     [ -n "$VER" ] && {
 
