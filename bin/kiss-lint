@@ -189,6 +189,6 @@ if [ $# -gt 1 ]; then
     done
     wait
 else
-    [ $# -eq 1 ] && cd "$1" || exit 1
+    [ $# -eq 1 ] && cd "$1"
     checkpkg
 fi
