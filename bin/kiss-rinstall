@@ -3,14 +3,14 @@
 # Useful when installing binaries, as kiss does not install dependencies by default.
 
 get_deps(){
-    f="$(kiss s "$1" | sed q)/depends"
+    f="$(kiss search "$1" | sed q)/depends"
     [ -e "$f" ] && cut -d' ' -f1 < "$f"
 }
 
 z(){
     # If the package is not installed, then we need to mark it, and get
     # it's missing depends too. Basically an aux function for aux.
-    ! kiss l "$1" 1>/dev/null 2>&1 && {
+    ! kiss list "$1" 1>/dev/null 2>&1 && {
         echo "$1" ; aux $(get_deps "$1")
     }
 }
@@ -46,10 +46,10 @@ fi
 for p in $(aux $initial_deps | sort -u)
 do
     # If it's not already installed, then try to either install it or build it.
-    if ! kiss l "$p" ; then
-        kiss i "$p" || kiss b "$p"
+    if ! kiss list "$p" ; then
+        kiss install "$p" || kiss build "$p"
     fi
 done
 
 # Finally install our target.
-kiss i "$1"
+kiss install "$1"
