@@ -3,7 +3,7 @@
 CFLAGS="$CFLAGS -fPIC -fcommon"
 EXTRA_CONF=""
 for p in mariadb postgresql sqlite cyrus-sasl; do
-    if kiss l "$p"; then
+    if kiss list "$p"; then
         case "$p" in
             mariadb)
                 CFLAGS="$CFLAGS -DHAS_MYSQL -I/usr/include/mysql "

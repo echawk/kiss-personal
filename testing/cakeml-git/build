@@ -2,9 +2,9 @@
 
 (
     cd HOL
-    if kiss l polyml ; then
+    if kiss list polyml ; then
         poly --script tools/smart-configure.sml
-    elif kiss l mosml ; then
+    elif kiss list mosml ; then
         mosml < tools/smart-configure.sml
     fi
     bin/build
