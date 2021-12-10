@@ -1,6 +1,6 @@
 #!/bin/sh
 # Package linter for KISS Linux and derivatives.
-KISS_LINT_AUTOEDIT=${KISS_LINT_AUTOEDIT:-0}
+KISS_LINT_AUTOFIX=${KISS_LINT_AUTOFIX:-0}
 
 line_aux() {
     cut -d':' -f1 | xargs | tr ' ' ','
@@ -24,7 +24,7 @@ checkposix() {
 }
 
 run_autoedit() {
-    ! [ "$KISS_LINT_AUTOEDIT" -eq 0 ] && {
+    ! [ "$KISS_LINT_AUTOFIX" -eq 0 ] && {
         $1
     }
 }
