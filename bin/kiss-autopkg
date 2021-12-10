@@ -16,7 +16,7 @@ do
 done
 
 update(){
-    kiss ou "$repodir" \
+    kiss outdated "$repodir" \
         | grep -E "($(echo "$repo_pkgs" | sed 's/ /|/g'))" \
         | while read -r LINE
         do
@@ -25,9 +25,9 @@ update(){
             cd "${repodir}/${pkg}"
             read -r oldver oldrel < version
             echo "$newver 1" > version
-            if kiss d
+            if kiss download
             then
-                kiss c
+                kiss checksum
                 git add .
                 git commit -m "(kiss-autopkg)$pkg: bump to $newver"
             else
