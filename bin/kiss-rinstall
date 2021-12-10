@@ -36,7 +36,7 @@ if [ -f "$1" ] ; then
     else
         dep_file=$(tar tf "$1" | grep "depends$")
     fi
-    [ -n "$dep_file" ] && initial_deps="$(tar xfO "$1" "$dep_file" | cut -d' ' -f1)"
+    [ -n "$dep_file" ] && initial_deps="$(tar xfO "$1" "$dep_file" | cut -d' ' -f1 | grep -v '#')"
 else
     # Otherwise, look it up.
     initial_deps="$(get_deps "$1")"
