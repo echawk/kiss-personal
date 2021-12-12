@@ -22,4 +22,5 @@ find "$1/usr/lib/ocaml" \
     \( -name '*.cmt' -o -name '*.cmti' -o -name '*.ml' \) \
     -a -delete
 
-rm -rf "$1/usr/lib/ocaml/compiler-libs"
+# Uncomment if you don't want the compiler libraries.
+# rm -rf "$1/usr/lib/ocaml/compiler-libs"
