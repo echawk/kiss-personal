@@ -1,0 +1,28 @@
+#!/bin/sh -e
+
+export PATH="$PATH:core/bin"
+
+# If crystal is installed, then use it.
+v="$(kiss list crystal | cut -d'-' -f1)"
+if [ -n "$v" ]; then
+    v="${v##* }"
+    export CRYSTAL_CONFIG_VERSION="$v"
+else
+    export CRYSTAL_CONFIG_VERSION="1.2.0"
+fi
+export EXPORT_CC="CC=cc"
+
+make crystal \
+    CRYSTAL_CONFIG_PATH="/usr/lib/crystal" \
+    CRYSTAL_CACHE_DIR=".tmp/crystal" \
+    LLVM_CONFIG="/usr/bin/llvm-config" \
+    release=1 \
+    FLAGS="--no-debug" \
+    CRYSTAL_PATH="src"
+
+
+install -Dm755 .build/crystal "$1/usr/bin/crystal"
+
+mkdir -p "$1/usr/lib"
+
+cp -a src "$1/usr/lib/crystal"
