@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+mkdir -p "$1/usr/bin"
+mv opam* "$1/usr/bin/opam"
+chmod +x "$1/usr/bin/opam"
+
