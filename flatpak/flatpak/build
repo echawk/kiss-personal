@@ -4,23 +4,20 @@ for patch in *.patch; do
     patch -p1 < "$patch"
 done
 
-# Remove libcap dependency (used solely when bwrap is suid
-# root). User namespaces are much better, should be used
-# in place of libcap and are free.
+# Remove libcap dependency (used solely when bwrap is suid root).
+# User namespaces are better - should be used in place of libcap and are free.
 sed 's/as_fn_error.*libcap/: "/g'        configure > _
 mv -f _ configure
 sed 's/as_fn_error.*capability\.h/: "/g' configure > _
 mv -f _ configure
 
-# Remove fuse2 dependency (used solely with root "system-helper"
-# daemon for file transfer. Unneeded in our case and drops the
-# old fuse version.
+# Remove fuse2 dependency (used solely w/ root "system-helper" daemon for file transfer.
+# Unneeded in our case and drops the old fuse version.
 sed 's/as_fn_error.*fuse/: "/g' configure > _
 mv -f _ configure
 
 # Turn the fuse2 filesystem into a C program which does nothing.
-# This is the easiest way to "turn off" revokefs as there's
-# no official support for doing so.
+# This is the easiest way to "turn off" revokefs as there's no official support for doing so.
 cat <<EOF > revokefs/main.c
 int main() { return 0; }
 EOF
