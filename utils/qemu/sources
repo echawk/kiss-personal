@@ -1,5 +1,1 @@
 https://download.qemu.org/qemu-VERSION.tar.xz
-patches/001-sigtrm-max.patch
-patches/003-map-sync-fix.patch
-patches/004-guest-agent-shutdown.patch
-patches/CVE-2021-20255.patch
