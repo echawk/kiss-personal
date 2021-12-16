@@ -1,0 +1,25 @@
+#!/bin/sh
+# List out packages that are 'dead' - can be revived with 'kiss-resurrect'
+
+get_git_repos() {
+    for repo in $(echo "$KISS_PATH" | tr ':' ' '); do
+        (
+            cd "$repo"
+            if git rev-parse; then
+                echo "$repo"
+            fi
+        )
+    done
+}
+
+for repo in $(get_git_repos); do
+    (
+        cd "$repo"
+        # Thank you `git-attic`, as this command is directly stolen from there.
+        git log --raw --no-renames --date=short --format="%h %cd" |
+            awk '/^[0-9a-f]/ { commit=$1; date=$2 }
+                 /^:/ && $5 == "D" { print date "_" commit ":" $6 }' |
+            rev | cut -d'/' -f2- | rev | grep -vE "(patches|files)$" | sort -u
+    ) &
+done
+wait
