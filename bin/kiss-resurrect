@@ -1,5 +1,4 @@
 #!/bin/sh -e
-
 # Resurrect dead kiss packages.
 
 get_git_repos() {
