@@ -1,7 +1,7 @@
 #!/bin/sh -e
 # Automatically updates specified packages in a given repository.
 
-if [ -z "$1" ] ; then
+if [ -z "$1" ]; then
     echo "usage: kiss-autopkg dir/ pkg list"
 fi
 repodir=$1
@@ -10,28 +10,25 @@ shift
 
 repo_pkgs=$*
 
-for pkg in $repo_pkgs
-do
+for pkg in $repo_pkgs; do
     [ -d "$repodir/$pkg" ] || exit 1
 done
 
-update(){
-    kiss outdated "$repodir" \
-        | grep -E "($(echo "$repo_pkgs" | sed 's/ /|/g'))" \
-        | while read -r LINE
-        do
+update() {
+    kiss outdated "$repodir" |
+          grep -E "($(echo "$repo_pkgs" | sed 's/ /|/g'))" |
+          while read -r LINE; do
             pkg="${LINE%% *}"
             newver="${LINE##* }"
             cd "${repodir}/${pkg}"
-            read -r oldver oldrel < version
-            echo "$newver 1" > version
-            if kiss download
-            then
+            read -r oldver oldrel <version
+            echo "$newver 1" >version
+            if kiss download; then
                 kiss checksum
                 git add .
                 git commit -m "(kiss-autopkg)$pkg: bump to $newver"
             else
-                echo "$oldver $oldrel" > version
+                echo "$oldver $oldrel" >version
             fi
             cd "$OLDPWD"
         done

@@ -2,23 +2,23 @@
 # Recursive install for kiss.
 # Useful when installing binaries, as kiss does not install dependencies by default.
 
-get_deps(){
+get_deps() {
     f="$(kiss search "$1" | sed q)/depends"
-    [ -e "$f" ] && cut -d' ' -f1 < "$f"
+    [ -e "$f" ] && cut -d' ' -f1 <"$f"
 }
 
-z(){
+z() {
     # If the package is not installed, then we need to mark it, and get
     # it's missing depends too. Basically an aux function for aux.
     ! kiss list "$1" 1>/dev/null 2>&1 && {
-        echo "$1" ; aux $(get_deps "$1")
+        echo "$1"
+        aux $(get_deps "$1")
     }
 }
 
-aux(){
+aux() {
     # Parallelizing here saves a good amount of time.
-    for d in "$@"
-    do
+    for d in "$@"; do
         ( z "$d" ) &
     done
     wait
@@ -29,9 +29,9 @@ aux(){
 
 # First we get the inital list of dependencies.
 # If it's a tarball, then get the depends from inside the tarball.
-if [ -f "$1" ] ; then
+if [ -f "$1" ]; then
     # If pax is installed, use it as it is about twice as fast as tar.
-    if command -v pax ; then
+    if command -v pax; then
         dep_file=$(pax -z -f "$1" | grep "depends$")
     else
         dep_file=$(tar tf "$1" | grep "depends$")
@@ -43,10 +43,9 @@ else
 fi
 
 # Then we call the aux function to get every missing dependency. Also dedup.
-for p in $(aux $initial_deps | sort -u)
-do
+for p in $(aux $initial_deps | sort -u); do
     # If it's not already installed, then try to either install it or build it.
-    if ! kiss list "$p" ; then
+    if ! kiss list "$p"; then
         kiss install "$p" || kiss build "$p"
     fi
 done

@@ -5,7 +5,7 @@
 # desc: automatically updates packages in a git repository using kiss-autopkg
 
 case $# in
-    0) dir="$(pwd)";;
+    0) dir="$(pwd)" ;;
     1) dir="$1"    ;;
     *) exit 1      ;;
 esac
@@ -14,10 +14,8 @@ cd "$dir"
 ! git rev-parse     && exit 1
 [ -e ".kiss_auto" ] || exit 1
 
-while true
-do
-    sort -u ".kiss_auto" | while read -r LINE
-    do
+while true; do
+    sort -u ".kiss_auto" | while read -r LINE; do
         repo="${LINE%%,*}"
         pkgs="${LINE##*,}"
         kiss-autopkg "$repo" $pkgs || :
