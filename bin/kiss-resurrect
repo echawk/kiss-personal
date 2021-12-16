@@ -1,0 +1,36 @@
+#!/bin/sh -e
+
+# Resurrect dead kiss packages.
+
+get_git_repos() {
+    for repo in $(echo "$KISS_PATH" | tr ':' ' '); do
+        (
+            cd "$repo"
+            if git rev-parse; then
+                echo "$repo"
+            fi
+        )
+    done
+}
+
+target=$1
+
+for repo in $(get_git_repos); do
+    (
+        cd "$repo"
+        # Thank you `git-attic`, as this command is directly stolen from there.
+        target_files="$(git log --raw --no-renames --date=short --format="%h %cd" |
+            awk '/^[0-9a-f]/ { commit=$1; date=$2 }
+                 /^:/ && $5 == "D" { print date, commit ":" $6 }' |
+            grep "$target" |
+            cut -d' ' -f2)"
+        if [ -n "$target_files" ]; then
+            for tf in $target_files; do
+                commit="$(git log --pretty=%P -n 1 "$(echo "$tf" | cut -d':' -f1)")"
+                file="$(echo "$tf" | cut -d':' -f2)"
+                git show "$commit:$file"
+            done
+        fi
+    )
+done
+
