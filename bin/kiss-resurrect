@@ -24,11 +24,18 @@ for repo in $(get_git_repos); do
                  /^:/ && $5 == "D" { print date, commit ":" $6 }' |
             grep "$target" |
             cut -d' ' -f2)"
+        # TODO: make sure only the files from one commit are used used.
+        # By default it should be the most recent commit
         if [ -n "$target_files" ]; then
             for tf in $target_files; do
                 commit="$(git log --pretty=%P -n 1 "$(echo "$tf" | cut -d':' -f1)")"
                 file="$(echo "$tf" | cut -d':' -f2)"
-                git show "$commit:$file"
+
+                pdir="$OLDPWD/$target"
+                mkdir -p "$OLDPWD/$target"
+                file_name="$(echo "$file" | rev | cut -d'/' -f1 | rev )"
+
+                git show "$commit:$file" >"$pdir/$commit-$file_name"
             done
         fi
     )
