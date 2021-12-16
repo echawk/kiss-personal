@@ -93,7 +93,7 @@ checkpkg() {
                             [ -n "$t" ] && echo "STYLE: '$f' has a comment that starts with a lower case letter (line(s): $t in $f)"
                         ) &
 
-                            t=$(grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux)
+                        t=$(grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux)
                         if [ -n "$t" ]; then
                             echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $t in $f)"
                             fix() {
@@ -111,7 +111,12 @@ checkpkg() {
                             }
                             run_autoedit fix
                         fi
-
+                        (
+                            t=$(grep -nE "^ *\/usr\/bin\/.*" "$f" | line_aux)
+                            if [ -n "$t" ]; then
+                                echo "WARNING: use '\${KISS_ROOT:-/}usr/bin/' instead of '/usr/bin/' (line(s): $t in $f)"
+                            fi
+                        ) &
                         (
                             t="$(fold "$f" | diff - "$f" | grep '>' | sed "s/> //" | while read -r l; do grep -n "$l" build; done | line_aux)"
                             [ -n "$t" ] && echo "STYLE: '$f' has a line(s) that exceed 80 characters (line(s): $t in $f)"
