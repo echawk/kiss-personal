@@ -1,5 +1,9 @@
 #!/bin/sh
 
+date=$(date +%Y-%m-%d)
+logdir=${XDG_CACHE_DIR:-$HOME/.cache}/kiss/logs/$date/
+mkdir -p $logdir
+
 TIME_FILE="/tmp/kiss-hook-timebuild-storage-$2"
 
 c1='\033[1;31m' # Red
@@ -26,6 +30,9 @@ print_time_elapsed(){
         "$c1" "timer" "$c5" \
         "$c4" "$step" "$c5" \
         "$c2" "$elapsed_hrs" "$elapsed_min" "$elapsed_sec" "$c5"
+    printf "%s -> %sh.%sm.%ss\n" \
+        "$step" "$elapsed_hrs" "$elapsed_min" "$elapsed_sec" \
+        >> "$logdir/kiss-timer-hook-$pkg-$1-$(date +%H:%M).txt"
 }
 
 case "$1" in
