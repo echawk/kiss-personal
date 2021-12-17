@@ -127,6 +127,10 @@ checkpkg() {
                                 tr -d '\t' <"$f" | diff - "$f" >/dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
                             fi
                         ) &
+                        (
+                            t="$(grep -nE "DESTDIR=\"?\$1\"?" "$f" | line_aux)"
+                            [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
+                        ) &
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         #$PKGMGR list shfmt > /dev/null && shfmt -p -i 4 -ci -kp < "$f" | diff "$f" - 1>/dev/null || echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp $f'" &
