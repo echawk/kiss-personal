@@ -1,0 +1,307 @@
+From 8f2d6753ed42292aaacfa2997a049669762f0752 Mon Sep 17 00:00:00 2001
+From: Jakob Wrigley <wrigleyster@gmail.com>
+Date: Sat, 14 Sep 2013 20:59:13 +0200
+Subject: [PATCH 1/4] Enable Shabang/Hashbang support (Hackish)
+
+Really allows #!-to-eol comments anywhere in a file. Ought to add
+checks to make sure #!comments are only allowed on the first line
+---
+ src/compiler/Lexer.lex | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/compiler/Lexer.lex b/src/compiler/Lexer.lex
+index 972cf74..823c2b4 100644
+--- a/src/compiler/Lexer.lex
++++ b/src/compiler/Lexer.lex
+@@ -231,6 +231,7 @@ rule Token = parse
+ 
+ and TokenN = parse
+     [` ` `\n` `\r` `\t` `\^L`]  { TokenN lexbuf }
++  | "#!" [^`\n` `\r`]* {TokenN lexbuf }
+   | "(*"
+       { savedLexemeStart := getLexemeStart lexbuf;
+         comment_depth := 1; Comment lexbuf; TokenN lexbuf
+
+From 451672be5a5110b9d3339bf0101ed884eb361910 Mon Sep 17 00:00:00 2001
+From: Jakob Wrigley <wrigleyster@gmail.com>
+Date: Sun, 15 Sep 2013 02:17:59 +0200
+Subject: [PATCH 2/4] Fixed Hashbang: Hashbang only permitted on first line.
+
+---
+ src/compiler/Lexer.lex | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/src/compiler/Lexer.lex b/src/compiler/Lexer.lex
+index 823c2b4..e1a814f 100644
+--- a/src/compiler/Lexer.lex
++++ b/src/compiler/Lexer.lex
+@@ -207,6 +207,12 @@ fun scanString scan lexbuf =
+   setLexStartPos lexbuf (!savedLexemeStart - getLexAbsPos lexbuf)
+ )
+ 
++(* enable support for Shebang/Hashbang *)
++exception HashbangError of string
++val currentLine = ref 1
++fun failIfWrongHashbang () =
++    if (!currentLine) <> 1 then raise HashbangError "Hashbang misplaced"
++                 else ()
+ }
+ 
+ rule Token = parse
+@@ -230,8 +236,11 @@ rule Token = parse
+       }
+ 
+ and TokenN = parse
+-    [` ` `\n` `\r` `\t` `\^L`]  { TokenN lexbuf }
+-  | "#!" [^`\n` `\r`]* {TokenN lexbuf }
++    [` ` `\r` `\t` `\^L`]  { TokenN lexbuf }
++  | `\n`
++      { currentLine := !currentLine+1; TokenN lexbuf }
++  | "#!" [^`\n` `\r`]*
++      { failIfWrongHashbang(); TokenN lexbuf }
+   | "(*"
+       { savedLexemeStart := getLexemeStart lexbuf;
+         comment_depth := 1; Comment lexbuf; TokenN lexbuf
+
+From 1cff16c74c49fd24afbdcf70915c0a5ea4561c1c Mon Sep 17 00:00:00 2001
+From: Jakob Wrigley <wrigleyster@gmail.com>
+Date: Fri, 27 Sep 2013 13:12:47 +0200
+Subject: [PATCH 3/4] Hashbang fixed: only permitted with special flag -s or
+ -hashbang
+
+---
+ src/compiler/Exec_phr.sig |  1 -
+ src/compiler/Lexer.lex    | 25 +++++++++++++++----------
+ src/compiler/Lexer.sig    |  5 +++++
+ src/compiler/Maint.sml    |  9 +++++++++
+ src/launch/mosml.tpl      |  3 +++
+ 5 files changed, 32 insertions(+), 11 deletions(-)
+
+diff --git a/src/compiler/Exec_phr.sig b/src/compiler/Exec_phr.sig
+index ca56e5f..20698a6 100644
+--- a/src/compiler/Exec_phr.sig
++++ b/src/compiler/Exec_phr.sig
+@@ -2,4 +2,3 @@ val execToplevelPhrase: Asynt.Dec -> unit;
+ val quietdec : bool ref
+ 
+ 
+-
+diff --git a/src/compiler/Lexer.lex b/src/compiler/Lexer.lex
+index e1a814f..21fa776 100644
+--- a/src/compiler/Lexer.lex
++++ b/src/compiler/Lexer.lex
+@@ -9,11 +9,11 @@ datatype lexingMode =
+     NORMALlm
+   | QUOTElm
+   | ANTIQUOTElm
++  | HASHBANGlm
+ 
+ val lexingMode = ref NORMALlm
+ 
+ val parCount = Stack.new() : int Stack.t
+-
+ fun resetLexerState() =
+ (
+   lexingMode := NORMALlm;
+@@ -209,10 +209,9 @@ fun scanString scan lexbuf =
+ 
+ (* enable support for Shebang/Hashbang *)
+ exception HashbangError of string
+-val currentLine = ref 1
+-fun failIfWrongHashbang () =
+-    if (!currentLine) <> 1 then raise HashbangError "Hashbang misplaced"
+-                 else ()
++fun enableHashbang b = (if b
++                        then lexingMode := HASHBANGlm
++                        else lexingMode := NORMALlm; ());
+ }
+ 
+ rule Token = parse
+@@ -227,20 +226,20 @@ rule Token = parse
+                case !lexingMode of
+                    NORMALlm =>
+                      QUOTER (get_stored_string())
++                 | HASHBANGlm =>
++                     QUOTER (get_stored_string())
+                  | ANTIQUOTElm =>
+                      QUOTEM (get_stored_string())
+                  | QUOTElm =>
+                      fatalError "Token")
+           | ANTIQUOTElm =>
+               AntiQuotation lexbuf
++          | HASHBANGlm =>
++              Hashbang lexbuf
+       }
+ 
+ and TokenN = parse
+-    [` ` `\r` `\t` `\^L`]  { TokenN lexbuf }
+-  | `\n`
+-      { currentLine := !currentLine+1; TokenN lexbuf }
+-  | "#!" [^`\n` `\r`]*
+-      { failIfWrongHashbang(); TokenN lexbuf }
++    [` ` `\n` `\r` `\t` `\^L`]  { TokenN lexbuf }
+   | "(*"
+       { savedLexemeStart := getLexemeStart lexbuf;
+         comment_depth := 1; Comment lexbuf; TokenN lexbuf
+@@ -471,6 +470,12 @@ and AntiQuotation = parse
+       { 
+         skipString "ill-formed antiquotation" SkipQuotation lexbuf
+       }
++and Hashbang = parse
++   "#!" [^`\n` `\r`]*
++      { lexingMode := NORMALlm; Token lexbuf }
++  | ""
++      { lexingMode := NORMALlm; Token lexbuf }
++
+ ;
+ 
+ 
+diff --git a/src/compiler/Lexer.sig b/src/compiler/Lexer.sig
+index 6e58009..4bc8a39 100644
+--- a/src/compiler/Lexer.sig
++++ b/src/compiler/Lexer.sig
+@@ -1,3 +1,8 @@
++(* Lexer.sig *)
++
++exception HashbangError of string;
++
++val enableHashbang  : bool -> unit;
+ val quotation : bool ref;
+ val resetLexerState : unit -> unit;
+ val Token : Lexing.lexbuf -> Parser.token;
+diff --git a/src/compiler/Maint.sml b/src/compiler/Maint.sml
+index 90868b1..fede5b6 100644
+--- a/src/compiler/Maint.sml
++++ b/src/compiler/Maint.sml
+@@ -3,6 +3,7 @@
+ open List BasicIO Nonstdio;
+ open Miscsys Memory Fnlib Config Mixture Location Units Smlperv Rtvals  Smltop;
+ open Types (* cvr *);
++open Lexer  (*to set hashbang*);
+ val initialFiles = ref ([] : string list);
+ 
+ (* Initial loop *)
+@@ -72,6 +73,12 @@ fun set_value_polymorphism b _ =
+ fun set_quietdec b _ =
+   Exec_phr.quietdec := b;
+ 
++fun set_hashbang b _ =
++  let in
++    Lexer.enableHashbang b;
++    Exec_phr.quietdec := b
++  end;
++
+ fun add_include d =
+   load_path := !load_path @ [d];
+ 
+@@ -117,6 +124,8 @@ fun main () =
+                ("-perv",      Arg.String perv_set),
+                ("-imptypes",  Arg.Unit (set_value_polymorphism false)),
+                ("-valuepoly", Arg.Unit (set_value_polymorphism true)),
++               ("-hashbang",  Arg.Unit (set_hashbang true)),
++               ("-s",         Arg.Unit (set_hashbang true)),
+                ("-quietdec",  Arg.Unit (set_quietdec true)),
+                ("-msgstyle",  Arg.String set_msgstyle),
+                ("-m",         Arg.String set_msgstyle),
+diff --git a/src/launch/mosml.tpl b/src/launch/mosml.tpl
+index e13c5aa..2afc72d 100755
+--- a/src/launch/mosml.tpl
++++ b/src/launch/mosml.tpl
+@@ -24,6 +24,9 @@ while : ; do
+     -quietdec)
+       options="$options -quietdec"
+       ;;
++    -s|-hashbang)
++      options="$options -hashbang"
++      ;;
+     -valuepoly)
+       options="$options -valuepoly"
+       ;;
+
+From 2a09010c322fb48f7460be2916daf3b0f5104042 Mon Sep 17 00:00:00 2001
+From: Jakob Wrigley <wrigleyster@gmail.com>
+Date: Fri, 27 Sep 2013 14:48:44 +0200
+Subject: [PATCH 4/4] Hashbang: complete proposal
+
+mosml no longer waits for input after EOF when run with -hashbang
+---
+ src/compiler/Exec_phr.sig | 1 +
+ src/compiler/Exec_phr.sml | 4 ++++
+ src/compiler/Lexer.lex    | 1 -
+ src/compiler/Lexer.sig    | 2 --
+ src/compiler/Maint.sml    | 6 ++++--
+ 5 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/src/compiler/Exec_phr.sig b/src/compiler/Exec_phr.sig
+index 20698a6..567f6d6 100644
+--- a/src/compiler/Exec_phr.sig
++++ b/src/compiler/Exec_phr.sig
+@@ -1,4 +1,5 @@
+ val execToplevelPhrase: Asynt.Dec -> unit;
+ val quietdec : bool ref
++val hashbang : bool ref
+ 
+ 
+diff --git a/src/compiler/Exec_phr.sml b/src/compiler/Exec_phr.sml
+index 583ef02..8998a70 100644
+--- a/src/compiler/Exec_phr.sml
++++ b/src/compiler/Exec_phr.sml
+@@ -8,6 +8,10 @@ open Symtable Rtvals Load_phr;
+ 
+ val quietdec = ref false ;
+ 
++(* Is enabled if running with -hashbang arg: *)
++
++val hashbang = ref false ;
++
+ (* Executing a top-level declaration. *)
+ 
+ local
+diff --git a/src/compiler/Lexer.lex b/src/compiler/Lexer.lex
+index 21fa776..e84f5c9 100644
+--- a/src/compiler/Lexer.lex
++++ b/src/compiler/Lexer.lex
+@@ -208,7 +208,6 @@ fun scanString scan lexbuf =
+ )
+ 
+ (* enable support for Shebang/Hashbang *)
+-exception HashbangError of string
+ fun enableHashbang b = (if b
+                         then lexingMode := HASHBANGlm
+                         else lexingMode := NORMALlm; ());
+diff --git a/src/compiler/Lexer.sig b/src/compiler/Lexer.sig
+index 4bc8a39..cec9db0 100644
+--- a/src/compiler/Lexer.sig
++++ b/src/compiler/Lexer.sig
+@@ -1,7 +1,5 @@
+ (* Lexer.sig *)
+ 
+-exception HashbangError of string;
+-
+ val enableHashbang  : bool -> unit;
+ val quotation : bool ref;
+ val resetLexerState : unit -> unit;
+diff --git a/src/compiler/Maint.sml b/src/compiler/Maint.sml
+index fede5b6..4f49f08 100644
+--- a/src/compiler/Maint.sml
++++ b/src/compiler/Maint.sml
+@@ -76,7 +76,8 @@ fun set_quietdec b _ =
+ fun set_hashbang b _ =
+   let in
+     Lexer.enableHashbang b;
+-    Exec_phr.quietdec := b
++    Exec_phr.quietdec := b;
++    Exec_phr.hashbang := b
+   end;
+ 
+ fun add_include d =
+@@ -157,7 +158,8 @@ fun main () =
+     resetTypes(); 
+     Miscsys.catch_interrupt true;
+     input_lexbuf := Compiler.createLexerStream std_in;
+-    (initial_loop() handle EndOfFile => ());
++    (initial_loop() handle EndOfFile =>
++         if !Exec_phr.hashbang then BasicIO.exit 0 else ());
+     main_loop()
+   end
+   handle

@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+# Patch to add shebang support to mosml.
+# Proper shebang is: #!/usr/bin/mosml -s
+patch -p1 < shebang-support.patch
+
 # Quick fix for musl, see `man 2 sigaction`.
 sed "s/SA_NOMASK/SA_NODEFER/g" src/runtime/sys.c > _
 mv -f _ src/runtime/sys.c
