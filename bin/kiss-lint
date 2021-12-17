@@ -128,7 +128,7 @@ checkpkg() {
                             fi
                         ) &
                         (
-                            t="$(grep -nE "DESTDIR=\"?\$1\"?" "$f" | line_aux)"
+                            t="$(grep -nE "DESTDIR=\"?..\"?" "$f" | line_aux)"
                             [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
                         ) &
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
