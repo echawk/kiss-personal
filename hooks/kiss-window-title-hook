@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+# https://unix.stackexchange.com/questions/481285/linux-how-to-get-window-title-with-just-shell-script
+
+# This hook is soley meant to provide useful information about builds in the
+# title of the window.
+
+# Set window name.
+status_str="kiss: ($1) - $2"
+
+case $1 in
+    queue-status) status_str="$status_str $3/$4"
+esac
+
+printf '\e]2;%s\e'\\ "$status_str"
