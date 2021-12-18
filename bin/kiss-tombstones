@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 # List out packages that are 'dead' - can be revived with 'kiss-resurrect'
 
 get_git_repos() {
