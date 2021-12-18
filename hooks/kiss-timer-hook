@@ -3,7 +3,7 @@
 date=$(date +%Y-%m-%d)
 logdir=${XDG_CACHE_DIR:-$HOME/.cache}/kiss/logs/$date/
 pkg=$2
-mkdir -p $logdir
+mkdir -p "$logdir"
 
 TIME_FILE="/tmp/kiss-hook-timebuild-storage-$2"
 
