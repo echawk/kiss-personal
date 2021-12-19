@@ -13,7 +13,7 @@ pkg=$1
 
 kiss n "$pkg" 1>/dev/null && cd "$pkg"
 
-distros="alpine arch void "
+distros="alpine arch void sabotage"
 for distro in $distros; do
     case $distro in
         alpine)
@@ -29,6 +29,9 @@ for distro in $distros; do
             ;;
         void)
             d void "https://github.com/void-linux/void-packages/raw/master/srcpkgs/$1/template" &
+            ;;
+        sabotage)
+            d sabotage "https://github.com/sabotage-linux/sabotage/raw/master/pkg/$1" &
             ;;
     esac
 done
