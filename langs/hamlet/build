@@ -1,15 +1,15 @@
 #!/bin/sh -e
 
-if kiss list polyml ; then
+if kiss list polyml; then
     make with-poly
-elif kiss list mosml ; then
+elif kiss list mosml; then
     make with-mosml
 fi
 
 make INSTALLDIR="$1/opt/hamlet" install
 
 mkdir -p "$1/usr/bin/"
-cat <<EOF > "$1/usr/bin/hamlet"
+cat << EOF > "$1/usr/bin/hamlet"
 #!/bin/sh
 /opt/hamlet/hamlet \$@
 EOF

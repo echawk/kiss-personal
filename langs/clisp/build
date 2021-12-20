@@ -3,7 +3,7 @@
 export CFLAGS="$CFLAGS -falign-functions=4"
 export FORCE_UNSAFE_CONFIGURE=1
 
-ulimit -s 16384 2>/dev/null || :
+ulimit -s 16384 2> /dev/null || :
 
 ./configure \
     --prefix=/usr \

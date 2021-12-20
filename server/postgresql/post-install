@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-cat <<EOF
+cat << EOF
 NOTE: postgresql needs it's own user for security reasons and can be
       created by running the following command:
 # adduser postgres

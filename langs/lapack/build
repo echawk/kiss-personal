@@ -9,8 +9,9 @@ make DESTDIR="$1" install
 
 mv "$1/usr/local/lib64" "$1/usr/lib"
 rmdir "$1/usr/local"
-for f in "$1/usr/lib/pkgconfig/blas.pc" "$1/usr/lib/pkgconfig/lapack.pc"
-do
-    sed 's|/usr/local|/usr|g' "$f" > _ ; mv -f _ "$f"
-    sed 's|lib64|lib|g'       "$f" > _ ; mv -f _ "$f"
+for f in "$1/usr/lib/pkgconfig/blas.pc" "$1/usr/lib/pkgconfig/lapack.pc"; do
+    sed 's|/usr/local|/usr|g' "$f" > _
+                                         mv -f _ "$f"
+    sed 's|lib64|lib|g'       "$f" > _
+                                         mv -f _ "$f"
 done

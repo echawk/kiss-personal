@@ -25,5 +25,3 @@ printf "+-----------------------------------------------------+
 | You can revert this by deleting the changed files   |
 | and running /etc/ssl/update-certdata.sh             |
 +-----------------------------------------------------+\n"
-
-

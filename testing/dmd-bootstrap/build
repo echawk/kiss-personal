@@ -2,7 +2,7 @@
 
 dmd="$PWD/dmd/src/dmd"
 
-mk(){
+mk() {
     make -f posix.mak \
         DMD="$dmd" \
         TARGET_CPU=X86 \
@@ -17,10 +17,10 @@ done
 
 temp_install="junk"
 mkdir -p "$temp_install"
-for d in dmd druntime phobos
-do
+for d in dmd druntime phobos; do
     cd "$d"
-    mk ; mk install
+    mk
+         mk install
     cd "$OLDPWD"
 done
 
@@ -37,4 +37,3 @@ mv "$temp_install/linux/lib64/"*        "$1/usr/lib/"
 mv "$temp_install/src/druntime/import/" "$1/usr/include/dmd/druntime"
 mv "$temp_install/src/phobos/"          "$1/usr/include/dmd/phobos/"
 chmod +x "$1/usr/bin/dmd"
-

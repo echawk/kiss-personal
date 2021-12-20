@@ -3,7 +3,7 @@
 patch -p1 < no-uuid.patch
 
 # Don't build tests.
-ed data/meson.build >/dev/null <<EOF
+ed data/meson.build > /dev/null << EOF
 /subdir('tests')/d
 w
 q

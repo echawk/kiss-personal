@@ -1,10 +1,10 @@
 #!/bin/sh -e
 
-: >nostrip
+: > nostrip
 
 # Without this flag appended, ccl segfaults.
 for f in lisp-kernel/*/Makefile; do
-    sed -E "s/^(OSLIBS .*)/\1 -no-pie/" "$f" >_
+    sed -E "s/^(OSLIBS .*)/\1 -no-pie/" "$f" > _
     mv -f _ "$f"
 done
 
@@ -13,7 +13,7 @@ kiss list glibc || {
     # Fixes for musl.
 
     # Define _libc_xmmreg if we are not on glibc.
-    ed lisp-kernel/lisp-debug.c >/dev/null <<EOF
+    ed lisp-kernel/lisp-debug.c > /dev/null << EOF
 36a
 #ifndef __GLIBC__
 struct _libc_xmmreg {
@@ -27,7 +27,7 @@ EOF
 
     # Remove mcheck.h include.
     # Wrap glibc function call in ifdefs
-    ed lisp-kernel/pmcl-kernel.c <<EOF
+    ed lisp-kernel/pmcl-kernel.c << EOF
 /#include <mcheck.h>/
 d
 /LispObj fs_addr = 0L, gs_addr = 0L, cur_thread = (LispObj)pthread_self();/
@@ -45,11 +45,11 @@ q
 EOF
 
     # Glibcisms are not Linuxisms.
-    sed "185s/LINUX/__GLIBC__/" lisp-kernel/thread_manager.c >_
+    sed "185s/LINUX/__GLIBC__/" lisp-kernel/thread_manager.c > _
     mv -f _ lisp-kernel/thread_manager.c
 
     # Delete include of fpu_control.h as musl doesn't have this header.
-    sed "/#include <fpu_control.h>/d" lisp-kernel/x86-exceptions.c >_
+    sed "/#include <fpu_control.h>/d" lisp-kernel/x86-exceptions.c > _
     mv -f _ lisp-kernel/x86-exceptions.c
 
 }
@@ -72,7 +72,7 @@ mkdir -p \
 cp -r lx86cl64 "$1/usr/lib/ccl/"
 cp lx86cl64.image "$1/usr/lib/ccl/"
 
-cat >"$1/usr/bin/ccl"  <<EOF
+cat > "$1/usr/bin/ccl" << EOF
 #!/bin/sh
 exec /usr/lib/ccl/lx86cl64 \$@
 EOF

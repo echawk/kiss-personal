@@ -2,12 +2,12 @@
 
 # Last 2 configure options can be optional
 CFLAGS="$CFLAGS -no-pie" ./configure \
-  --enable-shared \
-  --prefix=/usr \
-  --sysconfdir=/etc \
-  --mandir=/usr/share/man \
-  --with-gmp \
-  --with-system-libffi
+    --enable-shared \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --mandir=/usr/share/man \
+    --with-gmp \
+    --with-system-libffi
 make
 make compiler
 make DESTDIR="$1" install

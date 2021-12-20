@@ -1,9 +1,9 @@
 #!/bin/sh -e
 
 sed \
-  -e "s/__atomic_compare_exchange((p), (o), (n))/__atomic_compare_exchange_db((p), (o), (n))/" \
-  -e "s/static inline int __atomic_compare_exchange(/static inline int __atomic_compare_exchange_db(/" \
-  src/dbinc/atomic.h > _
+    -e "s/__atomic_compare_exchange((p), (o), (n))/__atomic_compare_exchange_db((p), (o), (n))/" \
+    -e "s/static inline int __atomic_compare_exchange(/static inline int __atomic_compare_exchange_db(/" \
+    src/dbinc/atomic.h > _
 mv -f _ src/dbinc/atomic.h
 
 cd build_unix

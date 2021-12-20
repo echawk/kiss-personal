@@ -9,6 +9,6 @@ make
 make DESTDIR="$1" install
 
 mkdir -p "$1/etc/dict/"
-for f in colorit.conf dict.conf dictd.conf dictd.confd site.info ; do
+for f in colorit.conf dict.conf dictd.conf dictd.confd site.info; do
     cp "$f" "$1/etc/dict/"
 done

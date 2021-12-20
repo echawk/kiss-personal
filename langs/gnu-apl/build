@@ -1,13 +1,13 @@
 #!/bin/sh -e
 
-for f in gnu-apl.d/preferences gnu-apl.d/preferences.in ; do
+for f in gnu-apl.d/preferences gnu-apl.d/preferences.in; do
     sed \
         -e '64 s/^.*Color.*ANSI/#&/' \
         -e '65 s/^#.*Color.*CURSES/Color\tCURSES/' "$f" > _
     mv -f _ "$f"
 done
 
-ed src/Error.hh <<EOF
+ed src/Error.hh << EOF
 /#include "UCS_string.hh"/
 a
 

@@ -1,8 +1,7 @@
 #!/bin/sh -e
 
 mkdir -p "$1/usr/share/fonts/TTF"
-for f in *
-do
+for f in *; do
     cabextract "$f" -d "$1/usr/share/fonts/TTF"
 done
 

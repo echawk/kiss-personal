@@ -2,7 +2,7 @@
 
 # Remove gettext requirement.
 rm -rf po/
-sed "/add_subdirectory(po)/d" CMakeLists.txt >_
+sed "/add_subdirectory(po)/d" CMakeLists.txt > _
 mv -f _ CMakeLists.txt
 
 cmake -B build \

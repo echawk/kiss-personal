@@ -1,4 +1,4 @@
 #!/bin/sh -e
 patch -p0 < "picker-2.2.patch"
-install -Dm755 -t "$1/usr/bin" fff;
-install -Dm644 -t "$1/usr/share/man/man1" fff.1;
+install -Dm755 -t "$1/usr/bin" fff
+install -Dm644 -t "$1/usr/share/man/man1" fff.1

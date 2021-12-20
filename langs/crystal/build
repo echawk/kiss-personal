@@ -20,7 +20,6 @@ make crystal \
     FLAGS="--no-debug" \
     CRYSTAL_PATH="src"
 
-
 install -Dm755 .build/crystal "$1/usr/bin/crystal"
 
 mkdir -p "$1/usr/lib"

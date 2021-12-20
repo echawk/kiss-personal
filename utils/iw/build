@@ -1,5 +1,5 @@
 #!/bin/sh -e
-mk(){
+mk() {
     make SBINDIR=/usr/bin "$@"
 }
 mk

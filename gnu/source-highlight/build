@@ -13,4 +13,3 @@ make DESTDIR="$1" \
     prefix="/usr" \
     bash_completiondir="/usr/share/bash-completion/completions" \
     install
-

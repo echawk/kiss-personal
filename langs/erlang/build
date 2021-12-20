@@ -5,8 +5,7 @@ export CXXFLAGS="$CXXFLAGS -w "
 ./configure \
     --prefix=/usr \
     --disable-hipe
-for d in lib/odbc/c_src/*/
-do
+for d in lib/odbc/c_src/*/; do
     sed '/LDFLAGS =/s/=/+=/' "$d/Makefile" > _
     mv -f _ "$d/Makefile"
 done

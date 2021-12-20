@@ -1,5 +1,5 @@
 #!/bin/sh -e
-:> nostrip
+: > nostrip
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \

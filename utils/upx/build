@@ -1,7 +1,8 @@
 #!/bin/sh -e
 git submodule update --init --recursive
 sed 's/bool warn = true/bool warn = false/' \
-    src/main.cpp > _ ; mv -f _ src/main.cpp
+    src/main.cpp > _
+                       mv -f _ src/main.cpp
 make \
     CHECK_WHITESPACE=/bin/true \
     UPX_LZMA_VERSION=0x465 \

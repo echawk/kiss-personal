@@ -4,4 +4,4 @@
     --prefix=/usr
 
 # The install works, but the file claims to have failed, so cheat a success.
-make -j1 install_notiming ||:
+make -j1 install_notiming || :

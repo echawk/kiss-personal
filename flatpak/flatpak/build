@@ -18,7 +18,7 @@ mv -f _ configure
 
 # Turn the fuse2 filesystem into a C program which does nothing.
 # This is the easiest way to "turn off" revokefs as there's no official support for doing so.
-cat <<EOF > revokefs/main.c
+cat << EOF > revokefs/main.c
 int main() { return 0; }
 EOF
 : > revokefs/writer.c

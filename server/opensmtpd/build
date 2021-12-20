@@ -9,8 +9,7 @@ mv -f _ usr.sbin/smtpd/smtpd.conf
     --with-path-mbox=/var/spool/mail \
     --with-path-empty=/var/empty \
     --with-path-socket=/run \
-    --with-path-CAfile=/etc/ssl/cert.pem\
-    --with-user-smtpd=smtpd \
+    --with-path-CAfile=/etc/ssl/cert.pem --with-user-smtpd=smtpd \
     --with-user-queue=smtpq \
     --with-group-queue=smtpq
 

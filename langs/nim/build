@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-(
+(   
     cd csources
 
     # Build nim source files
@@ -17,7 +17,7 @@ bin/nim compile --skipUserCfg --skipParentCfg --hints:off koch
 ./koch tools --skipUserCfg --skipParentCfg --hints:off
 
 # Build nimrtl.nim
-(
+(   
     cd lib
     ../bin/nim c --app:lib -d:createNimRtl -d:release nimrtl.nim
 )
@@ -39,7 +39,6 @@ install -Dm 755 bin/*    -t "$1"/usr/bin
 # (https://bugs.archlinux.org/task/50252)
 mkdir -p "$1/usr/include"
 cp -dpR "$1/usr/lib/nim/"*.h "$1"/usr/include/
-
 
 # Nimble looks for nimscriptapi.nim in /usr/bin/nimblepkg/, of all places
 mkdir -p "$1/usr/share/nimble"

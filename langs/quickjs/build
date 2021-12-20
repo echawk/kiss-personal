@@ -1,5 +1,5 @@
 #!/bin/sh -e
-cat >> Makefile <<EOF
+cat >> Makefile << EOF
 CFLAGS += ${CFLAGS}
 LDFLAGS += ${LDFLAGS}
 EOF

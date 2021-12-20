@@ -3,7 +3,6 @@ cd src
 
 export CFLAGS="$CFLAGS -fcommon"
 
-
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -30,4 +29,3 @@ ln -s /usr/share/gprolog/bin/hexgplc .
 ln -s /usr/share/gprolog/bin/ma2asm .
 ln -s /usr/share/gprolog/bin/pl2wam .
 ln -s /usr/share/gprolog/bin/wam2ma .
-

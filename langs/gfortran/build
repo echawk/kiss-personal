@@ -15,13 +15,14 @@ mkdir -p gcc-build
 cd gcc-build
 
 # Grab the system's GCC version.
-IFS=. read -r gcc_version _ 2>/dev/null \
+IFS=. read -r gcc_version _ 2> /dev/null \
     < "$KISS_ROOT/var/db/kiss/installed/gcc/version" || gcc_version=null
 
 # Skip the bootstrap process if we are able.
 case $2 in "$gcc_version"*)
     printf '%s\n' "Minor version difference, disabling bootstrap."
     bootstrap=--disable-bootstrap
+    ;;
 esac
 
 ../gcc/configure \

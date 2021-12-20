@@ -7,7 +7,8 @@ sys_arch=${3:-$(uname -m)}
 sed_i() {
     for file; do :; done
     sed "$@" > _
-    cat _ > "$file"; rm -f _
+    cat _ > "$file"
+                     rm -f _
 }
 
 if [ "${sys_arch#i*86}" ]; then
@@ -17,11 +18,14 @@ if [ "${sys_arch#i*86}" ]; then
 fi
 
 # FIXME: there is an offset on the diff, causing 'busybox patch' to fail.
-(cd gcc; patch -p1 < ../gccjit-musl-fix.patch)
+(   
+    cd gcc
+         patch -p1 < ../gccjit-musl-fix.patch
+)
 
 case "$sys_arch" in
     i*86)   archopts="--build=i686-pc-linux-musl" ;;
-    x86_64) archopts="--build=x86_64-pc-linux-musl"
+    x86_64) archopts="--build=x86_64-pc-linux-musl" ;;
 esac
 
 # Build must happen outside of gcc source.

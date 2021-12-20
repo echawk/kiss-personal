@@ -4,6 +4,6 @@
     --prefix=/usr \
     --with-tls=libtls \
     --disable-nls
-    
+
 make
 make DESTDIR="$1" install

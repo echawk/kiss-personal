@@ -5,16 +5,18 @@
 #done
 
 sed "/#include <linux\/errqueue.h>/a #include <linux/sockios.h>" \
-    linux-user/syscall.c > _ ; mv -f _ linux-user/syscall.c
+    linux-user/syscall.c > _
+                               mv -f _ linux-user/syscall.c
 
 # Remove bash dependency
-sed 's/bash/sh/g' Makefile > _ ; mv -f _ Makefile
+sed 's/bash/sh/g' Makefile > _
+                                 mv -f _ Makefile
 
 # The check for glib doesn't interact with our specified
 # CFLAGS, so we just comandeer the ones used by configure.
 # Build qemu-system* binaries dynamically linked
 CONFIGURE_CFLAGS="$CFLAGS" \
-./configure \
+    ./configure \
     --prefix=/usr \
     --localstatedir=/var \
     --sysconfdir=/etc \
@@ -35,7 +37,7 @@ make clean
 
 # Build qemu Linux user binaries statically linked.
 CONFIGURE_CFLAGS="$CFLAGS" \
-./configure \
+    ./configure \
     --prefix=/usr \
     --localstatedir=/var \
     --sysconfdir=/etc \
