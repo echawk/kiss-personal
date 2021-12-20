@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Disable stripping
-:> nostrip
+: > nostrip
 
 patch -p1 < valgrind-3.13.0-malloc.patch
 
@@ -10,8 +10,7 @@ export CC="/usr/bin/cc"
 export CXX="/usr/bin/c++"
 export CFLAGS="$CFLAGS -fno-stack-protector -no-pie"
 
-if [ "$(kiss owns /usr/bin/ld)" = "mold" ]
-then
+if [ "$(kiss owns /usr/bin/ld)" = "mold" ]; then
     lto=no
 else
     lto=yes
