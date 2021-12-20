@@ -1,0 +1,4 @@
+#!/bin/sh -e
+export USE_NO_MD5=1
+make
+make PREFIX=/usr install
