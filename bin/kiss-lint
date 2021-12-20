@@ -136,7 +136,7 @@ checkpkg() {
                         if command -v shfmt >/dev/null; then
                             # shfmt: posix, 4 spaces, indent case, keep col alignment paddings, redirect is followed by space
                             if shfmt -p -i 4 -ci -kp -sr < "$f" | diff "$f" - >/dev/null; then
-                                echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp $f'" &
+                                echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp -sr $f'" &
                                 fix() {
                                     shfmt -p -i 4 -ci -kp -sr -w "$f"
                                 }
