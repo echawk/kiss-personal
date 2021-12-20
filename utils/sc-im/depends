@@ -1,0 +1,6 @@
+bison make
+libxls
+libxlsxwriter
+libxml2
+libzip
+ncurses
