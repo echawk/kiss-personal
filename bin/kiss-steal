@@ -13,7 +13,7 @@ pkg=$1
 
 kiss n "$pkg" 1> /dev/null && cd "$pkg"
 
-distros="alpine arch void sabotage"
+distros="ataraxia alpine arch void sabotage"
 for distro in $distros; do
     case $distro in
         alpine)
@@ -32,6 +32,9 @@ for distro in $distros; do
             ;;
         sabotage)
             d sabotage "https://github.com/sabotage-linux/sabotage/raw/master/pkg/$1" &
+            ;;
+        ataraxia)
+            d ataraxia "https://gitlab.com/ataraxialinux/ataraxia/-/raw/master/packages/$1/KagamiBuild" &
             ;;
     esac
 done
