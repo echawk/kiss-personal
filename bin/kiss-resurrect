@@ -3,7 +3,7 @@
 
 get_git_repos() {
     for repo in $(echo "$KISS_PATH" | tr ':' ' '); do
-        (
+        (   
             cd "$repo"
             if git rev-parse; then
                 echo "$repo"
@@ -15,7 +15,7 @@ get_git_repos() {
 target=$1
 
 for repo in $(get_git_repos); do
-    (
+    (   
         cd "$repo"
         # Thank you `git-attic`, as this command is directly stolen from there.
         target_files="$(git log --raw --no-renames --date=short --format="%h %cd" |
@@ -32,11 +32,10 @@ for repo in $(get_git_repos); do
 
                 pdir="$OLDPWD/$target"
                 mkdir -p "$OLDPWD/$target"
-                file_name="$(echo "$file" | rev | cut -d'/' -f1 | rev )"
+                file_name="$(echo "$file" | rev | cut -d'/' -f1 | rev)"
 
-                git show "$commit:$file" >"$pdir/$commit-$file_name"
+                git show "$commit:$file" > "$pdir/$commit-$file_name"
             done
         fi
     )
 done
-

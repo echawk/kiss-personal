@@ -3,7 +3,7 @@
 
 get_git_repos() {
     for repo in $(echo "$KISS_PATH" | tr ':' ' '); do
-        (
+        (   
             cd "$repo"
             if git rev-parse; then
                 echo "$repo"
@@ -13,7 +13,7 @@ get_git_repos() {
 }
 
 for repo in $(get_git_repos); do
-    (
+    (   
         cd "$repo"
         # Thank you `git-attic`, as this command is directly stolen from there.
         git log --raw --no-renames --date=short --format="%h %cd" |

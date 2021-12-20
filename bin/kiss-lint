@@ -7,7 +7,7 @@ line_aux() {
 }
 checkposix() {
     # basically search a posix shell script for things that aren't posix
-    (
+    (   
         t="$(grep -nE "sed (-[a-zA-Z]*)*-i?[a-zA-Z]*i[a-zA-Z]*i?" "$f" | line_aux)"
         [ -n "$t" ] && echo "WARNING: 'sed -i' is not portable, use 'sed file > _ ; mv -f _ file' (line(s): $t in $f)"
     ) &
@@ -16,7 +16,7 @@ checkposix() {
     if [ -n "$t" ]; then
         echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $t in $f)"
         fix() {
-            sed -E "s/ ?which / command -v /" "$f" >_
+            sed -E "s/ ?which / command -v /" "$f" > _
             mv -f _ "$f"
         }
         run_autoedit fix
@@ -34,14 +34,14 @@ checkpkg() {
         if [ -e "$f" ]; then
             case "$f" in
                 version)
-                    read -r VER REL <"$f"
+                    read -r VER REL < "$f"
                     [ -z "$VER" ] && echo "ERROR: version is not defined"
                     [ -z "$REL" ] && echo "ERROR: release is not defined"
                     ;;
                 depends)
                     base="(baseinit|baselayout|busybox|bzip2|git|kiss|make|musl|zlib|xz|pigz)"
                     if grep -qE "^$base" "$f"; then
-                        (
+                        (   
                             t="$(grep -nE "^$base" "$f" | line_aux)"
                             t="$(grep -E "^$base" "$f" | cut -d' ' -f1 | tr '\n' ',' | rev | cut -d',' -f2- | rev) is/are implicit deps (line(s): $t in $f)"
                             echo "WARNING: $t"
@@ -50,7 +50,7 @@ checkpkg() {
 
                     buildtools="(meson|cmake|pkgconf|autoconf|automake)"
                     if grep -qE "^$buildtools$" "$f"; then
-                        (
+                        (   
                             t="$(grep -nE "^$buildtools" "$f" | line_aux)"
                             t="$(grep -E "^$buildtools" "$f" | cut -d' ' -f1 | tr '\n' ',' | rev | cut -d',' -f2- | rev) is/are 'make' deps (line(s): $t in $f)"
                             echo "WARNING: $t"
@@ -64,10 +64,10 @@ checkpkg() {
                         }
                         run_autoedit fix
                     fi
-                    if ! sort "$f" | diff - "$f" >/dev/null 2>&1; then
+                    if ! sort "$f" | diff - "$f" > /dev/null 2>&1; then
                         echo "STYLE: '$f' is not sorted"
                         fix() {
-                            sort "$f" >_
+                            sort "$f" > _
                             mv -f _ "$f"
                         }
                         run_autoedit fix
@@ -88,7 +88,7 @@ checkpkg() {
 
                         head -n 1 "$f" | grep -q "sh -e" || echo "ERROR: '$f' is missing the '-e' flag in the shebang" &
 
-                        (
+                        (   
                             t="$(grep -nE "^\ *#\ *[a-z]" "$f" | grep -v "shellcheck" | line_aux)"
                             [ -n "$t" ] && echo "STYLE: '$f' has a comment that starts with a lower case letter (line(s): $t in $f)"
                         ) &
@@ -97,7 +97,7 @@ checkpkg() {
                         if [ -n "$t" ]; then
                             echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $t in $f)"
                             fix() {
-                                sed "s/kiss l/kiss list/" "$f" >_
+                                sed "s/kiss l/kiss list/" "$f" > _
                                 mv -f _ "$f"
                             }
                             run_autoedit fix
@@ -106,36 +106,36 @@ checkpkg() {
                         if [ -n "$t" ]; then
                             echo "WARNING: use 'kiss alternatives' instead of 'kiss a' (line(s): $t in $f)"
                             fix() {
-                                sed "s/kiss a/kiss alternatives/" "$f" >_
+                                sed "s/kiss a/kiss alternatives/" "$f" > _
                                 mv -f _ "$f"
                             }
                             run_autoedit fix
                         fi
-                        (
+                        (   
                             t=$(grep -nE "^ *\/usr\/bin\/.*" "$f" | line_aux)
                             if [ -n "$t" ]; then
                                 echo "WARNING: use '\${KISS_ROOT:-/}usr/bin/' instead of '/usr/bin/' (line(s): $t in $f)"
                             fi
                         ) &
-                        (
+                        (   
                             t="$(fold "$f" | diff - "$f" | grep '>' | sed "s/> //" | while read -r l; do grep -n "$l" build; done | line_aux)"
                             [ -n "$t" ] && echo "STYLE: '$f' has a line(s) that exceed 80 characters (line(s): $t in $f)"
                         ) &
 
-                        (
+                        (   
                             if grep -qE "^\t" "$f"; then
-                                tr -d '\t' <"$f" | diff - "$f" >/dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
+                                tr -d '\t' < "$f" | diff - "$f" > /dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
                             fi
                         ) &
-                        (
+                        (   
                             t="$(grep -nE "DESTDIR=\"?..\"?" "$f" | line_aux)"
                             [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
                         ) &
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
-                        if command -v shfmt >/dev/null; then
+                        if command -v shfmt > /dev/null; then
                             # shfmt: posix, 4 spaces, indent case, keep col alignment paddings, redirect is followed by space
-                            if shfmt -p -i 4 -ci -kp -sr "$f" | diff - "$f" | grep '>' >/dev/null; then
+                            if shfmt -p -i 4 -ci -kp -sr "$f" | diff - "$f" | grep '>' > /dev/null; then
                                 echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp -sr $f'"
                                 fix() {
                                     shfmt -p -i 4 -ci -kp -sr -w "$f"
@@ -159,9 +159,9 @@ checkpkg() {
                         ! [ "$VER" = "git" ] && [ "$KISS" = "1" ] && grep -q "$VER" "$f" && echo "STYLE: can replace '$VER' in '$f' with 'VERSION'" &
 
                         [ -e checksums ] && {
-                            [ "$VER" = "git" ] && [ "$(wc -l <"$f")" = "1" ] && echo "WARNING: version is '$VER', don't need 'checksums' file" &
+                            [ "$VER" = "git" ] && [ "$(wc -l < "$f")" = "1" ] && echo "WARNING: version is '$VER', don't need 'checksums' file" &
 
-                            ! [ "$(grep -cvE "^#|^$|^git\+" "$f")" -eq "$(wc -l <checksums)" ] &&
+                            ! [ "$(grep -cvE "^#|^$|^git\+" "$f")" -eq "$(wc -l < checksums)" ] &&
                                 echo "ERROR: mismatch in the number of line(s) for the '$f' and 'checksums' files" &
                         }
                     }
@@ -181,7 +181,7 @@ checkpkg() {
                 version | build | sources) echo "ERROR: '$f' does not exist" ;;
                 meta) echo "WARNING: '$f' does not exist" ;;
                 checksums)
-                    ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ "$(wc -l <"sources")" = "1" ] && echo "ERROR: '$f' does not exist" &
+                    ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ "$(wc -l < "sources")" = "1" ] && echo "ERROR: '$f' does not exist" &
                     ;;
                 *) ;;
             esac

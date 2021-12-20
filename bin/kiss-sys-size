@@ -12,7 +12,7 @@ a() {
     wait
 }
 b() {
-    a | xargs -P0 du 2>/dev/null | awk '{sum += $1} END {print sum}'
+    a | xargs -P0 du 2> /dev/null | awk '{sum += $1} END {print sum}'
 }
 if [ $# -ge 1 ]; then
     case $1 in

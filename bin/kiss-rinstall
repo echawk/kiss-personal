@@ -4,13 +4,13 @@
 
 get_deps() {
     f="$(kiss search "$1" | sed q)/depends"
-    [ -e "$f" ] && cut -d' ' -f1 <"$f"
+    [ -e "$f" ] && cut -d' ' -f1 < "$f"
 }
 
 z() {
     # If the package is not installed, then we need to mark it, and get
     # it's missing depends too. Basically an aux function for aux.
-    ! kiss list "$1" 1>/dev/null 2>&1 && {
+    ! kiss list "$1" 1> /dev/null 2>&1 && {
         echo "$1"
         aux $(get_deps "$1")
     }
