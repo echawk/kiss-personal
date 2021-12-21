@@ -1,7 +1,9 @@
 #!/bin/sh -e
 
 ./configure \
-    --prefix=/usr
+    --prefix=/usr \
+    --mandir=/usr/share/man
 
-# The install works, but the file claims to have failed, so cheat a success.
-make -j1 install_notiming || :
+# Rules: build_all -> build w/o timing, install_notiming -> install w/o timing
+make -j1 build_all
+make -j1 install_notiming
