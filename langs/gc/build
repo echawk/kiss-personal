@@ -1,7 +1,9 @@
 #!/bin/sh -e
 
 ./configure \
-    --prefix=/usr
+    --prefix=/usr \
+    --enable-static \
+    --enable-mmap
 
 make
-make DESTDIR="$1" install
+make install
