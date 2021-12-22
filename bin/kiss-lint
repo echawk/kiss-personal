@@ -72,6 +72,14 @@ checkpkg() {
                         }
                         run_autoedit fix
                     fi
+                    if [ -n "$(cut -d' ' -f1 "$f" | sort | uniq -d)" ]; then
+                        echo "WARNING: duplicate entries in $f"
+                        fix() {
+                            sort -u "$f" > _
+                            mv -f _ "$f"
+                        }
+                        run_autoedit fix
+                    fi
                     ;;
                 build | post-install | pre-remove)
                     if ! [ -x "$f" ]; then
