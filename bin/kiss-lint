@@ -131,6 +131,20 @@ checkpkg() {
                             t="$(grep -nE "DESTDIR=\"?..\"?" "$f" | line_aux)"
                             [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
                         ) &
+                        (
+                            t="$(grep -nE "(meson|ninja)" "$f" | line_aux)"
+                            if [ -n "$t" ]; then
+                                if grep -qE "meson" depends && grep -qE "samurai" depends; then
+                                    break
+                                else
+                                    echo "WARNING: 'meson' and 'samurai' are used, but not in depends (lines(s): $t in $f)"
+                                    fix() {
+                                        printf "meson make\nsamurai make\n" >> depends
+                                    }
+                                    run_autoedit fix
+                                fi
+                            fi
+                        )
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
