@@ -8,6 +8,11 @@ patch -p1 < shebang-support.patch
 sed "s/SA_NOMASK/SA_NODEFER/g" src/runtime/sys.c > _
 mv -f _ src/runtime/sys.c
 
-cd src
-make PREFIX=/usr world
-make PREFIX=/usr install
+(
+    cd src
+    make PREFIX=/usr world
+    make PREFIX=/usr install
+)
+cd man
+mkdir -p "$1/usr/share/man/man1"
+cp *.1   "$1/usr/share/man/man1"
