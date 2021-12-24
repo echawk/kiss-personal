@@ -15,7 +15,9 @@ linux-headers make
 llvm
 m4            make
 meson         make
+meson make
 pkgconf       make
 python        make
+samurai make
 xorgproto
 zlib
