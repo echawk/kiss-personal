@@ -1,18 +1,15 @@
 #!/bin/sh -e
-d() {
-    echo "$1"
-    exit 1
-}
 for t in merge update extract perl; do
     ln -sf intltool "intltool-$t"
 done
 export PATH="$PWD:$PATH"
 
-command -v xgettext || d "-> gettext is not available"
+sed -e "s/as_fn_error \$? \"GNU gettext.*/echo fixed/" configure > _
+mv -f _ configure
+chmod +x configure
 
 ./configure \
-    --prefix=/usr \
-    --without-readline
+    --prefix=/usr
 make
 make install
 
