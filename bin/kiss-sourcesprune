@@ -3,12 +3,20 @@
 
 kiss_sources_dir=${XDG_CACHE_HOME:-$HOME/.cache}/kiss/sources/
 
+# NOTE: This script does not show *any* directories, only tarballs.
+
 for d in "$kiss_sources_dir"*/; do (
-    pkg="$(basename $d)"
-    pkgdir=$(kiss search $pkg 2> /dev/null | sed q)
+    pkg="$(basename "$d")"
+    pkgdir=$(kiss search "$pkg" 2> /dev/null | sed q)
+
+    # If the package is in our KISS_PATH, then keep the most recent version.
     if [ -n "$pkgdir" ]; then
-        read -r ver rel < "$pkgdir/version"
-        find $d -maxdepth 1 -type f | grep -v "$ver" | sort
+        read -r ver _ < "$pkgdir/version"
+        # This filter is intentionally not idiot proof. Use your brain.
+        find "$d" -maxdepth 1 -type f | grep -v "$ver" | sort
+    else
+        # Otherwise, list out all of the files.
+        find "$d" -maxdepth 1 -type f | sort
     fi
 ) & done
 wait
