@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+mk() {
+    make \
+        CFLAGS="$CFLAGS -fPIC -rdynamic -Iinclude -L." \
+        LDFLAGS="$LDFLAGS -L." \
+        PREFIX=/usr \
+        "$@"
+}
+
+mk libcyclone.a
+mk cyclone
+mk icyc-c
+mk
+mk install
