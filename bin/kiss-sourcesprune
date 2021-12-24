@@ -1,0 +1,14 @@
+#!/bin/sh
+# List out sources for packages.
+
+kiss_sources_dir=${XDG_CACHE_HOME:-$HOME/.cache}/kiss/sources/
+
+for d in "$kiss_sources_dir"*/; do (
+    pkg="$(basename $d)"
+    pkgdir=$(kiss search $pkg 2> /dev/null | sed q)
+    if [ -n "$pkgdir" ]; then
+        read -r ver rel < "$pkgdir/version"
+        find $d -maxdepth 1 -type f | grep -v "$ver" | sort
+    fi
+) & done
+wait
