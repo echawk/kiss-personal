@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+rm -Rf src/foreign/libffi
+
+cd src
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --enable-shared
+
+make
+make install
