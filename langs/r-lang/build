@@ -1,8 +1,9 @@
 #!/bin/sh -e
 
-for patch in *.patch; do
-    patch -Np1 -i "$patch"
-done
+sed -e '/"po\/Makefile") CONFIG_FILES=/d' \
+    -e "s~po/Makefile~~" configure > _
+mv -f _ configure
+chmod +x configure
 
 # CXXFLAGS is propagated to /etc/R/Makeconf that is read when building
 # additional R modules. -D__MUSL__ is needed for some modules like Rcpp.
@@ -14,7 +15,7 @@ rm -rf po
 
 # R refuses to build without these files which is weird considering that
 # they are not included in the source tarball
-(   
+(
     cd doc
     touch NEWS.rds
     touch NEWS.2.rds
