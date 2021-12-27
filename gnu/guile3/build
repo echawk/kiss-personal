@@ -1,8 +1,16 @@
 #!/bin/sh -e
 : > nostrip
+
+for p in *.patch; do
+    patch -p1 < "$p"
+done
+
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
-    --program-suffix=3
+    --program-suffix=3 \
+    --disable-error-on-warning \
+    --disable-static
+
 make
 make install
