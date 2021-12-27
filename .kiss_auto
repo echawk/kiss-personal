@@ -1,7 +1,7 @@
 amd/,radeontop
 flatpak/,gpgme ostree
 gnu/,guile3 libunistring source-highlight
-langs/,chez-scheme ecl elixir erlang fennel fsharp gc go ruby sbcl typescript vala
+langs/,chez-scheme ecl elixir erlang fennel fsharp gc go moarvm nqp rakudo ruby R sbcl typescript vala
 lsp/,acorn bash-language-server erlang_ls gopls pyright rebar3 terraform-ls texlab typescript-language-server vim-language-server
 server/,darkhttpd i2pd postgresql ragel terraform tor torsocks
-utils/,acpi acpid aria2 coreutils diffutils entr gdb git-extras htop libmupdf lowdown mercurial msmtp notmuch pcre2 pv shellcheck-bin ucl valgrind yash
+utils/,acpi acpid aria2 coreutils diffutils entr gdb git-extras htop libmupdf lowdown mercurial msmtp notmuch pcre2 pv shellcheck-bin shfmt ucl valgrind yash
