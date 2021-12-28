@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+find "${KISS_ROOT:-/}usr/share/info" -type f ! -name dir | while read -r file; do
+    install-info "$file" "${KISS_ROOT:-/}usr/share/info/dir"
+done
