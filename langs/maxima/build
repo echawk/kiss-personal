@@ -1,0 +1,10 @@
+#!/bin/sh -e
+./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --libexecdir=/usr/libexec \
+    --enable-sbcl \
+    --with-default-lisp=sbcl
+
+make
+make install
