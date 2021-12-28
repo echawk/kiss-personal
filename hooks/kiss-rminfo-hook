@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+case "$1" in
+    post-build) rm -rf -- "$3/usr/share/info" ;;
+esac
