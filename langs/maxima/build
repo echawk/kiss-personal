@@ -7,4 +7,4 @@
     --with-default-lisp=sbcl
 
 make
-make install
+make emacsdir=/usr/share/emacs/site-lisp/maxima install
