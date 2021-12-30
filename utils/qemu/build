@@ -1,16 +1,8 @@
 #!/bin/sh -e
 
-#for patch in *.patch; do
-#    patch -p1 < "$patch"
-#done
-
-sed "/#include <linux\/errqueue.h>/a #include <linux/sockios.h>" \
-    linux-user/syscall.c > _
-                               mv -f _ linux-user/syscall.c
-
-# Remove bash dependency
-sed 's/bash/sh/g' Makefile > _
-                                 mv -f _ Makefile
+# Remove bash dependency.
+sed 's/SHELL = bash -o pipefail/SHELL = sh/g' Makefile > _
+mv -f _ Makefile
 
 # The check for glib doesn't interact with our specified
 # CFLAGS, so we just comandeer the ones used by configure.
@@ -32,7 +24,7 @@ CONFIGURE_CFLAGS="$CFLAGS" \
     --enable-system
 
 make
-make DESTDIR="$1" PREFIX=/usr install
+make PREFIX=/usr install
 make clean
 
 # Build qemu Linux user binaries statically linked.
@@ -50,8 +42,4 @@ CONFIGURE_CFLAGS="$CFLAGS" \
     --static
 
 make
-make DESTDIR="$1" PREFIX=/usr install
-
-# Install the license
-install -Dm755 COPYING     "$1/usr/share/LICENSES/qemu.license"
-install -Dm755 COPYING.LIB "$1/usr/share/LICENSES/qemu-lib.license"
+make PREFIX=/usr install
