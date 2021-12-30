@@ -23,11 +23,12 @@ rm -rf po
 )
 
 conf_flags=""
-for p in cairo lapack libpng tiff openblas libjpeg-turbo libX11; do
+for p in cairo lapack libpng tiff tk openblas libjpeg-turbo libX11; do
     case $p in
         openblas)      kiss list $p && conf_flags="$conf_flags --with-blas" ;;
         libjpeg-turbo) kiss list $p && conf_flags="$conf_flags --with-jpeglib" ;;
         libX11)        kiss list $p && conf_flags="$conf_flags --with-x" ;;
+        tk)            kiss list $p && conf_flags="$conf_flags --with-tcltk" ;;
         *)             kiss list $p && conf_flags="$conf_flags --with-$p" ;;
     esac
 done
@@ -47,7 +48,6 @@ done
     --with-recommended-packages \
     --without-ICU \
     --without-docs \
-    --without-tcltk \
     $conf_flags \
     gcc=gfortran \
     LIBnn=Lib
