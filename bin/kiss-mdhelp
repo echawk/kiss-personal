@@ -82,7 +82,7 @@ mk_index() {
         done
         printf "%s\n" "$LINE" | sed -E "s~ (\[[0-9]{3}\])~ $dots \1~"
     done
-    printf "\n\n"
+    printf "\n"
 }
 
 mk_index > "$index_f"
