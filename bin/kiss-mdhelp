@@ -13,28 +13,39 @@ t_f=$(mktemp)
 sed -E \
     -e "s~^\# ([a-zA-Z0-9]+)~\1\n-80-~" \
     -e "s~^\#\# ([a-zA-Z0-9]+)~-sub- \1\n-80-~" \
-    -e "s~^\`(.*)\`~-bt-\n-bs-\n-cmd-\1\n-bs-\n-bt-~" \
+    -e "s~^\#\#\# ([a-zA-Z0-9]+)~-subsub- \1~" \
+    -e "s~\`(.*)\`~-bt-\n-bs-\n-cmd-\1\n-bs-\n-bt-~" \
     < "$md_f" \
     > "$t_f"
-
 
 sed -i -E \
     -e "s~^-80-~$dashes~" \
     -e "s~^-bt-~$box_tb~" \
     -e "s~^-bs-~$box_s~" \
+    -e "s~^-sub-~[---]~" \
     "$t_f"
 
-grep -E "^-cmd-" "$t_f" | while read -r CMD_L
-do
+grep -E "^-cmd-" "$t_f" | while read -r CMD_L; do
     cmd_l=$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~" | fold -w 1 | wc -l)
     spaces_num=$((80 - (cmd_l + 5))) # + 5 because we have the start of the box and the last pipe of the box
     spaces=""
-    for i in $(seq $spaces_num)
-    do
+    for i in $(seq $spaces_num); do
         spaces="$spaces "
     done
     sed -i -E -e "s~^-cmd-(.*)~|   \1${spaces}|~" "$t_f"
 done
+
+grep -E "^-subsub-" "$t_f" | while read -r SUBSUB_L; do
+    sbsb_l=$(echo "$SUBSUB_L" | sed -E "s~^-subsub-(.*)~\1~" | fold -w 1 | wc -l)
+    dashes_num=$((80 - (sbsb_l + 8)))
+    d=""
+    for i in $(seq $dashes_num); do
+        d="$d-"
+    done
+    sed -i -E -e "s~^-subsub-(.*)~--[---]\1 ${d}~" "$t_f"
+done
+
+#grep "^##" test.md | sed -e "s~## ~ * ~" -e "s~#~  ~" -e "s~^ ~~"
 
 cat "$t_f"
 rm "$t_f"
