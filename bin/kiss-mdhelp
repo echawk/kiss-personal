@@ -9,6 +9,7 @@ box_s="|                                                                        
 
 md_f=$1
 t_f=$(mktemp)
+index_f=$(mktemp)
 
 sed -E \
     -e "s~^\# ([a-zA-Z0-9]+)~\1\n-80-~" \
@@ -45,7 +46,44 @@ grep -E "^-subsub-" "$t_f" | while read -r SUBSUB_L; do
     sed -i -E -e "s~^-subsub-(.*)~--[---]\1 ${d}~" "$t_f"
 done
 
-#grep "^##" test.md | sed -e "s~## ~ * ~" -e "s~#~  ~" -e "s~^ ~~"
+i=1
+grep -F '[---]' "$t_f" | while read -r HEADING; do
+    #[---] -> [hto]
+    o=$i
+    t=$((o / 10))
+    h=$((t / 10))
+    o=$((o % 10))
+    t=$((t % 10))
+    sed -i "s~$(echo $HEADING | sed -e "s~\[~\\\\[~" -e "s~\]~\\\\]~")~$(echo $HEADING | sed "s~\[---\]~\[$h$t$o\]~")~" "$t_f"
+    i=$((i+1))
+done
+
+mk_index() {
+    echo "[000] Index"
+    printf "%s\n\n" "$dashes"
+    set -f # disable globbing for this part
+    grep -E "\[[0-9]{3}\]" "$t_f" \
+    | sed "s~^--~  ~" \
+    | tr -d '-' \
+    | sed -E \
+    -e "s~(\[[0-9]{3}\]) (.*)~* \2 \1~" \
+    -e "s~(.)  \[~\1 \[~" \
+    -e "s~^~_~" | while read LINE; do
+    LINE="$(echo "$LINE" | sed -E -e "s~_~~" -e "s~ \*~  \*~")"
+    line_l=$(printf "%s\n" "$LINE" | fold -w 1 | wc -l)
+    dots_num=$((80 - (line_l + 1)))
+
+    dots=""
+    for i in $(seq $dots_num); do
+            dots="$dots."
+        done
+        printf "%s\n" "$LINE" | sed -E "s~ (\[[0-9]{3}\])~ $dots \1~"
+    done
+    printf "\n\n"
+}
+
+mk_index > "$index_f"
+sed -i -E -e "s~(\[001\])~--index--\n\1~" -e "/--index--/r $index_f" -e "/--index--/d" "$t_f"
 
 cat "$t_f"
 rm "$t_f"
