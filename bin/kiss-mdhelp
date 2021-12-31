@@ -86,7 +86,9 @@ mk_index() {
 }
 
 mk_index > "$index_f"
-sed -E -e "s~(\[001\])~--index--\n\1~" -e "/--index--/r $index_f" -e "/--index--/d" "$t_f" > "$sed_t"
+sed -E -e "s~(\[001\])~--index--\n\1~" "$t_f" > "$sed_t"
+mv -f "$sed_t" "$t_f"
+sed -E -e "/--index--/r $index_f" -e "/--index--/d" "$t_f" > "$sed_t"
 mv -f "$sed_t" "$t_f"
 
 cat "$t_f"
