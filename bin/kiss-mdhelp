@@ -1,2 +1,40 @@
 #!/bin/sh
 # Convert a markdown file into a help document for KISS.
+
+#FIXME: remove sed -i
+
+dashes="________________________________________________________________________________"
+box_tb="+------------------------------------------------------------------------------+"
+box_s="|                                                                              |"
+
+md_f=$1
+t_f=$(mktemp)
+
+sed -E \
+    -e "s~^\# ([a-zA-Z0-9]+)~\1\n-80-~" \
+    -e "s~^\#\# ([a-zA-Z0-9]+)~-sub- \1\n-80-~" \
+    -e "s~^\`(.*)\`~-bt-\n-bs-\n-cmd-\1\n-bs-\n-bt-~" \
+    < "$md_f" \
+    > "$t_f"
+
+
+sed -i -E \
+    -e "s~^-80-~$dashes~" \
+    -e "s~^-bt-~$box_tb~" \
+    -e "s~^-bs-~$box_s~" \
+    "$t_f"
+
+grep -E "^-cmd-" "$t_f" | while read -r CMD_L
+do
+    cmd_l=$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~" | fold -w 1 | wc -l)
+    spaces_num=$((80 - (cmd_l + 5))) # + 5 because we have the start of the box and the last pipe of the box
+    spaces=""
+    for i in $(seq $spaces_num)
+    do
+        spaces="$spaces "
+    done
+    sed -i -E -e "s~^-cmd-(.*)~|   \1${spaces}|~" "$t_f"
+done
+
+cat "$t_f"
+rm "$t_f"
