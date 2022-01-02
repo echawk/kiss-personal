@@ -16,6 +16,10 @@ t_f=$(mktemp)
 index_f=$(mktemp)
 sed_t=$(mktemp)
 
+strlen() {
+    echo "$1" | fold -w 1 | wc -l
+}
+
 md_to_ir() {
     sed -E \
         -e "s~^\# ([a-zA-Z0-9]+)~\1\n-80-~" \
@@ -38,7 +42,7 @@ basic_formatting() {
 
 format_commands() {
     grep -E "^-cmd-" "$t_f" | while read -r CMD_L; do
-        cmd_l=$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~" | fold -w 1 | wc -l)
+        cmd_l=$(strlen "$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~")")
         spaces_num=$((80 - (cmd_l + 4))) # + 4 because we have the start of the box and the last pipe of the box
         spaces=""
         for i in $(seq $spaces_num); do
@@ -51,7 +55,7 @@ format_commands() {
 
 format_subsections() {
     grep -E "^-subsub-" "$t_f" | while read -r SUBSUB_L; do
-        sbsb_l=$(echo "$SUBSUB_L" | sed -E "s~^-subsub-(.*)~\1~" | fold -w 1 | wc -l)
+        sbsb_l=$(strlen "$(echo "$SUBSUB_L" | sed -E "s~^-subsub-(.*)~\1~")")
         dashes_num=$((80 - (sbsb_l + 8)))
         d=""
         for i in $(seq $dashes_num); do
@@ -89,7 +93,7 @@ mk_index() {
             -e "s~(.)  \[~\1 \[~" \
             -e "s~^~_~" | while read -r LINE; do
         LINE="$(echo "$LINE" | sed -E -e "s~^_~~" -e "s~ \*~  \*~")"
-        line_l=$(printf "%s\n" "$LINE" | fold -w 1 | wc -l)
+        line_l=$(strlen "$(printf "%s\n" "$LINE")")
         dots_num=$((80 - (line_l + 1)))
 
         dots=""
