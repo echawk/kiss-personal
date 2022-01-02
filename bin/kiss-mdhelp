@@ -12,74 +12,84 @@ t_f=$(mktemp)
 index_f=$(mktemp)
 sed_t=$(mktemp)
 
-sed -E \
-    -e "s~^\# ([a-zA-Z0-9]+)~\1\n-80-~" \
-    -e "s~^\#\# ([a-zA-Z0-9]+)~-sub- \1\n-80-~" \
-    -e "s~^\#\#\# ([a-zA-Z0-9]+)~-subsub- \1~" \
-    -e "s~\`(.*)\`~-bt-\n-bs-\n-cmd-\1\n-bs-\n-bt-~" \
-    < "$md_f" \
-    > "$t_f"
+md_to_ir() {
+    sed -E \
+        -e "s~^\# ([a-zA-Z0-9]+)~\1\n-80-~" \
+        -e "s~^\#\# ([a-zA-Z0-9]+)~-sub- \1\n-80-~" \
+        -e "s~^\#\#\# ([a-zA-Z0-9]+)~-subsub- \1~" \
+        -e "s~\`(.*)\`~-bt-\n-bs-\n-cmd-\1\n-bs-\n-bt-~" \
+        < "$md_f" \
+        > "$t_f"
+}
 
-sed -E \
-    -e "s~^-80-~$dashes~" \
-    -e "s~^-bt-~$box_tb~" \
-    -e "s~^-bs-~$box_s~" \
-    -e "s~^-sub-~[---]~" \
-    "$t_f" > "$sed_t"
-mv -f "$sed_t" "$t_f"
+basic_formatting() {
+    sed -E \
+        -e "s~^-80-~$dashes~" \
+        -e "s~^-bt-~$box_tb~" \
+        -e "s~^-bs-~$box_s~" \
+        -e "s~^-sub-~[---]~" \
+        "$t_f" > "$sed_t"
+    mv -f "$sed_t" "$t_f"
+}
 
-grep -E "^-cmd-" "$t_f" | while read -r CMD_L; do
-    cmd_l=$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~" | fold -w 1 | wc -l)
-    spaces_num=$((80 - (cmd_l + 4))) # + 4 because we have the start of the box and the last pipe of the box
-    spaces=""
-    for i in $(seq $spaces_num); do
-        spaces="$spaces "
+format_commands() {
+    grep -E "^-cmd-" "$t_f" | while read -r CMD_L; do
+        cmd_l=$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~" | fold -w 1 | wc -l)
+        spaces_num=$((80 - (cmd_l + 4))) # + 4 because we have the start of the box and the last pipe of the box
+        spaces=""
+        for i in $(seq $spaces_num); do
+            spaces="$spaces "
+        done
+        sed -E -e "s~^-cmd-(.*)~|  \1${spaces}|~" "$t_f" > "$sed_t"
+        mv -f "$sed_t" "$t_f"
     done
-    sed -E -e "s~^-cmd-(.*)~|  \1${spaces}|~" "$t_f" > "$sed_t"
-    mv -f "$sed_t" "$t_f"
-done
+}
 
-grep -E "^-subsub-" "$t_f" | while read -r SUBSUB_L; do
-    sbsb_l=$(echo "$SUBSUB_L" | sed -E "s~^-subsub-(.*)~\1~" | fold -w 1 | wc -l)
-    dashes_num=$((80 - (sbsb_l + 8)))
-    d=""
-    for i in $(seq $dashes_num); do
-        d="$d-"
+format_subsections() {
+    grep -E "^-subsub-" "$t_f" | while read -r SUBSUB_L; do
+        sbsb_l=$(echo "$SUBSUB_L" | sed -E "s~^-subsub-(.*)~\1~" | fold -w 1 | wc -l)
+        dashes_num=$((80 - (sbsb_l + 8)))
+        d=""
+        for i in $(seq $dashes_num); do
+            d="$d-"
+        done
+        sed -E -e "s~^-subsub-(.*)~--[---]\1 ${d}~" "$t_f" > "$sed_t"
+        mv -f "$sed_t" "$t_f"
     done
-    sed -E -e "s~^-subsub-(.*)~--[---]\1 ${d}~" "$t_f" > "$sed_t"
-    mv -f "$sed_t" "$t_f"
-done
+}
 
-i=1
-grep -F '[---]' "$t_f" | while read -r HEADING; do
-    #[---] -> [hto]
-    o=$i
-    t=$((o / 10))
-    h=$((t / 10))
-    o=$((o % 10))
-    t=$((t % 10))
-    sed "s~$(echo "$HEADING" | sed -e "s~\[~\\\\[~" -e "s~\]~\\\\]~")~$(echo "$HEADING" | sed "s~\[---\]~\[$h$t$o\]~")~" "$t_f" > "$sed_t"
-    mv -f "$sed_t" "$t_f"
-    i=$((i+1))
-done
+number_sections() {
+    i=1
+    grep -F '[---]' "$t_f" | while read -r HEADING; do
+        #[---] -> [hto]
+        o=$i
+        t=$((o / 10))
+        h=$((t / 10))
+        o=$((o % 10))
+        t=$((t % 10))
+        sed "s~$(echo "$HEADING" | sed -e "s~\[~\\\\[~" -e "s~\]~\\\\]~")~$(echo "$HEADING" | sed "s~\[---\]~\[$h$t$o\]~")~" "$t_f" > "$sed_t"
+        mv -f "$sed_t" "$t_f"
+        i=$((i + 1))
+    done
+}
 
 mk_index() {
     echo "[000] Index"
     printf "%s\n\n" "$dashes"
     set -f # disable globbing for this part
-    grep -E "\[[0-9]{3}\]" "$t_f" \
-    | sed "s~^--~  ~" \
-    | tr -d '-' \
-    | sed -E \
-    -e "s~(\[[0-9]{3}\]) (.*)~* \2 \1~" \
-    -e "s~(.)  \[~\1 \[~" \
-    -e "s~^~_~" | while read -r LINE; do
-    LINE="$(echo "$LINE" | sed -E -e "s~_~~" -e "s~ \*~  \*~")"
-    line_l=$(printf "%s\n" "$LINE" | fold -w 1 | wc -l)
-    dots_num=$((80 - (line_l + 1)))
+    grep -E "\[[0-9]{3}\]" "$t_f" |
+        sed "s~^--~  ~" |
+        tr -d '-' |
+        sed -E \
+            -e "s~(\[[0-9]{3}\]) (.*)~* \2 \1~" \
+            -e "s~(.)  \[~\1 \[~" \
+            -e "s~^~_~" | while read -r LINE; do
+        LINE="$(echo "$LINE" | sed -E -e "s~_~~" -e "s~ \*~  \*~")"
+        line_l=$(printf "%s\n" "$LINE" | fold -w 1 | wc -l)
+        dots_num=$((80 - (line_l + 1)))
 
-    dots=""
-    for i in $(seq $dots_num); do
+        dots=""
+        for i in $(seq $dots_num); do
             dots="$dots."
         done
         printf "%s\n" "$LINE" | sed -E "s~ (\[[0-9]{3}\])~ $dots \1~"
@@ -87,11 +97,21 @@ mk_index() {
     printf "\n"
 }
 
-mk_index > "$index_f"
-sed -E -e "s~(\[001\])~--index--\n\1~" "$t_f" > "$sed_t"
-mv -f "$sed_t" "$t_f"
-sed -E -e "/--index--/r $index_f" -e "/--index--/d" "$t_f" > "$sed_t"
-mv -f "$sed_t" "$t_f"
+main() {
+    md_to_ir
+    basic_formatting
+    format_commands
+    format_subsections
+    number_sections
 
-cat "$t_f"
-rm -- "$t_f" "$index_f"
+    mk_index > "$index_f"
+    sed -E -e "s~(\[001\])~--index--\n\1~" "$t_f" > "$sed_t"
+    mv -f "$sed_t" "$t_f"
+    sed -E -e "/--index--/r $index_f" -e "/--index--/d" "$t_f" > "$sed_t"
+    mv -f "$sed_t" "$t_f"
+
+    cat "$t_f"
+    rm -- "$t_f" "$index_f"
+}
+
+main
