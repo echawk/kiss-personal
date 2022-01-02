@@ -84,7 +84,7 @@ mk_index() {
             -e "s~(\[[0-9]{3}\]) (.*)~* \2 \1~" \
             -e "s~(.)  \[~\1 \[~" \
             -e "s~^~_~" | while read -r LINE; do
-        LINE="$(echo "$LINE" | sed -E -e "s~_~~" -e "s~ \*~  \*~")"
+        LINE="$(echo "$LINE" | sed -E -e "s~^_~~" -e "s~ \*~  \*~")"
         line_l=$(printf "%s\n" "$LINE" | fold -w 1 | wc -l)
         dots_num=$((80 - (line_l + 1)))
 
