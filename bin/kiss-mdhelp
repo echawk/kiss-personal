@@ -8,6 +8,10 @@ box_tb="+-----------------------------------------------------------------------
 box_s="|                                                                              |"
 
 md_f=$1
+if ! [ -e "$md_f" ]; then
+    md_f="$(kiss search "$1" | sed q)/README.md"
+fi
+
 t_f=$(mktemp)
 index_f=$(mktemp)
 sed_t=$(mktemp)
