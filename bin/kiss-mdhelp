@@ -28,12 +28,12 @@ mv -f "$sed_t" "$t_f"
 
 grep -E "^-cmd-" "$t_f" | while read -r CMD_L; do
     cmd_l=$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~" | fold -w 1 | wc -l)
-    spaces_num=$((80 - (cmd_l + 5))) # + 5 because we have the start of the box and the last pipe of the box
+    spaces_num=$((80 - (cmd_l + 4))) # + 4 because we have the start of the box and the last pipe of the box
     spaces=""
     for i in $(seq $spaces_num); do
         spaces="$spaces "
     done
-    sed -E -e "s~^-cmd-(.*)~|   \1${spaces}|~" "$t_f" > "$sed_t"
+    sed -E -e "s~^-cmd-(.*)~|  \1${spaces}|~" "$t_f" > "$sed_t"
     mv -f "$sed_t" "$t_f"
 done
 
