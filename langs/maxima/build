@@ -2,7 +2,6 @@
 ./configure \
     --prefix=/usr \
     --mandir=/usr/share/man \
-    --libexecdir=/usr/lib \
     --enable-sbcl \
     --with-default-lisp=sbcl
 
