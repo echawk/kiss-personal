@@ -27,6 +27,7 @@ chmod +x configure
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
+    --libexecdir=/usr/lib \
     --without-systemd \
     --disable-system-helper \
     --disable-nls \
