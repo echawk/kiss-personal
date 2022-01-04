@@ -12,6 +12,7 @@ CONFIGURE_CFLAGS="$CFLAGS" \
     --prefix=/usr \
     --localstatedir=/var \
     --sysconfdir=/etc \
+    --libexecdir=/usr/lib \
     --disable-debug-info \
     --disable-gtk \
     --disable-docs \
@@ -33,6 +34,7 @@ CONFIGURE_CFLAGS="$CFLAGS" \
     --prefix=/usr \
     --localstatedir=/var \
     --sysconfdir=/etc \
+    --libexecdir=/usr/lib \
     --disable-debug-info \
     --disable-gtk \
     --disable-docs \
