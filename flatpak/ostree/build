@@ -2,6 +2,7 @@
 
 ./configure \
     --prefix=/usr \
+    --libexecdir=/usr/lib \
     --disable-gtk-doc \
     --disable-man \
     --disable-rofiles-fuse
