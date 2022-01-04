@@ -10,20 +10,17 @@ export CC="/usr/bin/cc"
 export CXX="/usr/bin/c++"
 export CFLAGS="$CFLAGS -fno-stack-protector -no-pie"
 
-if [ "$(kiss owns /usr/bin/ld)" = "mold" ]; then
-    lto=no
-else
-    lto=yes
-fi
+[ "$(kiss owns /usr/bin/ld)" = "mold" ] && lto=no
 
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
+    --libexecdir=/usr/lib \
     --mandir=/usr/share/man \
     --infodir=/usr/share/info \
     --localstatedir=/var \
     --without-mpicc \
-    --enable-lto="$lto"
+    --enable-lto="${lto:-yes}"
 
 make
 make install
