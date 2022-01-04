@@ -37,6 +37,8 @@ mv -f _ meson.build
 # and enables it if present. ie: install glvnd, rebuild mesa.
 ! kiss list libglvnd > /dev/null 2>&1 || glvnd_enabled=true
 
+! kiss list valgrind > /dev/null 2>&1 || valgrind=true
+
 meson \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -50,7 +52,7 @@ meson \
     -Ddri-drivers=r100,r200 \
     -Dglx=auto \
     -Degl=enabled \
-    -Dvalgrind=false \
+    -Dvalgrind="${valgrind:-false}" \
     -Dzstd=false \
     -Dglvnd="${glvnd_enabled:-false}" \
     . output
