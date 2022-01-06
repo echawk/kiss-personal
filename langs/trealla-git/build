@@ -2,6 +2,11 @@
 ! kiss list openssl && {
     export NOSSL=1
 }
+kiss list libedit && {
+    sed "s/-lreadline/-ledit/" Makefile > _
+    mv -f _ Makefile
+}
+
 make
 make test # Failed tests don't cause the build to fail, so it's safe to call.
 
