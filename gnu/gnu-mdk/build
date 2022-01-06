@@ -6,6 +6,10 @@ export PATH="$PWD:$PATH"
 
 sed -e "s/as_fn_error \$? \"GNU gettext.*/echo fixed/" configure > _
 mv -f _ configure
+kiss list libedit && {
+    sed "s/-lreadline/-ledit/" configure > _
+    mv -f _ configure
+}
 chmod +x configure
 
 ./configure \
