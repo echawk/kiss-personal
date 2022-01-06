@@ -1,5 +1,11 @@
 #!/bin/sh -e
 
+if kiss list libedit; then
+    sed "s/-lreadline/-ledit/" configure > _
+    mv -f _ configure
+    chmod +x configure
+fi
+
 ./configure \
     --prefix=/usr \
     --mandir=/usr/share/man
