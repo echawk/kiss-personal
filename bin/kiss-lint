@@ -12,21 +12,28 @@ checkposix() {
         [ -n "$t" ] && echo "WARNING: 'sed -i' is not portable, use 'sed file > _ ; mv -f _ file' (line(s): $t in $f)"
     ) &
 
-    t="$(grep -v "#" "$f" | grep -nE " ?which " | line_aux)"
-    if [ -n "$t" ]; then
-        echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $t in $f)"
-        fix() {
-            sed -E "s/ ?which / command -v /" "$f" > _
-            mv -f _ "$f"
-        }
-        run_autoedit fix
-    fi
+    t() { grep -v "#" "$f" | grep -nE " ?which " | line_aux ; }
+    ok() { false ; }
+    msg() { echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $(t) in $f)" ; }
+    fix() { sed -E "s/ ?which / command -v /" "$f" > _ ;  mv -f _ "$f" ; }
+    lint_with_fix
 }
 
 run_autoedit() {
     ! [ "$KISS_LINT_AUTOFIX" -eq 0 ] && {
         $1
     }
+}
+
+lint_with_fix() {
+    if [ -n "$(t)" ]; then
+        if ok; then
+            return
+        else
+            msg
+            run_autoedit fix
+        fi
+    fi
 }
 
 checkpkg() {
@@ -57,38 +64,33 @@ checkpkg() {
                         ) &
                     fi
 
-                    if ! [ -s "$f" ]; then
-                        echo "WARNING: '$f' is empty, can be removed"
-                        fix() {
-                            rm -v "$f"
-                        }
-                        run_autoedit fix
-                    fi
-                    if ! sort "$f" | diff - "$f" > /dev/null 2>&1; then
-                        echo "STYLE: '$f' is not sorted"
-                        fix() {
-                            sort "$f" > _
-                            mv -f _ "$f"
-                        }
-                        run_autoedit fix
-                    fi
-                    if [ -n "$(cut -d' ' -f1 "$f" | sort | uniq -d)" ]; then
-                        echo "WARNING: duplicate entries in $f"
-                        fix() {
-                            sort -u "$f" > _
-                            mv -f _ "$f"
-                        }
-                        run_autoedit fix
-                    fi
+                    # empty depends file
+                    t() { ! [ -s "$f" ] && echo "a"; }
+                    ok() { [ -s "$f" ] ;  }
+                    msg() { echo "WARNING: '$f' is empty, can be removed" ; }
+                    fix() { rm -v "$f" ; }
+                    lint_with_fix
+
+                    t() { ! sort "$f" | diff - "$f" ; }
+                    ok() { false ; }
+                    msg() { echo "STYLE: '$f' is not sorted" ; }
+                    fix() { sort "$f" > _ ; mv -f _ "$f" ; }
+                    lint_with_fix
+
+                    t() { [ -n "$(cut -d' ' -f1 "$f" | sort | uniq -d)" ] && echo a ; }
+                    ok() { false ; }
+                    msg() { echo "WARNING: duplicate entries in $f" ; }
+                    fix() { sort -u "$f" > _ ; mv -f _ "$f" ; }
+                    lint_with_fix
                     ;;
                 build | post-install | pre-remove)
-                    if ! [ -x "$f" ]; then
-                        echo "ERROR: '$f' not executable"
-                        fix() {
-                            chmod +x "$f"
-                        }
-                        run_autoedit fix
-                    fi
+                    # check if file is executable
+                    t() { ! [ -x "$f" ] && echo a ; }
+                    ok() { [ -x "$f" ] ; }
+                    msg() { echo "ERROR: '$f' not executable" ; }
+                    fix() { chmod +x "$f" ; }
+                    lint_with_fix
+
                     if head -n 1 "$f" | grep -qE "env sh|bin/sh"; then
                         checkposix
                         t="$(grep -n "mkdir" "$f" | grep -v -- "-p" | line_aux)"
@@ -101,24 +103,18 @@ checkpkg() {
                             [ -n "$t" ] && echo "STYLE: '$f' has a comment that starts with a lower case letter (line(s): $t in $f)"
                         ) &
 
-                        t=$(grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux)
-                        if [ -n "$t" ]; then
-                            echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $t in $f)"
-                            fix() {
-                                sed "s/kiss l/kiss list/" "$f" > _
-                                mv -f _ "$f"
-                            }
-                            run_autoedit fix
-                        fi
-                        t=$(grep -n "kiss a " "$f" | grep -v "kiss alternatives" | line_aux)
-                        if [ -n "$t" ]; then
-                            echo "WARNING: use 'kiss alternatives' instead of 'kiss a' (line(s): $t in $f)"
-                            fix() {
-                                sed "s/kiss a /kiss alternatives /g" "$f" > _
-                                mv -f _ "$f"
-                            }
-                            run_autoedit fix
-                        fi
+                        t() { grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux ; }
+                        ok() { false ; }
+                        msg() { echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $(t) in $f)" ; }
+                        fix() { sed "s/kiss l/kiss list/" "$f" > _ ; mv -f _ "$f" ; }
+                        lint_with_fix
+
+                        t() { grep -n "kiss a " "$f" | grep -v "kiss alternatives" | line_aux ; }
+                        ok() { false ; }
+                        msg() { echo "WARNING: use 'kiss alternatives' instead of 'kiss a' (line(s): $(t) in $f)" ; }
+                        fix() { sed "s/kiss a /kiss alternatives /g" "$f" > _ ; mv -f _ "$f" ; }
+                        lint_with_fix
+
                         (
                             t=$(grep -nE "^ *\/usr\/bin\/.*" "$f" | line_aux)
                             if [ -n "$t" ]; then
@@ -139,40 +135,37 @@ checkpkg() {
                             t="$(grep -nE "DESTDIR=\"?..\"?" "$f" | line_aux)"
                             [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
                         ) &
-                        t="$(grep -nE "(meson|ninja)" "$f" | line_aux)"
-                        if [ -n "$t" ]; then
-                            if grep -qE "meson" depends && grep -qE "samurai" depends; then
-                                break
-                            else
-                                echo "WARNING: 'meson' and 'samurai' are used, but not in depends (lines(s): $t in $f)"
-                                fix() {
-                                    printf "meson make\nsamurai make\n" >> depends
-                                }
-                                run_autoedit fix
-                            fi
-                        fi
+
+                        t() { grep -nE "(meson|ninja)" "$f" | line_aux ; }
+                        ok() { grep -qE "meson" depends && grep -qE "samurai" depends ; }
+                        msg() { echo "WARNING: 'meson' and 'samurai' are used, but not in depends (lines(s): $(t) in $f)" ; }
+                        fix() { printf "meson make\nsamurai make\n" >> depends ; }
+                        lint_with_fix # meson/ninja check
+
+                        t() { grep -nE "python" "$f" | line_aux ; }
+                        ok() { [ -e depends ] && grep -q "python" depends ; }
+                        msg() { echo "WARNING: 'python' is used in the build script, but not listed in depends (line(s): $(t) in $f)" ; }
+                        fix() { printf "python\n" >> depends ; }
+                        lint_with_fix # python check
+
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
                             # shfmt: posix, 4 spaces, indent case, keep col alignment paddings, redirect is followed by space
-                            if shfmt -p -i 4 -ci -kp -sr "$f" | diff - "$f" | grep '>' > /dev/null; then
-                                echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp -sr $f'"
-                                fix() {
-                                    shfmt -p -i 4 -ci -kp -sr -w "$f"
-                                }
-                                run_autoedit fix
-                            fi
+                            t() { shfmt -p -i 4 -ci -kp -sr "$f" | diff - "$f" | grep '>' ; }
+                            ok() { false ; }
+                            msg() { echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp -sr $f'" ; }
+                            fix() { shfmt -p -i 4 -ci -kp -sr -w "$f" ; }
+                            lint_with_fix
                         fi
                     fi
                     ;;
                 sources)
-                    if [ -x "$f" ]; then
-                        echo "WARNING: '$f' is executable"
-                        fix() {
-                                chmod -x "$f"
-                        }
-                        run_autoedit fix
-                    fi
+                    t() { [ -x "$f" ] && echo a ; }
+                    ok() { false ; }
+                    msg() { echo "WARNING: '$f' is executable" ; }
+                    fix() { chmod -x "$f" ; }
+                    lint_with_fix
 
                     [ -n "$VER" ] && {
 
