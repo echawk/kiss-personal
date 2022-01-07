@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --enable-libgdbm-compat \
+    --disable-nls \
+    --enable-fast-install
+make
+make install
+
+install -dm755 "$1"/usr/include/gdbm
+ln -sf ../gdbm.h "$1"/usr/include/gdbm/gdbm.h
+ln -sf ../ndbm.h "$1"/usr/include/gdbm/ndbm.h
+ln -sf ../dbm.h "$1"/usr/include/gdbm/dbm.h
