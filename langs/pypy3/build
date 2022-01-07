@@ -1,0 +1,29 @@
+#!/bin/sh -e
+
+if kiss list musl; then
+    sed "s/ctypes.util.find_library('c')/'libc.so'/" \
+        rpython/rlib/clibffi.py > _
+    mv -f _ rpython/rlib/clibffi.py
+
+    sed -E "s~(include <unistd.h>)~\1\n# include <sys/time.h>~" \
+        pypy/module/cpyext/include/Python.h > _
+    mv -f _ pypy/module/cpyext/include/Python.h
+
+    sed -E "s~(if declare_as_extern):$~\1 and name not in ['stdin', 'stdout', 'stderr']:~" \
+        rpython/rtyper/lltypesystem/rffi.py > _
+    mv -f _ rpython/rtyper/lltypesystem/rffi.py
+fi
+
+cd pypy/goal/
+python2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared targetpypystandalone
+#PYTHONPATH=../.. ./pypy3-c ../../lib_pypy/pypy_tools/build_cffi_imports.py
+cd $OLDPWD
+
+# _ssl is currently broken
+python2 pypy/tool/release/package.py --without-_ssl --archive-name pypy --targetdir .
+mkdir -p "$1/opt"
+tar xvf pypy.tar.bz2 -C "$1/opt"
+
+mkdir -p "$1/usr/bin/"
+ln -s "/opt/pypy/bin/pypy3"         "$1/usr/bin/pypy3"
+ln -s "/opt/pypy/bin/libpypy3-c.so" "$1/usr/bin/libpypy3-c.so"

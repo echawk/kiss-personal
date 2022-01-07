@@ -1,0 +1,11 @@
+bzip2
+expat
+gdbm
+libffi
+ncurses
+python2
+sqlite
+tcl
+tk
+xz
+zlib
