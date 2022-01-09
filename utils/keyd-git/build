@@ -1,9 +1,12 @@
 #!/bin/sh -e
 sed "/^%/d" man.md > _
-                         mv -f _ man.md
+mv -f _ man.md
 meta="-M'author:Raheman Vaiya' -M'section:1' -M'title:keyd'"
 sed "s/pandoc.*/lowdown -s -Tman $meta man.md | gzip > keyd.1.gz/" Makefile > _
 mv -f _ Makefile
+
+sed -E "s/(#include \"config.h\")/\1\n#include <limits.h>/" src/config.c > _
+mv -f _ src/config.c
 
 make
 make man
