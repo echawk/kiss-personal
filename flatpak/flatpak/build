@@ -4,6 +4,18 @@ for patch in *.patch; do
     patch -p1 < "$patch"
 done
 
+cat <<EOF >> config.h.in
+/* taken from glibc unistd.h and fixes musl */
+#ifndef TEMP_FAILURE_RETRY
+#define TEMP_FAILURE_RETRY(expression) \
+  (__extension__                                                              \
+    ({ long int __result;                                                     \
+       do __result = (long int) (expression);                                 \
+       while (__result == -1L && errno == EINTR);                             \
+       __result; }))
+#endif
+EOF
+
 # Remove libcap dependency (used solely when bwrap is suid root).
 # User namespaces are better - should be used in place of libcap and are free.
 sed 's/as_fn_error.*libcap/: "/g'        configure > _
@@ -46,7 +58,6 @@ make install
 {
     rm -rf "$1/etc"
     rm -rf "$1/usr/share"
-    rm -rf "$1/usr/lib"
     rm -rf "$1/usr/include"
     rm  -f "$1/usr/libexec/revokefs-fuse"
 }

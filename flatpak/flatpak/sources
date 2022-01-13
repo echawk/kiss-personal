@@ -1,5 +1,4 @@
 https://github.com/flatpak/flatpak/releases/download/VERSION/flatpak-VERSION.tar.xz
 patches/bubblewrap-musl.patch
-patches/fix-musl.patch
 patches/flatpak-alsa.patch
 patches/no-libcap.patch
