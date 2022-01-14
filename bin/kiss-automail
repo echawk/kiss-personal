@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Send an email to the maintainer of a package in a git repository when
+# their package is out of date.
+
+# Depends on msmtp.
+KISS_AUTOMAIL_EMAIL=${KISS_AUTOMAIL_EMAIL:-error}
+#[ "$KISS_AUTOMAIL_EMAIL" = error ] || exit 1
+
+[ -d "$1" ] || exit 1
+repodir="$1"
+
+if [ -f "$2" ]; then
+    blacklist="$2"
+fi
+
+kiss outdated "$repodir" |
+    grep -vE "($(tr '\n' '|' < "$blacklist" | sed 's/|$//'))" |
+    while read -r LINE; do
+        pkg="${LINE%% *}"
+        newver="${LINE##* }"
+        hash="$(git blame utils/boost/version | cut -d' ' -f1)"
+        maintainer_email="$(git show -s --format='%ae' "$hash")"
+        printf "To: $maintainer_email\nFrom: $KISS_AUTOMAIL_EMAIL\nSubject: $pkg -> $newver\nThere is an update for $pkg to version $newver.\nIf you want to stop receiving these emails, add the relevant packages to the blacklist.\n" #| msmtp -a "$KISS_AUTOMAIL_EMAIL" "$maintainer_email"
+    done
+
