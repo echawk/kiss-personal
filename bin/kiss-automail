@@ -7,12 +7,10 @@
 KISS_AUTOMAIL_EMAIL=${KISS_AUTOMAIL_EMAIL:-error}
 #[ "$KISS_AUTOMAIL_EMAIL" = error ] || exit 1
 
-[ -d "$1" ] || exit 1
-repodir="$1"
+[ -d "$1" ] && repodir="$1" || exit 1
 
-if [ -f "$2" ]; then
-    blacklist="$2"
-fi
+[ -f "$2" ] && blacklist="$2"
+
 filter() {
     if [ -n "$blacklist" ]; then
         grep -vE "($(tr '\n' '|' < "$blacklist" | sed 's/|$//'))"
