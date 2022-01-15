@@ -1,6 +1,9 @@
 #!/bin/sh -e
+export CFLAGS="$CFLAGS -w"
+
 sed "s,/etc/mail,/etc/smtpd,g" usr.sbin/smtpd/smtpd.conf > _
 mv -f _ usr.sbin/smtpd/smtpd.conf
+
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc/smtpd \
@@ -9,7 +12,8 @@ mv -f _ usr.sbin/smtpd/smtpd.conf
     --with-path-mbox=/var/spool/mail \
     --with-path-empty=/var/empty \
     --with-path-socket=/run \
-    --with-path-CAfile=/etc/ssl/cert.pem --with-user-smtpd=smtpd \
+    --with-path-CAfile=/etc/ssl/cert.pem \
+    --with-user-smtpd=smtpd \
     --with-user-queue=smtpq \
     --with-group-queue=smtpq
 
