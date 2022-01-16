@@ -25,15 +25,29 @@ m() {
 
 dotgraph() {
     echo "strict digraph \"$1\"{"
-    m "$1" | sed -E "s/(.*);(.*)$/\"\1\" -> \"\2\";/"
+    m "$1" | sed -E "s/(.*);(.*)$/  \"\1\" -> \"\2\";/"
     echo "  \"$1\""
     echo "}"
     rm -- "$seen_f"
 }
 
-dotgraph "$1" |
+tredc=tred
+if [ $# -gt 1 ]; then
+    for arg in "$@"; do
+        case "$arg" in
+            -notred) tredc=tee;;
+            *) pkg="$arg";;
+        esac
+    done
+elif [ $# -eq 1 ]; then
+    pkg="$1"
+else
+    exit 1
+fi
+
+dotgraph "$pkg" |
 if command -v tred 1>/dev/null 2>&1; then
-    tred
+    $tredc
 else
     tee
 fi
