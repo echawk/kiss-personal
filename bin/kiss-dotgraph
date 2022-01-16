@@ -1,0 +1,41 @@
+#!/bin/sh -e
+
+seen_f=$(mktemp)
+
+get_deps() {
+    f="$(kiss search "$1" | sed q)/depends"
+    if [ -e "$f" ]; then
+        cut -d' ' -f1 < "$f"
+    fi
+}
+
+w_get_deps() {
+    get_deps "$1" | sed "s/^/$1;/"
+}
+
+m() {
+    for d in $@; do
+        w_get_deps $d
+        for seen_d in $@; do
+            echo "$seen_d" >> $seen_f
+        done
+        at_d="$(echo "$@" | xargs)"
+        d_d="$(get_deps $d | xargs)"
+        for j in $d_d; do
+            if grep -q "$j" "$seen_f"; then
+                d_d=$(echo $d_d | sed "s/$j//")
+            fi
+        done
+        m $d_d
+    done
+}
+
+dotgraph() {
+    echo "strict digraph \"$1\"{"
+    m "$1" | sed -e "s/^/  \"/" -e "s/;/\" -> \"/" -e "s/$/\";/"
+    echo "  \"$1\""
+    echo "}"
+    rm -- $seen_f
+}
+
+dotgraph "$1"
