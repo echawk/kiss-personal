@@ -25,7 +25,7 @@ m() {
 
 dotgraph() {
     echo "strict digraph \"$1\"{"
-    m "$1" | sed -e "s/^/  \"/" -e "s/;/\" -> \"/" -e "s/$/\";/"
+    m "$1" | sed -E "s/(.*);(.*)$/\"\1\" -> \"\2\";/"
     echo "  \"$1\""
     echo "}"
     rm -- "$seen_f"
