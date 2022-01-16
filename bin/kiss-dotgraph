@@ -9,18 +9,11 @@ get_deps() {
     fi
 }
 
-w_get_deps() {
-    get_deps "$1" | sed "s/^/$1;/"
-}
-
 m() {
-    for d in $@; do
-        w_get_deps $d
-        for seen_d in $@; do
-            echo "$seen_d" >> $seen_f
-        done
-        at_d="$(echo "$@" | xargs)"
-        d_d="$(get_deps $d | xargs)"
+    for d in "$@"; do
+        d_d=$(get_deps "$d")
+        echo "$d_d" | tr ' ' '\n' | xargs -I{} echo "$d;{}"
+        echo "$@" >> "$seen_f"
         for j in $d_d; do
             if grep -q "$j" "$seen_f"; then
                 d_d=$(echo $d_d | sed "s/$j//")
@@ -35,7 +28,7 @@ dotgraph() {
     m "$1" | sed -e "s/^/  \"/" -e "s/;/\" -> \"/" -e "s/$/\";/"
     echo "  \"$1\""
     echo "}"
-    rm -- $seen_f
+    rm -- "$seen_f"
 }
 
 dotgraph "$1" |
