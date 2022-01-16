@@ -5,7 +5,7 @@
 
 # Depends on msmtp.
 KISS_AUTOMAIL_EMAIL=${KISS_AUTOMAIL_EMAIL:-error}
-#[ "$KISS_AUTOMAIL_EMAIL" = error ] || exit 1
+[ "$KISS_AUTOMAIL_EMAIL" = error ] && exit 1
 
 [ -d "$1" ] && repodir="$1" || exit 1
 
