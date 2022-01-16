@@ -38,4 +38,9 @@ dotgraph() {
     rm -- $seen_f
 }
 
-dotgraph "$1"
+dotgraph "$1" |
+if command -v tred 1>/dev/null 2>&1; then
+    tred
+else
+    tee
+fi
