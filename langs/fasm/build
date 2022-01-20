@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+: > nostrip
+
+arch=$(uname -m)
+case $arch in
+    i686*)
+        _fasm=./fasm
+        _source='source/Linux/fasm.asm'
+        ;;
+    x86_64*)
+        _fasm=./fasm.x64
+        _source='source/Linux/x64/fasm.asm'
+        ;;
+esac
+
+${_fasm} ${_source} fasm.out
+
+mkdir -p "$1/usr/bin/"
+cp fasm.out "$1/usr/bin/fasm"
