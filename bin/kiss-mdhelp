@@ -41,14 +41,16 @@ basic_formatting() {
 }
 
 format_commands() {
-    grep -E "^-cmd-" "$t_f" | while read -r CMD_L; do
-        cmd_l=$(strlen "$(echo "$CMD_L" | sed -E "s~^-cmd-(.*)~\1~")")
+    grep -n -E "^-cmd-" "$t_f" | while read -r CMD_L; do
+        CMD="$(echo "$CMD_L" | cut -d':' -f2-)"
+        LNUM="$(echo "$CMD_L" | cut -d':' -f1)"
+        cmd_l=$(strlen "$(echo "$CMD" | sed -E "s~^-cmd-(.*)~\1~")")
         spaces_num=$((80 - (cmd_l + 4))) # + 4 because we have the start of the box and the last pipe of the box
         spaces=""
         for i in $(seq $spaces_num); do
             spaces="$spaces "
         done
-        sed -E -e "s~^-cmd-(.*)~|  \1${spaces}|~" "$t_f" > "$sed_t"
+        sed -E -e "${LNUM}s~^-cmd-(.*)~|  \1${spaces}|~" "$t_f" > "$sed_t"
         mv -f "$sed_t" "$t_f"
     done
 }
