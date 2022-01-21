@@ -1,0 +1,12 @@
+#!/bin/sh -e
+kiss list libX11  && x11="x11,"
+
+./configure \
+    --prefix=/usr \
+    --enable-image="${x11:-}"fb \
+    --with-imagelib=imlib2 \
+    --with-termlib=ncurses \
+    --disable-w3mmailer
+
+make
+make install
