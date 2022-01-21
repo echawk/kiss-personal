@@ -1,0 +1,5 @@
+#!/bin/sh -e
+sed "s/-ltermcap/-lcurses/" Makefile > _
+mv -f _ Makefile
+make prefix=/usr
+make prefix=/usr install
