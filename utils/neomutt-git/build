@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Enable building with netbsd-curses.
-sed 's/tinfow tinfo/tinfow tinfo terminfo/g' auto.def > _
+sed 's/tinfow tinfo/tinfow tinfo terminfo/g;/Unable to find xsltproc/d' auto.def > _
 mv -f _ auto.def
 
 ./configure \
@@ -16,7 +16,7 @@ mv -f _ auto.def
 
 # Don't actually build the docs (some of the xsltproc html stuff requires
 # an internet connection)
-sed '/^.*_TARGETS=/s/ .*-docs//' Makefile > _
+sed '/^.*_TARGETS=/s/ .*-docs//;s/xsltproc/:/g' Makefile > _
 mv _ Makefile
 
 make
