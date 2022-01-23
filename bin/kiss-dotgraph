@@ -1,5 +1,10 @@
 #!/bin/sh -e
 
+# TODO: add coloring of nodes
+#       - green for pkg is available
+#       - orange if pkg is not installed but is available
+#       - yellow if pkg is locally installed (ie: not in public repos)
+#       - red if pkg is not in public repos or installed
 seen_f=$(mktemp)
 
 get_deps() {
