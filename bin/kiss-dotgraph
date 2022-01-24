@@ -1,10 +1,5 @@
 #!/bin/sh -e
 
-# TODO: add coloring of nodes
-#       - green for pkg is available
-#       - orange if pkg is not installed but is available
-#       - yellow if pkg is locally installed (ie: not in public repos)
-#       - red if pkg is not in public repos or installed
 seen_f=$(mktemp)
 
 get_deps() {
@@ -13,11 +8,33 @@ get_deps() {
         cut -d' ' -f1 < "$f"
     fi
 }
-
+get_color() {
+    # Determines what the color of a particular dep should be.
+    if test -n "$(kiss search "$1" 2>/dev/null | grep -v installed)"; then
+        if kiss list "$1" 1>/dev/null 2>&1; then
+            echo "green"
+        else
+            echo "yellow"
+        fi
+    else
+        if kiss list "$1" 1>/dev/null 2>&1; then
+            echo "orange"
+        else
+            echo "red"
+        fi
+    fi
+}
 m() {
     for d in "$@"; do
         d_d=$(get_deps "$d")
-        echo "$d_d" | tr ' ' '\n' | xargs -I{} echo "$d;{}"
+        if [ "$color_dep" = 1 ]; then
+            d_color=$(get_color "$d")
+            for dep in $d_d; do
+                echo "$d;$dep;$d_color;$(get_color $dep)"
+            done
+        else
+            echo "$d_d" | tr ' ' '\n' | xargs -I{} echo "$d;{}"
+        fi
         echo "$@" >> "$seen_f"
         for j in $d_d; do
             if grep -q "$j" "$seen_f"; then
@@ -30,7 +47,11 @@ m() {
 
 dotgraph() {
     echo "strict digraph \"$1\"{"
-    m "$1" | sed -E "s/(.*);(.*)$/  \"\1\" -> \"\2\";/"
+    if [ "$color_dep" = 1 ]; then
+        m "$1" | sed -E "s/(.*);(.*);(.*);(.*)$/  \"\1\" [ style = filled, fillcolor = \3 ];\n  \"\2\" [ style = filled, fillcolor = \4 ];  \n \"\1\" -> \"\2\";/"
+    else
+        m "$1" | sed -E "s/(.*);(.*)$/  \"\1\" -> \"\2\";/"
+    fi
     echo "  \"$1\""
     echo "}"
     rm -- "$seen_f"
@@ -41,6 +62,7 @@ if [ $# -gt 1 ]; then
     for arg in "$@"; do
         case "$arg" in
             -notred) tredc=tee;;
+            -color) color_dep=1;;
             *) pkg="$arg";;
         esac
     done
