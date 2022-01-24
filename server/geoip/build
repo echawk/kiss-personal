@@ -7,6 +7,6 @@
     --infodir=/usr/share/info
 
 make
-make DESTDIR="$1" install
+make install
 
 mkdir -p "$1/usr/share/GeoIP"
