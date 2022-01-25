@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -w -no-pie"
+export LDFLAGS="$LDFLAGS -no-pie"
+cd src
+
+./configure \
+    --prefix=/usr \
+    --enable-native-code
+
+make -j1
+make install
