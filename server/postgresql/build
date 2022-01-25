@@ -10,7 +10,7 @@
     --with-llvm
 
 make world
-make DESTDIR="$1" install
+make install
 
 install -Dm644 postgresqld.conf "$1/etc/default/postgresql"
 
