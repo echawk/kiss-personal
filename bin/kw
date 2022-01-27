@@ -42,7 +42,10 @@ case $cmd in
         KISS_PATH="$KW_REPO:$KISS_PATH" kiss $ARGS
         rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
         ;;
-    u|update) # TODO: Support updating packages that with KW_HOOKs
+    u|update) # TODO: Support updating packages with KW_HOOKs
+        ;;
+    U|upgrade) # TODO: Support upgrading packages with KW_HOOKs
+
         ;;
     *) kiss $ARGS;; # If we don't know $cmd is, then send it to kiss.
 esac
