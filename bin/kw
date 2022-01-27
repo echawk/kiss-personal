@@ -40,7 +40,7 @@ case $cmd in
             done
         }
         KISS_PATH="$KW_REPO:$KISS_PATH" kiss $ARGS
-        rm -rf "$KW_REPO"/*/
+        rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
         ;;
     u|update) # TODO: Support updating packages that with KW_HOOKs
         ;;
