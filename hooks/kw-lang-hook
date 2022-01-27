@@ -1,58 +1,6 @@
 #!/bin/sh -e
 
-ownsdir(){
-    ! [ "$(whoami)" != "$(stat -c "%U" "$1")" ]
-}
-
-m="/tmp/kiss-lang-hook-$2"
-kiss l git-extras 1>/dev/null 2>&1 || exit 0
-
-mod(){
-    cd "$pkgd"
-    if git rev-parse ; then
-        if ownsdir "$pkgd" ; then
-            if ! [ -e "$m" ] ; then
-                git-clear -f
-                $1 ; touch "$m"
-            fi
-        else
-            if ! [ -e "$m" ] ; then
-                $KISS_SU git-clear -f
-                $2 ; touch "$m"
-            fi
-        fi
-    fi
-}
-
+# Enable fortran & d in gcc.
 case $1 in
-    pre-source)
-        pkgd="$(KISS_HOOK='' kiss s "$2" | sed q)"
-        case $2 in
-            gcc)
-                # Enables gfortran & gdc.
-                f(){
-                    sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
-                }
-                sf(){
-                    $KISS_SU sed -E -i "s/(c,c\+\+)/\1,fortran,d/" build
-                }
-                mod f sf
-                ;;
-        esac
-    ;;
-    pre-build)
-        rm -- "$m"
-    ;;
-    build-fail|post-package)
-        pkgd="$(KISS_HOOK='' kiss s "$2" | sed q)"
-        cd "$pkgd"
-        if git rev-parse ; then
-            if ownsdir "$pkgd" ; then
-                git-clear -f
-            else
-                $KISS_SU git-clear -f
-            fi
-        fi
-    ;;
+    gcc) sed -E -i "s/(c,c\+\+)/\1,fortran,d/" "$2/build";;
 esac
-
