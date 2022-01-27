@@ -1,72 +1,15 @@
 #!/bin/sh -e
 
 # This hook adds `clangd` and `rls` as executables for the clang and rust pkgs.
-
-cte="https://github.com/llvm/llvm-project/releases/download/llvmorg-VERSION/clang-tools-extra-VERSION.src.tar.xz tools/extra"
-
-ownsdir(){
-    ! [ "$(whoami)" != "$(stat -c "%U" "$1")" ]
-}
-
-m="/tmp/kiss-lsp-hook-$2"
-kiss list git-extras 1>/dev/null 2>&1 || exit 0
-
-mod(){
-    cd "$pkgd"
-    if git rev-parse ; then
-        if ownsdir "$pkgd" ; then
-            if ! [ -e "$m" ] ; then
-                git-clear -f
-                $1 ; touch "$m"
-            fi
-        else
-            if ! [ -e "$m" ] ; then
-                $KISS_SU git-clear -f
-                $2 ; touch "$m"
-            fi
-        fi
-    fi
-}
-
+# Needs `kw`.
 case $1 in
-    pre-source)
-        pkgd="$(KISS_HOOK='' kiss search "$2" | sed q)"
-        case $2 in
-            clang)
-                f(){
-                    echo "$cte" >> sources
-                    KISS_HOOK='' kiss checksum
-                }
-                sf(){
-                    $KISS_SU sh -c "echo \"$cte\" >> sources"
-                    $KISS_SU sh -c "KISS_HOOK='' kiss checksum"
-                }
-                mod f sf
-                ;;
-            rust)
-                f(){
-                    sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
-                }
-                sf(){
-                    $KISS_SU sed -E -i "s/(\"cargo\")/\"rls\", \1/" build
-                }
-                mod f sf
-                ;;
-        esac
-    ;;
-    pre-build)
-        rm -- "$m"
-    ;;
-    build-fail|post-package)
-        pkgd="$(KISS_HOOK='' kiss search "$2" | sed q)"
-        cd "$pkgd"
-        if git rev-parse ; then
-            if ownsdir "$pkgd" ; then
-                git-clear -f
-            else
-                $KISS_SU git-clear -f
-            fi
-        fi
-    ;;
+    clang)
+        cte="https://github.com/llvm/llvm-project/releases/download/llvmorg-VERSION/clang-tools-extra-VERSION.src.tar.xz tools/extra"
+        echo "$cte" >> "$2/sources"
+        (
+            cd "$2"
+            KISS_HOOK='' kiss checksum
+        )
+        ;;
+    rust) sed -E -i "s/(\"cargo\")/\"rls\", \1/" "$2/build";;
 esac
-
