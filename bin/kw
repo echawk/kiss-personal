@@ -26,15 +26,15 @@ KW_HOOK=${KW_HOOK:-} # Maybe have a default hook?
 
 ARGS=$@ # Save args for kiss.
 
-cmd="$(echo $ARGS | cut -d' ' -f1)"
+cmd="$(echo "$ARGS" | cut -d' ' -f1)"
 
 case $cmd in
     b|build)
         pkgs="$(echo "$ARGS" | sed "s/$cmd//")"
         [ -n "$pkgs" ] && {
             for pkg in $pkgs; do
-                cp -r "$(kiss search $pkg | sed 1q)" "$KW_REPO"
-                for hook in $(echo $KW_HOOK | tr ':' ' '); do
+                cp -r "$(kiss search "$pkg" | sed 1q)" "$KW_REPO"
+                for hook in $(echo "$KW_HOOK" | tr ':' ' '); do
                     "$hook" "$pkg" "$KW_REPO/$pkg"
                 done
             done
