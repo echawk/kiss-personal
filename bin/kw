@@ -1,0 +1,46 @@
+#!/bin/sh
+# _K_iss _W_rapper that allows more powerful hooks.
+
+# Why?
+# - Because kiss doesn't make editing build files easy via default hooks.
+#   And since I don't care for forking packages, this is _my_ solution.
+
+# Effectively all kw does is fork a package, allow you to make some edits,
+# then sets KISS_PATH so that the new package is first, then finally cleans up.
+
+# Pretty simple.
+
+# Also, `kw` is safe to alias to kiss, so there's no funny business.
+
+
+# Example: (enabling rls for rust)
+
+#case "$1" in
+#    rust) sed -E -i "s/(\"cargo\")/\"rls\", \1/" "$2/build";;
+#esac
+
+
+KW_REPO="${KW_REPO:-/tmp/kw}"
+mkdir -p "$KW_REPO"
+KW_HOOK=${KW_HOOK:-} # Maybe have a default hook?
+
+ARGS=$@ # Save args for kiss.
+
+cmd="$(echo $ARGS | cut -d' ' -f1)"
+
+case $cmd in
+    b|build)
+        pkgs="$(echo "$ARGS" | sed "s/$cmd//")"
+        [ -n "$pkgs" ] && {
+            for pkg in $pkgs; do
+                cp -r "$(kiss search $pkg | sed 1q)" "$KW_REPO"
+                for hook in $(echo $KW_HOOK | tr ':' ' '); do
+                    "$hook" "$pkg" "$KW_REPO/$pkg"
+                done
+            done
+        }
+        KISS_PATH="$KW_REPO:$KISS_PATH" kiss $ARGS
+        rm -rf "$KW_REPO"/*/
+        ;;
+    *) kiss $ARGS;; # If we don't know $cmd is, then send it to kiss.
+esac
