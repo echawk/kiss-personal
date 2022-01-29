@@ -23,6 +23,7 @@ md_to_ir() {
         -e "s~^\# ([a-zA-Z0-9]+)~\1\n-80-~" \
         -e "s~^\#\# ([a-zA-Z0-9]+)~-sub- \1\n-80-~" \
         -e "s~^\#\#\# ([a-zA-Z0-9]+)~-subsub- \1~" \
+        -e "s~^\#\#\#\# ([a-zA-Z0-9]+)~-subsubsub- \1~" \
         -e "s~\`(.*)\`~-bt-\n-bs-\n-cmd-\1\n-bs-\n-bt-~" \
         < "$md_f" \
         > "$t_f"
@@ -53,7 +54,7 @@ format_commands() {
     done
 }
 
-format_subsections() {
+format_sub_sub_sections() {
     grep -E "^-subsub-" "$t_f" | while read -r SUBSUB_L; do
         sbsb_l=$(strlen "$(echo "$SUBSUB_L" | sed -E "s~^-subsub-(.*)~\1~")")
         dashes_num=$((80 - (sbsb_l + 8)))
@@ -65,7 +66,18 @@ format_subsections() {
         mv -f "$sed_t" "$t_f"
     done
 }
-
+format_sub_sub_sub_sections() {
+    grep -E "^-subsubsub-" "$t_f" | while read -r SUBSUBSUB_L; do
+        sbsbsb_l=$(strlen "$(echo "$SUBSUBSUB_L" | sed -E "s~^-subsubsub-(.*)~\1~")")
+        dashes_num=$((80 - (sbsbsb_l + 10)))
+        d=""
+        for i in $(seq $dashes_num); do
+            d="$d-"
+        done
+        sed -E -e "s~^-subsubsub-(.*)~----[---]\1 ${d}~" "$t_f" > "$sed_t"
+        mv -f "$sed_t" "$t_f"
+    done
+}
 number_sections() {
     i=1
     grep -F '[---]' "$t_f" | while read -r HEADING; do
@@ -86,7 +98,7 @@ mk_index() {
     printf "%s\n\n" "$dashes"
     set -f # disable globbing for this part
     grep -E "\[[0-9]{3}\]" "$t_f" |
-        sed "s~^--~  ~" |
+        sed "s~^----~    ~;s~^--~  ~" |
         tr -d '-' |
         sed -E \
             -e "s~(\[[0-9]{3}\]) (.*)~* \2 \1~" \
@@ -109,7 +121,8 @@ main() {
     md_to_ir
     basic_formatting
     format_commands
-    format_subsections
+    format_sub_sub_sections
+    format_sub_sub_sub_sections
     number_sections
 
     mk_index > "$index_f"
