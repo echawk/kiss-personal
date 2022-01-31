@@ -1,13 +1,15 @@
 #!/bin/sh -e
 
-export CFLAGS="$CFLAGS -ffat-lto-objects"
-
-sed -i 's/-Werror//' Makefile
-
-./configure \
-    --prefix=/usr
 mk() {
     make SBINDIR=/usr/bin $@
 }
+
+export CFLAGS="$CFLAGS -ffat-lto-objects"
+
+sed 's/-Werror//' Makefile > _
+mv -f _ Makefile
+
+./configure \
+    --prefix=/usr
 mk
 mk install
