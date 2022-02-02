@@ -11,13 +11,13 @@ get_deps() {
 get_color() {
     # Determines what the color of a particular dep should be.
     if test -n "$(kiss search "$1" 2>/dev/null | grep -v installed)"; then
-        if kiss list "$1" 1>/dev/null 2>&1; then
+        if [ -e "${KISS_ROOT:-/}var/db/kiss/installed/$1" ] ; then
             echo "green"
         else
             echo "yellow"
         fi
     else
-        if kiss list "$1" 1>/dev/null 2>&1; then
+        if [ -e "${KISS_ROOT:-/}var/db/kiss/installed/$1" ] ; then
             echo "orange"
         else
             echo "red"
