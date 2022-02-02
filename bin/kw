@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 # _K_iss _W_rapper that allows more powerful hooks.
 
 # Why?
@@ -35,9 +35,9 @@ same_ver() {
 }
 
 outdatedpkgs() {
-    for d in ${KISS_ROOT:-/}var/db/kiss/installed/*/ ; do
-        pkg="$(basename $d)"
-        repo_dir="$(kiss search $pkg | grep -v "installed" | sed 1q)"
+    for d in "${KISS_ROOT:-/}"var/db/kiss/installed/*/ ; do
+        pkg="$(basename "$d")"
+        repo_dir="$(kiss search "$pkg" | grep -v "installed" | sed 1q)"
         if [ -n "$repo_dir" ]; then
             if ! same_ver ; then
                 echo "$pkg"
@@ -59,12 +59,12 @@ run_hooks_on_pkgs() {
 
 update_outdated() {
     pkgs=$(outdatedpkgs)
-    [ -z $pkgs ] && exit 1 # Exit if no pkgs need updating.
+    [ -z "$pkgs" ] && exit 1 # Exit if no pkgs need updating.
     run_hooks_on_pkgs
-    echo "Update '$(echo $pkgs | tr '\n' ' ')'? (Y/N): "
+    echo "Update '$(echo "$pkgs" | tr '\n' ' ')'? (Y/N): "
     read -r ANS
     if [ "$ANS" = Y ] ; then
-        KISS_PATH="$KW_REPO:$KISS_PATH" kiss build $pkgs
+        KISS_PATH="$KW_REPO:$KISS_PATH" kiss build "$pkgs"
     fi
 }
 
@@ -76,7 +76,7 @@ case $cmd in
         ;;
     u|update) # TODO: Support updating packages with KW_HOOKs
         KW_SYNC_TIME=${KW_SYNC_TIME:-5} # Default to 5 seconds.
-        ( timeout -s 2 $KW_SYNC_TIME kiss update 1>/dev/null 2>&1 ) &
+        ( timeout -s 2 "$KW_SYNC_TIME" kiss update 1>/dev/null 2>&1 ) &
         printf "Syncing repos..."
         wait
         echo "Done!"
