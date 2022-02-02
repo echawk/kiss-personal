@@ -28,12 +28,18 @@ ARGS=$@ # Save args for kiss.
 
 cmd="$(echo "$ARGS" | cut -d' ' -f1)"
 
+same_ver() {
+    repo_dir_v="$(sed 's/ //g' < "$repo_dir/version")"
+    d_dir_v="$(sed 's/ //g' < "$d/version")"
+    [ "$repo_dir_v" = "$d_dir_v" ]
+}
+
 outdatedpkgs() {
     for d in ${KISS_ROOT:-/}var/db/kiss/installed/*/ ; do
         pkg="$(basename $d)"
         repo_dir="$(kiss search $pkg | grep -v "installed" | sed 1q)"
         if [ -n "$repo_dir" ]; then
-            if ! diff "$repo_dir/version" "$d/version" 1>/dev/null 2>&1 ; then
+            if ! same_ver ; then
                 echo "$pkg"
             fi
         fi
@@ -53,8 +59,9 @@ run_hooks_on_pkgs() {
 
 update_outdated() {
     pkgs=$(outdatedpkgs)
+    [ -z $pkgs ] && exit 1 # Exit if no pkgs need updating.
     run_hooks_on_pkgs
-    echo "Update $pkgs? (Y/N): "
+    echo "Update '$(echo $pkgs | tr '\n' ' ')'? (Y/N): "
     read -r ANS
     if [ "$ANS" = Y ] ; then
         KISS_PATH="$KW_REPO:$KISS_PATH" kiss build $pkgs
