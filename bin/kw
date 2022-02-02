@@ -28,23 +28,54 @@ ARGS=$@ # Save args for kiss.
 
 cmd="$(echo "$ARGS" | cut -d' ' -f1)"
 
+outdatedpkgs() {
+    for d in ${KISS_ROOT:-/}var/db/kiss/installed/*/ ; do
+        pkg="$(basename $d)"
+        repo_dir="$(kiss search $pkg | grep -v "installed" | sed 1q)"
+        if [ -n "$repo_dir" ]; then
+            if ! diff -Z "$repo_dir/version" "$d/version" 1>/dev/null 2>&1 ; then
+                echo "$pkg"
+            fi
+        fi
+    done
+}
+
+run_hooks_on_pkgs() {
+    [ -n "$pkgs" ] && {
+        for pkg in $pkgs; do
+            cp -r "$(kiss search "$pkg" | sed 1q)" "$KW_REPO"
+            for hook in $(echo "$KW_HOOK" | tr ':' ' '); do
+                "$hook" "$pkg" "$KW_REPO/$pkg"
+            done
+        done
+    }
+}
+
+update_outdated() {
+    pkgs=$(outdatedpkgs)
+    run_hooks_on_pkgs
+    KISS_PATH="$KW_REPO:$KISS_PATH" kiss build $pkgs
+    rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
+}
+
 case $cmd in
     b|build)
         pkgs="$(echo "$ARGS" | sed "s/$cmd//")"
-        [ -n "$pkgs" ] && {
-            for pkg in $pkgs; do
-                cp -r "$(kiss search "$pkg" | sed 1q)" "$KW_REPO"
-                for hook in $(echo "$KW_HOOK" | tr ':' ' '); do
-                    "$hook" "$pkg" "$KW_REPO/$pkg"
-                done
-            done
-        }
+        run_hooks_on_pkgs
         KISS_PATH="$KW_REPO:$KISS_PATH" kiss $ARGS
         rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
         ;;
     u|update) # TODO: Support updating packages with KW_HOOKs
+        KW_SYNC_TIME=${KW_SYNC_TIME:-5} # Default to 5 seconds.
+        ( timeout -s 2 5 kiss update 1>/dev/null 2>&1 ) &
+        printf "Syncing repos..."
+        wait
+        echo "Done!"
+        # Now get a list of pkgs that need to be updated.
+        update_outdated
         ;;
     U|upgrade) # TODO: Support upgrading packages with KW_HOOKs
+        update_outdated
         ;;
     *) kiss $ARGS;; # If we don't know $cmd is, then send it to kiss.
 esac
