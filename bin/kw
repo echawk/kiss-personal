@@ -66,7 +66,6 @@ update_outdated() {
     if [ "$ANS" = Y ] ; then
         KISS_PATH="$KW_REPO:$KISS_PATH" kiss build $pkgs
     fi
-    rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
 }
 
 case $cmd in
@@ -74,7 +73,6 @@ case $cmd in
         pkgs="$(echo "$ARGS" | sed "s/$cmd//")"
         run_hooks_on_pkgs
         KISS_PATH="$KW_REPO:$KISS_PATH" kiss $ARGS
-        rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
         ;;
     u|update) # TODO: Support updating packages with KW_HOOKs
         KW_SYNC_TIME=${KW_SYNC_TIME:-5} # Default to 5 seconds.
@@ -90,3 +88,4 @@ case $cmd in
         ;;
     *) kiss $ARGS;; # If we don't know $cmd is, then send it to kiss.
 esac
+rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
