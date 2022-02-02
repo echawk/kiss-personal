@@ -33,7 +33,7 @@ outdatedpkgs() {
         pkg="$(basename $d)"
         repo_dir="$(kiss search $pkg | grep -v "installed" | sed 1q)"
         if [ -n "$repo_dir" ]; then
-            if ! diff -Z "$repo_dir/version" "$d/version" 1>/dev/null 2>&1 ; then
+            if ! diff "$repo_dir/version" "$d/version" 1>/dev/null 2>&1 ; then
                 echo "$pkg"
             fi
         fi
@@ -54,7 +54,11 @@ run_hooks_on_pkgs() {
 update_outdated() {
     pkgs=$(outdatedpkgs)
     run_hooks_on_pkgs
-    KISS_PATH="$KW_REPO:$KISS_PATH" kiss build $pkgs
+    echo "Update $pkgs? (Y/N): "
+    read -r ANS
+    if [ "$ANS" = Y ] ; then
+        KISS_PATH="$KW_REPO:$KISS_PATH" kiss build $pkgs
+    fi
     rm -rf "${KW_REPO:?Not set, so not removing root.}"/*/
 }
 
@@ -67,7 +71,7 @@ case $cmd in
         ;;
     u|update) # TODO: Support updating packages with KW_HOOKs
         KW_SYNC_TIME=${KW_SYNC_TIME:-5} # Default to 5 seconds.
-        ( timeout -s 2 5 kiss update 1>/dev/null 2>&1 ) &
+        ( timeout -s 2 $KW_SYNC_TIME kiss update 1>/dev/null 2>&1 ) &
         printf "Syncing repos..."
         wait
         echo "Done!"
