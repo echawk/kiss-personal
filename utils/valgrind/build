@@ -10,7 +10,7 @@ export CC="/usr/bin/cc"
 export CXX="/usr/bin/c++"
 export CFLAGS="$CFLAGS -fno-stack-protector -no-pie"
 
-[ "$(kiss owns /usr/bin/ld)" = "mold" ] && lto=no
+ld --version | grep -q "mold" && lto=no
 
 ./configure \
     --prefix=/usr \
