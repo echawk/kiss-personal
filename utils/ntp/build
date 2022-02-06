@@ -1,0 +1,7 @@
+#!/bin/sh -e
+./configure \
+    --prefix=/usr \
+    --libexecdir=/usr/lib \
+    --enable-ntp-signd
+make
+make install
