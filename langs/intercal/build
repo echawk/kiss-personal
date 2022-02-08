@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+sed "/^int yydebug;/d" src/perpet.c > _
+mv -f _ src/perpet.c
+
+autoreconf -vif
+./configure \
+    --prefix=/usr
+make
+make install
