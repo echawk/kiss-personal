@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+patch -p1 < hsbase_inline.patch
+
+sed "/extern int execvpe/d" packages/base/include/HsBase.h > _
+mv -f _ packages/base/include/HsBase.h
+
+./configure \
+    --prefix="/usr"
+
+make
+make install
