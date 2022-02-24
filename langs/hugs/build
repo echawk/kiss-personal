@@ -1,9 +1,17 @@
 #!/bin/sh -e
 
+export PATH="$PWD:$PATH"
+
 patch -p1 < hsbase_inline.patch
 
 sed "/extern int execvpe/d" packages/base/include/HsBase.h > _
 mv -f _ packages/base/include/HsBase.h
+
+for f in docs/Makefile.in libraries/tools/make_bootlib; do
+    sed "s/cat -s/cat-s/" "$f" > _
+    mv -f _ "$f"
+    chmod +x "$f"
+done
 
 ./configure \
     --prefix="/usr"
