@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-if kiss list gobject; then
+if kiss list gobject-introspection; then
     case $1 in
         freetype-harfbuzz)
             sed -i -E "s/(gobject=)disabled/\1enabled" "$2/build";;
