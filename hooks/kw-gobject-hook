@@ -3,11 +3,11 @@
 if kiss list gobject-introspection; then
     case $1 in
         freetype-harfbuzz)
-            sed -i -E "s/(gobject=)disabled/\1enabled" "$2/build";;
+            sed -i -E "s/(gobject=)disabled/\1enabled/" "$2/build";;
         pango)
-            sed -i -E "s/(introspection=)disabled/\1enabled" "$2/build";;
+            sed -i -E "s/(introspection=)disabled/\1enabled/" "$2/build";;
         atk)
-            sed -i -E "s/(introspection=)false/\1true" "$2/build";;
+            sed -i -E "s/(introspection=)false/\1true/" "$2/build";;
         gtk+3)
             kiss list librsvg && {
                 sed -i -E -e "s/^rm -f.*//" "$2/build"
