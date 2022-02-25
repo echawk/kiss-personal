@@ -22,7 +22,7 @@ for d in dmd druntime phobos; do
     cd "$OLDPWD"
 done
 
-mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/etc/" "$1/usr/include/dlang/dmd/"
+mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/etc/" "$1/usr/include/dlang/dmd/" "$1/usr/share/man/man1"  "$1/usr/share/man/man5"
 
 cp "$dmd" "$1/usr/bin/dmd"
 cat > "$1/etc/dmd.conf" <<- EOF
@@ -30,6 +30,8 @@ cat > "$1/etc/dmd.conf" <<- EOF
 DFLAGS=-I/usr/include/dlang/dmd -L-L/usr/lib -L--export-dynamic -fPIC
 EOF
 
+cp dmd/docs/man/man1/*  "$1/usr/share/man/man1"
+cp dmd/docs/man/man5/*  "$1/usr/share/man/man5"
 cp phobos/generated/linux/release/*/libphobos2.a "$1/usr/lib/"
 cp -r phobos/*.d        "$1/usr/include/dlang/dmd"
 cp -r phobos/etc        "$1/usr/include/dlang/dmd"
