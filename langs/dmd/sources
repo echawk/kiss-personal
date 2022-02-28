@@ -1,0 +1,4 @@
+https://github.com/dlang/dmd/archive/vVERSION.tar.gz      dmd
+https://github.com/dlang/druntime/archive/vVERSION.tar.gz druntime
+https://github.com/dlang/phobos/archive/vVERSION.tar.gz   phobos
+patches/musl.patch                                        patches/
