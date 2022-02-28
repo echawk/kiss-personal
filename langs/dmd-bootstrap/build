@@ -1,26 +1,18 @@
 #!/bin/sh -e
 
-dmd="$PWD/dmd/src/dmd"
-
-mk() {
-    make -f posix.mak \
-        DMD="$dmd" \
-        TARGET_CPU=X86 \
-        RELEASE=1 \
-        PIC=1 \
-        $@
-}
-
 for p in patches/*; do
     patch -p0 < "$p"
 done
 
-for d in dmd druntime phobos; do
-    cd "$d"
-    mk
-    mk install
-    cd "$OLDPWD"
-done
+dmd="$PWD/dmd/src/dmd"
+
+mk() {
+    make -f posix.mak DMD="$dmd" TARGET_CPU=X86 RELEASE=1 PIC=1 $@
+}
+
+mk -C dmd
+mk -C druntime
+mk -C phobos
 
 mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/etc/" "$1/usr/include/dlang/dmd/" "$1/usr/share/man/man1"  "$1/usr/share/man/man5"
 
