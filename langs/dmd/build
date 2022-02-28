@@ -31,6 +31,7 @@ dmd="$PWD/dmd/generated/linux/release/$_arch/dmd"
 
 mk -C druntime
 mk -C phobos
+mk -C dtools
 
 mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/etc/" "$1/usr/include/d" "$1/usr/include/d/druntime" "$1/usr/share/man/man1"  "$1/usr/share/man/man5"
 cp "$dmd" "$1/usr/bin/dmd"
@@ -48,3 +49,5 @@ cp -r phobos/etc        "$1/usr/include/d"
 cp -r phobos/std        "$1/usr/include/d"
 cp -r druntime/import   "$1/usr/include/d/druntime"
 chmod +x "$1/usr/bin/dmd"
+rm -- dtools/generated/linux/$_arch/*.o
+cp dtools/generated/linux/$_arch/* "$1/usr/bin/"
