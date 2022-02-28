@@ -1,0 +1,50 @@
+#!/bin/sh -e
+
+d() { echo "$1" ; exit 1 ; }
+
+case "$(readlink "$(command -v ld)")" in
+    ld.bfd);;
+    *) d "Only 'ld' from 'binutils' is supported" ;;
+esac
+
+export LDFLAGS="$LDFLAGS -lpthread"
+
+for p in patches/*; do
+    patch -p0 < "$p"
+done
+
+dmd="$(command -v dmd)"
+
+mk() {
+    make -f posix.mak TARGET_CPU=X86 ENABLE_RELEASE=1 PIC=1 DMD=$dmd $@
+}
+
+mk -C dmd
+make -C dmd/docs
+
+case "$(uname -m)" in
+    x86_64) _arch=64;;
+    i*86)   _arch=32;;
+esac
+
+dmd="$PWD/dmd/generated/linux/release/$_arch/dmd"
+
+mk -C druntime
+mk -C phobos
+
+mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/etc/" "$1/usr/include/d" "$1/usr/include/d/druntime" "$1/usr/share/man/man1"  "$1/usr/share/man/man5"
+cp "$dmd" "$1/usr/bin/dmd"
+cat > "$1/etc/dmd.conf" <<- EOF
+[Environment]
+DFLAGS=-I/usr/include/d -I/usr/include/d/druntime/import -L-L/usr/lib -L-L/usr/lib -L--no-warn-search-mismatch -L--export-dynamic -fPIC
+EOF
+
+cp dmd/docs/man/man1/*  "$1/usr/share/man/man1"
+cp dmd/docs/man/man5/*  "$1/usr/share/man/man5"
+cp phobos/generated/linux/release/*/libphobos2.a "$1/usr/lib/"
+cp druntime/generated/linux/release/*/libdruntime.a "$1/usr/lib"
+cp -r phobos/*.d        "$1/usr/include/d"
+cp -r phobos/etc        "$1/usr/include/d"
+cp -r phobos/std        "$1/usr/include/d"
+cp -r druntime/import   "$1/usr/include/d/druntime"
+chmod +x "$1/usr/bin/dmd"
