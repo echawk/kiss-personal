@@ -18,7 +18,7 @@ if [ "${sys_arch#i*86}" ]; then
 fi
 
 # FIXME: there is an offset on the diff, causing 'busybox patch' to fail.
-(   
+(
     cd gcc
          patch -p1 < ../gccjit-musl-fix.patch
 )
@@ -66,10 +66,10 @@ make
 make -C gcc install
 
 # Remove unnecessary gcc files.
-rm -rf "$DESTDIR/usr/bin" \
-       "$DESTDIR/usr/lib/gcc" \
-       "$DESTDIR/usr/libexec" \
-       "$DESTDIR/usr/share/man"
+rm -rf "$1/usr/bin" \
+       "$1/usr/lib/gcc" \
+       "$1/usr/libexec" \
+       "$1/usr/share/man"
 
 # Remove info pages other than libgccjit
-find "$DESTDIR/usr/share/info" -type f ! -name libgccjit.info -exec rm -f {} +
+find "$1/usr/share/info" -type f ! -name libgccjit.info -exec rm -f {} +
