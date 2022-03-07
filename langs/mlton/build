@@ -1,0 +1,7 @@
+#!/bin/sh -e
+if command -v mlton; then
+    make -j1 all
+else
+    make -j1 bootstrap-polyml
+fi
+make PREFIX=/usr DESTDIR="$1" install
