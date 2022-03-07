@@ -1,6 +1,8 @@
 #!/bin/sh -e
 
-if kiss list polyml; then
+if kiss list mlton; then
+    make with-mlton
+elif kiss list polyml; then
     make with-poly
 elif kiss list mosml; then
     make with-mosml
