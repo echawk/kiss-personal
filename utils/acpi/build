@@ -1,4 +1,5 @@
 #!/bin/sh -e
+export CFLAGS="$CFLAGS -static"
 ./configure \
     --prefix=/usr
 make
