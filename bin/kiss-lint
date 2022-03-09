@@ -137,7 +137,7 @@ checkpkg() {
                         ) &
 
                         t() { grep -nE "(meson|ninja)" "$f" | line_aux ; }
-                        ok() { grep -qE "meson" depends && grep -qE "samurai" depends ; }
+                        ok() { grep -qE "meson" depends ; }
                         msg() { echo "WARNING: 'meson' and 'samurai' are used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "meson make\nsamurai make\n" >> depends ; }
                         lint_with_fix # meson/ninja check
