@@ -6,22 +6,26 @@
 for arg in "$@"; do
     case "$arg" in
         -d) delete=1;;
+        -l) list=1;;
         *) pkg="$arg";;
     esac
 done
 
-[ -z "$pkg" ] && exit 1
-
-pkg_id="${KISS_ROOT:-/}var/db/kiss/installed/$pkg/"
-
 kiss_hold_repo="${XDG_CACHE_DIR:-$HOME/.cache}/kiss/hold/"
-
 [ -d "$kiss_hold_repo" ] || mkdir -pv "$kiss_hold_repo"
 
-if [ -d "$pkg_id" ]; then
-    cp -r "$pkg_id" "$kiss_hold_repo"
-fi
+if ! [ "$list" = 1 ]; then
+    [ -z "$pkg" ] && exit 1
 
-if [ "$delete" = 1 ]; then
-    rm -rf -- "${kiss_hold_repo}${pkg}"
+    pkg_id="${KISS_ROOT:-/}var/db/kiss/installed/$pkg/"
+
+    if [ -d "$pkg_id" ]; then
+        cp -r "$pkg_id" "$kiss_hold_repo"
+    fi
+
+    if [ "$delete" = 1 ]; then
+        rm -rf -- "${kiss_hold_repo}${pkg}"
+    fi
+else
+    ls "$kiss_hold_repo" | tee
 fi
