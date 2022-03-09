@@ -1,0 +1,11 @@
+#!/bin/sh
+
+PKGS=$(
+{
+    for pkg in ${KISS_ROOT:-/}var/db/kiss/installed/*/; do
+        basename $pkg
+    done
+} | tr '\n' ' '
+)
+
+kiss build $PKGS
