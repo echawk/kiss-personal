@@ -3,9 +3,16 @@
 # Easy way to 'hold' packages at a specified version, just make
 # "$HOME/.cache/kiss/hold/" the first repo in your KISS_PATH.
 
-[ -z "$1" ] && exit 1
+for arg in "$@"; do
+    case "$arg" in
+        -d) delete=1;;
+        *) pkg="$arg";;
+    esac
+done
 
-pkg_id="${KISS_ROOT:-/}var/db/kiss/installed/$1/"
+[ -z "$pkg" ] && exit 1
+
+pkg_id="${KISS_ROOT:-/}var/db/kiss/installed/$pkg/"
 
 kiss_hold_repo="${XDG_CACHE_DIR:-$HOME/.cache}/kiss/hold/"
 
@@ -15,3 +22,6 @@ if [ -d "$pkg_id" ]; then
     cp -r "$pkg_id" "$kiss_hold_repo"
 fi
 
+if [ "$delete" = 1 ]; then
+    rm -rf -- "${kiss_hold_repo}${pkg}"
+fi
