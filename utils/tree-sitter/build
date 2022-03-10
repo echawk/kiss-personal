@@ -1,0 +1,9 @@
+#!/bin/sh -e
+make
+(
+    cd cli
+    cargo build --release --locked --all-features
+)
+make PREFIX=/usr install
+mkdir -p "$1/usr/bin/"
+cp target/release/tree-sitter "$1/usr/bin/tree-sitter"
