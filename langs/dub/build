@@ -1,0 +1,4 @@
+#!/bin/sh -e
+./build.d
+mkdir -p "$1/usr/bin/"
+cp bin/dub "$1/usr/bin/dub"
