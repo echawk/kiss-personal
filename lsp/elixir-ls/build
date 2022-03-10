@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+export MIX_ENV=prod
+export MIX_HOME="$PWD/mix-cache"
+mkdir -p "$MIX_HOME"
+
+mix local.hex   --force
+mix local.rebar --force rebar3 /usr/bin/rebar3
+
+mix deps.get
+mix compile
+
+mkdir -p "$1/usr/lib/" "$1/usr/bin/"
+
+mix elixir_ls.release -o "$1/usr/lib/elixir_ls"
+
+cat <<EOF > "$1/usr/bin/elixir-ls"
+#!/bin/sh
+exec /usr/lib/elixir_ls/language_server.sh
+EOF
+
+cat <<EOF > "$1"/usr/bin/elixir-ls-debug
+#!/bin/sh
+exec /usr/lib/elixir_ls/debugger.sh"
+EOF
+
+chmod +x "$1/usr/bin/"*
