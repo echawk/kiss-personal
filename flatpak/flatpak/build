@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+# Don't treat warnings as errors.
+export CFLAGS="$CFLAGS -w"
+
 for patch in *.patch; do
     patch -p1 < "$patch"
 done
