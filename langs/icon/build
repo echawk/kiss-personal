@@ -1,0 +1,36 @@
+#!/bin/sh -e
+
+_target=$(uname | tr L l)
+
+if kiss list musl; then
+    _target="${_target}_musl"
+fi
+
+kiss list libX11 && _X="X-"
+
+make "${_X:-}Configure" name="$_target"
+
+# Parallel build is broken.
+make -j1
+
+mkdir -p "$1/usr/share"
+make Install dest="$1/usr/share/icon"
+
+for _i in colrbook colrpick fontpick icont iconx palette vib wevents; do
+  install -D -m755 "$1/usr/share/icon/bin/$_i" "$1/usr/bin/$_i"
+  rm "$1/usr/share/icon/bin/$_i"
+done
+cd "$1/usr/share/icon/bin"
+rm icon
+install -D -m644 "$1/usr/share/icon/bin/libcfunc.so" "$1/usr/lib/libcfunc.so"
+rm "$1/usr/share/icon/bin/libcfunc.so"
+rm -fr "$1/usr/share/icon/bin"
+for _i in icont icon; do
+  install -D -m644 "$1/usr/share/icon/man/man1/$_i.1" \
+  "$1/usr/share/man/man1/$_i.1"
+  rm "$1/usr/share/icon/man/man1/$_i.1"
+done
+rmdir "$1/usr/share/icon/man/man1/"
+rmdir "$1/usr/share/icon/man"
+cd "$1/usr/bin"
+ln -s icont icon
