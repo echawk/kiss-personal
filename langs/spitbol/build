@@ -1,0 +1,5 @@
+#!/bin/sh -e
+make bootsbl
+make BOOTBOL=./bootsbl spitbol
+mkdir -p "$1/usr/bin"
+make DEST="$1/usr/bin" install
