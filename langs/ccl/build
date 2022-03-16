@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -ex
 
 : > nostrip
 
@@ -13,36 +13,18 @@ kiss list glibc || {
     # Fixes for musl.
 
     # Define _libc_xmmreg if we are not on glibc.
-    ed lisp-kernel/lisp-debug.c > /dev/null << EOF
-36a
-#ifndef __GLIBC__
-struct _libc_xmmreg {
-  unsigned int element[4];
-};
-#endif
-.
-w
-q
-EOF
+    sed '/#include <fcntl.h>/a\#ifndef __GLIBC__\nstruct _libc_xmmreg {\nunsigned int element[4];\n};\n#endif\n' \
+        lisp-kernel/lisp-debug.c > _
+    mv -f _ lisp-kernel/lisp-debug.c
 
     # Remove mcheck.h include.
-    # Wrap glibc function call in ifdefs
-    ed lisp-kernel/pmcl-kernel.c << EOF
-/#include <mcheck.h>/
-d
-/LispObj fs_addr = 0L, gs_addr = 0L, cur_thread = (LispObj)pthread_self();/
-a
-#ifdef __GLIBC__
-.
-/char *gnu_get_libc_version(void);/
-a
-#else
-#define gnu_get_libc_version() ""
-#endif
-.
-w
-q
-EOF
+    # Remove gnu_get_libc_version, as it's obviously GLIBC specific.
+    sed -E \
+        -e "/#include <mcheck.h>/d" \
+        -e "/gnu_get_libc_version/d" \
+        lisp-kernel/pmcl-kernel.c > _
+    mv -f _ lisp-kernel/pmcl-kernel.c
+    cat lisp-kernel/pmcl-kernel.c
 
     # Glibcisms are not Linuxisms.
     sed "185s/LINUX/__GLIBC__/" lisp-kernel/thread_manager.c > _
@@ -54,7 +36,7 @@ EOF
 
 }
 
-(   
+(
     cd lisp-kernel/linuxx8664
     make clean
     make -j1
