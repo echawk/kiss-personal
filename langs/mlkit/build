@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+sed -e "2s/^#//" -e "/-drop-pass/d" Makefiledefault > _
+mv -f _ Makefiledefault
+
+./autobuild
+./configure --sysconfdir=/etc --prefix=/usr
+make mlkit
+make mlkit_libs
+make SHELL="/usr/bin/bash" DESTDIR="$1/" install
