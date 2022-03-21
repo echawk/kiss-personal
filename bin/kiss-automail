@@ -24,12 +24,13 @@ kiss outdated "$repodir" |
         pkg="${LINE%% *}"
         newver="${LINE##* }"
         hash="$(git blame $repodir/$pkg/version | cut -d' ' -f1)"
+        oldver="$(cut -d' ' -f1 < $repodir/$pkg/version)"
         maintainer_email="$(git show -s --format='%ae' "$hash")"
         cat <<EOF #| msmtp -a "$KISS_AUTOMAIL_EMAIL" "$maintainer_email"
 To: $maintainer_email
 From: $KISS_AUTOMAIL_EMAIL
-Subject: $pkg -> $newver
-There is an update for $pkg to version $newver.
+Subject: [$pkg] $oldver -> $newver
+There is an update for $pkg, currently at '$oldver', to version '$newver'.
 If you want to stop receiving these emails, add the relevant packages to the blacklist.
 EOF
     done
