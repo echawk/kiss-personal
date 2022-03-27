@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+case $1 in
+    llvm)
+        # Zig compatability.
+        sed -i "/LLVM_TARGETS_TO_BUILD/d" "$2/build"
+
+        # Entire LLVM source.
+        #sed -i "s~(https://github.com/llvm/llvm-project/).*~\1archive/refs/tags/llvmorg-VERSION.tar.gz~" "$2/sources"
+        #(
+        #    cd "$2"
+        #    KISS_HOOK='' kiss checksum
+        #)
+        # Flang support.
+        #sed -i -E -e "s/(cmake -B build)/\1 -DLLVM_ENABLE_PROJECTS=\"clang;flang\"/" "$2/build"
+        ;;
+esac
