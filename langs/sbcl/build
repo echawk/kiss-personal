@@ -4,11 +4,11 @@ read -r ver _ < "${0%/*}/version"
 echo "\"${ver}\"" > version.lisp-expr
 
 # If you already have sbcl installed, build with sbcl instead.
-if kiss list sbcl; then
+if command -v sbcl; then
     ./make.sh --xc-host=sbcl --prefix=/usr
-elif kiss list ccl; then
+elif command -v ccl; then
     ./make.sh --xc-host=ccl --prefix=/usr
-elif kiss list clisp; then
+elif command -v clisp; then
     ./make.sh --xc-host=clisp --prefix=/usr
 else
     ./make.sh --xc-host=ecl --prefix=/usr
