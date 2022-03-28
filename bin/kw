@@ -78,10 +78,8 @@ case $cmd in
         ;;
     u|update) # TODO: Support updating packages with KW_HOOKs
         KW_SYNC_TIME=${KW_SYNC_TIME:-5} # Default to 5 seconds.
-        ( timeout -s 2 "$KW_SYNC_TIME" kiss update 1>/dev/null 2>&1 ) &
-        printf "Syncing repos..."
+        ( timeout -s 2 "$KW_SYNC_TIME" kiss update 2>&1 ) &
         wait
-        echo "Done!"
         # Now get a list of pkgs that need to be updated.
         update_outdated
         ;;
