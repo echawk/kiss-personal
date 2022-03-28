@@ -1,10 +1,10 @@
 #!/bin/sh -e
 
-if kiss list mlton; then
+if command -v mlton; then
     make with-mlton
-elif kiss list polyml; then
+elif command -v poly; then
     make with-poly
-elif kiss list mosml; then
+elif command -v mosml; then
     make with-mosml
 fi
 
