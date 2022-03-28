@@ -2,6 +2,8 @@
 
 if command -v mlton; then
     make with-mlton
+elif command -v mlkit; then
+    make with-mlkit
 elif command -v poly; then
     make with-poly
 elif command -v mosml; then
