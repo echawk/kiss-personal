@@ -1,1 +1,1 @@
-https://ziglang.org/download/VERSION/zig-VERSION.tar.xz
+git+https://github.com/ziglang/zig
