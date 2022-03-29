@@ -1,2 +1,1 @@
 https://caml.inria.fr/pub/distrib/ocaml-MAJOR.MINOR/ocaml-VERSION.tar.xz
-patches/fix-configure-musl.patch
