@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+git submodule update --init --recursive
+
+zig build -Drelease-fast
+
+mkdir -p "$1/usr/bin"
+cp $(find -name zls) "$1/usr/bin/zls"
+#rm "$1/usr/bin/build_runner.zig"
