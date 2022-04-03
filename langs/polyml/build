@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+sed "s/-lstdc++/-stdlib=libc++/g" configure > _
+mv -f _ configure
+chmod +x configure
+
 # Last 2 configure options can be optional
 CFLAGS="$CFLAGS -no-pie" ./configure \
     --enable-shared \
