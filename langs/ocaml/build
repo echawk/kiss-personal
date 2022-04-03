@@ -11,7 +11,7 @@ export ASPP="cc -c"
     --disable-force-safe-string \
     --with-pic
 
-sed -E "s/\\$\(RANLIB\)(.*)/echo \"\1\" | tr ' ' '\\\n' | xargs ranlib/" Makefile > _
+sed -E "s/\\$\(RANLIB\)(.*)/echo \"\1\" | tr ' ' '\\\n' | xargs -I{} ranlib {}/" Makefile > _
 mv -f _ Makefile
 
 make world.opt
