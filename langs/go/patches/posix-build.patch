@@ -9,8 +9,8 @@ index 880a0f4..f27c355 100755
  # Use of this source code is governed by a BSD-style
  # license that can be found in the LICENSE file.
 @@ -154,7 +154,7 @@ fi
- 
- export GOROOT_BOOTSTRAP=${GOROOT_BOOTSTRAP:-$HOME/go1.4}
+ export GOROOT_BOOTSTRAP
+
  export GOROOT="$(cd .. && pwd)"
 -IFS=$'\n'; for go_exe in $(type -ap go); do
 +for go_exe in $(command -v go); do
