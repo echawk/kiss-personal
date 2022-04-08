@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+patch -p1 < llvm-ranlib.patch
+
 export AS="cc -c"
 export ASPP="cc -c"
 
@@ -10,9 +12,6 @@ export ASPP="cc -c"
     --mandir /usr/share/man \
     --disable-force-safe-string \
     --with-pic
-
-sed -E "s/\\$\(RANLIB\)(.*)/echo \"\1\" | tr ' ' '\\\n' | xargs -I{} ranlib {}/" Makefile > _
-mv -f _ Makefile
 
 make world.opt
 make install
