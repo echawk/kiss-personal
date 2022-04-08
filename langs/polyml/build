@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-sed "s/-lstdc++/-stdlib=libc++/g" configure > _
+sed "s/-lstdc++/-stdlib=libstdc++/g" configure > _
 mv -f _ configure
 chmod +x configure
 
