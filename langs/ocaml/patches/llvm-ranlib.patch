@@ -1,10 +1,13 @@
 diff --git a/Makefile b/Makefile
-index 638bf31b8..552310148 100644
+index 638bf31b8..dae491fc1 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -590,7 +590,9 @@ ifeq "$(INSTALL_OCAMLNAT)" "true"
+@@ -589,8 +589,12 @@ endif
+ ifeq "$(INSTALL_OCAMLNAT)" "true"
  	  $(INSTALL_PROG) ocamlnat$(EXE) "$(INSTALL_BINDIR)"
  endif
++	# Libaries need to be passed separately, as non-GNU ranlib may not support
++	# running on multiple files, like llvm-ranlib.
  	cd "$(INSTALL_COMPLIBDIR)" && \
 -	   $(RANLIB) ocamlcommon.$(A) ocamlbytecomp.$(A) ocamloptcomp.$(A)
 +	   $(RANLIB) ocamlcommon.$(A) && \
