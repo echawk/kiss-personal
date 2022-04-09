@@ -50,7 +50,7 @@ outdatedpkgs() {
 run_hooks_on_pkgs() {
     [ -n "$pkgs" ] && {
         for pkg in $pkgs; do
-            cp -r "$(kiss search "$pkg" | sed 1q)" "$KW_REPO"
+            cp -Lrf "$(kiss search "$pkg" | sed 1q)" "$KW_REPO"
             for hook in $(echo "$KW_HOOK" | tr ':' ' '); do
                 "$hook" "$pkg" "$KW_REPO/$pkg"
             done
