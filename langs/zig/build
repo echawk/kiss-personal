@@ -3,7 +3,7 @@
 cmake -B build \
     -DCMAKE_BUILD_TYPE=None \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DZIG_PREFER_CLANG_CPP_DYLIB=ON
+    -DZIG_STATIC=ON
 
 cmake --build   build
 cmake --install build
