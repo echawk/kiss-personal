@@ -5,11 +5,11 @@ get_git_repos() {
     for repo in $(echo "$KISS_PATH" | tr ':' ' '); do
         (
             cd "$repo"
-            if git rev-parse; then
+            if git rev-parse 2>/dev/null; then
                 echo "$repo"
             fi
         )
-    done
+    done | sort -u
 }
 
 for repo in $(get_git_repos); do
