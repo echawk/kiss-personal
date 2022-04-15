@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+case $1 in
+    emacs*)
+        echo "Adding harfbuzz, cairo, xinput2, and gtk3 support to $1."
+        # Add harfbuzz & cairo.
+        # Change to gtk3 for toolkit.
+        sed -E -i \
+            -e "s/(with-xft)/\1 --with-harfbuzz --with-cairo --with-xinput2/" \
+            -e "s/athena/gtk3/" \
+            "$2/build"
+        ;;
+esac
