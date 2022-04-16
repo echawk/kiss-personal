@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc
+
+sed -e 's/ -shared / -Wl,--as-needed\0/g' libtool > _
+mv -f _ libtool
+chmod +x libtool
+
+make
+make install
