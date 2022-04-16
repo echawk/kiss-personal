@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+autoreconf -vif
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --mandir=/usr/share/man \
+    --localstatedir=/var \
+    --disable-webkit \
+    --disable-gtk \
+    --enable-mu4e
+
+make
+make install
