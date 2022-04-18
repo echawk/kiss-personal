@@ -1,0 +1,5 @@
+#!/bin/sh -e
+shards
+crystal build --static src/crystalline.cr -o crystalline
+mkdir -p "$1/usr/bin/"
+cp crystalline "$1/usr/bin/"
