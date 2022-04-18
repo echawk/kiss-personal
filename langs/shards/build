@@ -2,5 +2,5 @@
 
 export CRFLAGS="--release"
 
-make
+make static=1
 make PREFIX=/usr install
