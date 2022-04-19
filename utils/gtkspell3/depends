@@ -1,0 +1,8 @@
+atk
+cairo
+enchant
+freetype-harfbuzz
+gdk-pixbuf
+glib
+gtk+3
+pango

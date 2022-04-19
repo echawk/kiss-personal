@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+# 'Vendor' libtool.
+for t in merge update extract perl; do
+    ln -sf intltool "intltool-$t"
+done
+export PATH="$PWD:$PATH"
+
+# Fix the configure script because it likes to double check for intltool.
+sed "s/as_fn_error \$? \"XML::Parser.*/echo fixed/" configure > _
+mv -f _ configure
+chmod +x configure
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --mandir=/usr/share/man \
+    --localstatedir=/var
+
+make
+make install
