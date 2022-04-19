@@ -1,0 +1,12 @@
+atk
+cairo
+enchant
+freetype-harfbuzz
+gdk-pixbuf
+glib
+gtk+3
+gtksourceview3
+gtkspell3
+pango
+poppler
+texlive-bin
