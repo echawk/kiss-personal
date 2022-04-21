@@ -32,6 +32,7 @@ if ! [ "$list" = 1 ]; then
 
     if [ -d "$pkg_id" ]; then
         cp -r "$pkg_id" "$kiss_hold_repo"
+        rm -rf -- "${kiss_hold_repo}${pkg}/manifest"
     fi
 
     if [ "$delete" = 1 ]; then
