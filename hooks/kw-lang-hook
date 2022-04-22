@@ -3,4 +3,5 @@
 # Enable fortran & d in gcc.
 case $1 in
     gcc) sed -E -i "s/(c,c\+\+)/\1,fortran,d/" "$2/build";;
+    R) command -v gfortran && sed -E -i "/gfortran/d" "$2/depends";;
 esac
