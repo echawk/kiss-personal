@@ -22,6 +22,7 @@ CONFIGURE_CFLAGS="$CFLAGS" \
     --enable-curses \
     --disable-user \
     --disable-linux-user \
+    --disable-gnutls \
     --enable-system
 
 make
@@ -41,6 +42,7 @@ CONFIGURE_CFLAGS="$CFLAGS" \
     --disable-user \
     --enable-linux-user \
     --disable-system \
+    --disable-gnutls \
     --static
 
 make
