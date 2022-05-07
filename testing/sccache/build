@@ -1,8 +1,12 @@
 #!/bin/sh -e
 
-cargo build --release
+cargo fetch --locked
 
 cargo install \
-    --root "$DESTDIR/usr" \
-    --features all \
-    --path sccache
+    --frozen \
+    --offline \
+    --no-track \
+    --no-default-features \
+    --features native-zlib \
+    --path . \
+    --root "$1/usr" \
