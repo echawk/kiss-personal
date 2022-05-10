@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+tar xvf click*
+
+cd miranda
+
+make cleanup
+make CC="gcc -w -fcommon -D__WORDSIZE=64"
+
+mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/usr/share/man/man1/"
+cp mira    "$1/usr/bin/"
+cp -r miralib "$1/usr/lib/"
+cp mira.1  "$1/usr/share/man/man1/"
+
