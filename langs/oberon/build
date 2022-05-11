@@ -1,0 +1,4 @@
+#!/bin/sh -e
+export LDFLAGS="$LDFLAGS -lexecinfo"
+./build --prefix=/usr
+./install --destdir="$1"
