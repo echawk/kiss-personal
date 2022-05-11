@@ -1,0 +1,4 @@
+#!/bin/sh -ex
+
+make PREFIX="/usr" SCHEME=scheme bootstrap
+make PREFIX="$1/usr" IDRIS2_PREFIX="$1/usr" install
