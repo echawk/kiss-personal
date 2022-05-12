@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-echo "EXTRA_CFLAGS += -Wno-error=array-parameter" >> Mmake.params
+echo "EXTRA_CFLAGS += -w -Wno-error=array-parameter" >> Mmake.params
 
 ./configure \
     --prefix=/usr \
