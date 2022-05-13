@@ -148,6 +148,12 @@ checkpkg() {
                         fix() { printf "python\n" >> depends ; }
                         lint_with_fix # python check
 
+                        t() { grep -nE "(autoreconf|autogen.sh)" "$f" | line_aux ; }
+                        ok() { grep -qE "autoconf" depends ; }
+                        msg() { echo "WARNING: 'autoreconf/autogen.sh' is used, but 'autoconf' is not in depends (lines(s): $(t) in $f)" ; }
+                        fix() { printf "autoconf make\nautomake make\n" >> depends ; }
+                        lint_with_fix # autoconf/automake check
+
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
