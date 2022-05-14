@@ -5,7 +5,7 @@ freetype-harfbuzz
 gdk-pixbuf
 glib
 gtk+3
-gtksourceview3
+gtksourceview
 gtkspell3
 pango
 poppler
