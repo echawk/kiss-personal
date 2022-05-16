@@ -6,3 +6,7 @@ else
     make PREFIX="/usr" SCHEME=scheme bootstrap
 fi
 make PREFIX="$1/usr" IDRIS2_PREFIX="$1/usr" install
+
+# Remove useless directory in /usr/bin
+mv "$1/usr/bin/idris2_app/idris2.so" "$1/usr/bin/idris2"
+rm -rf "$1/usr/bin/idris2_app"
