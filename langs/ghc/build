@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+cp mk/build.mk.sample mk/build.mk
+cat >> mk/build.mk << EOF
+BuildFlavor      = perf-llvm
+INTEGER_LIBRARY  = integer-gmp
+BeConservative   = YES
+GhcStage3HcOpts += -O3
+SplitSections    = YES
+EOF
+
+ffi_lib=$(pkg-config libffi --libs-only-L); ffi_lib="${ffi_lib%% }"
+
+./configure \
+    --prefix="/usr" \
+    --with-system-libffi \
+    ${ffi_lib:+--with-ffi-libraries="${ffi_lib#-L}"} \
+    --with-ar=ar \
+    --with-nm=nm \
+    --with-objdump=objdump \
+    --disable-ld-override \
+    CONF_CC_OPTS_STAGE0=" $ffi_lib "
+
+sed -i -e 's/unknown/pc/g' llvm-targets
+
+make
+make DESTDIR="$1" install
