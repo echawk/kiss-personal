@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+[ -e /usr/lib/libtinfow.so.6 ] || {
+    cat <<EOF
+GHC depends on libtinfow, and since it doesn't exist
+you need to symlink ncurses to it.
+
+Run the following as root:
+
+# ln -s /usr/lib/libncursesw.so.6 /usr/lib/libtinfow.so.6
+
+EOF
+    exit 1
+}
+
+./configure \
+    --prefix="/usr" \
+    --disable-ld-override
+
+make DESTDIR="$1" install
