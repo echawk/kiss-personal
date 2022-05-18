@@ -1,5 +1,5 @@
 #!/bin/sh -e
-! kiss list openssl && {
+! command -v openssl && {
     export NOSSL=1
 }
 kiss list libedit && {
