@@ -8,7 +8,7 @@ sed_i() {
     for file; do :; done
     sed "$@" > _
     cat _ > "$file"
-                     rm -f _
+    rm -f _
 }
 
 if [ "${sys_arch#i*86}" ]; then
@@ -20,7 +20,7 @@ fi
 # FIXME: there is an offset on the diff, causing 'busybox patch' to fail.
 (
     cd gcc
-         patch -p1 < ../gccjit-musl-fix.patch
+    patch -p1 < ../gccjit-musl-fix.patch
 )
 
 case "$sys_arch" in

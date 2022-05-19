@@ -1,7 +1,16 @@
-diff --git a/gcc/jit/jit-playback.c b/gcc/jit/jit-playback.c
-index 5bccf591a..35f5e35ef 100644
---- a/gcc/jit/jit-playback.c
-+++ b/gcc/jit/jit-playback.c
+https://git.alpinelinux.org/aports/plain/main/gcc/0042-Fix-attempt-to-use-poisoned-calloc-error-in-libgccji.patch
+https://bugs.gentoo.org/828580
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=104799 (additional two hunks thrown in from here for 12)
+
+From 72f32e3383129ad139df76d9a063fac9b03079b1 Mon Sep 17 00:00:00 2001
+From: Alex McGrath <amk@amk.ie>
+Date: Wed, 13 Oct 2021 23:24:27 +0100
+Subject: [PATCH] Fix attempt to use poisoned calloc error in libgccjit
+
+This moves usages of pthread.h to above any usage of system.h as it
+included #pragma GCC poison calloc
+--- a/gcc/jit/jit-playback.cc
++++ b/gcc/jit/jit-playback.cc
 @@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
  along with GCC; see the file COPYING3.  If not see
  <http://www.gnu.org/licenses/>.  */
@@ -20,10 +29,8 @@ index 5bccf591a..35f5e35ef 100644
  #include "jit-playback.h"
  #include "jit-result.h"
  #include "jit-builtins.h"
-diff --git a/gcc/jit/jit-recording.c b/gcc/jit/jit-recording.c
-index a237d574f..5785e3269 100644
---- a/gcc/jit/jit-recording.c
-+++ b/gcc/jit/jit-recording.c
+--- a/gcc/jit/jit-recording.cc
++++ b/gcc/jit/jit-recording.cc
 @@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
  along with GCC; see the file COPYING3.  If not see
  <http://www.gnu.org/licenses/>.  */
@@ -42,15 +49,14 @@ index a237d574f..5785e3269 100644
  #include "jit-builtins.h"
  #include "jit-recording.h"
  #include "jit-playback.h"
-diff --git a/gcc/jit/libgccjit.c b/gcc/jit/libgccjit.c
-index f9c33c63c..75f21d275 100644
---- a/gcc/jit/libgccjit.c
-+++ b/gcc/jit/libgccjit.c
-@@ -18,13 +18,13 @@ You should have received a copy of the GNU General Public License
+--- a/gcc/jit/libgccjit.cc
++++ b/gcc/jit/libgccjit.cc
+@@ -18,13 +18,14 @@ You should have received a copy of the GNU General Public License
  along with GCC; see the file COPYING3.  If not see
  <http://www.gnu.org/licenses/>.  */
  
 +#include <pthread.h>
++
  #include "config.h"
  #include "system.h"
  #include "coretypes.h"
@@ -61,3 +67,24 @@ index f9c33c63c..75f21d275 100644
  
  #include "libgccjit.h"
  #include "jit-recording.h"
+--- a/libcc1/libcc1plugin.cc
++++ b/libcc1/libcc1plugin.cc
+@@ -17,6 +17,7 @@
+    along with GCC; see the file COPYING3.  If not see
+    <http://www.gnu.org/licenses/>.  */
+ 
++#include <pthread.h>
+ #include <cc1plugin-config.h>
+ 
+ #undef PACKAGE_NAME
+--- a/libcc1/libcp1plugin.cc
++++ b/libcc1/libcp1plugin.cc
+@@ -18,6 +18,7 @@
+    along with GCC; see the file COPYING3.  If not see
+    <http://www.gnu.org/licenses/>.  */
+ 
++#include <pthread.h>
+ #include <cc1plugin-config.h>
+ 
+ #undef PACKAGE_NAME
+
