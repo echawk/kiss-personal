@@ -1,5 +1,7 @@
 #!/bin/sh -e
 ./configure \
-    --prefix=/usr
+    --prefix=/usr \
+    --enable-hardening \
+    --with-db=no
 make
 make install
