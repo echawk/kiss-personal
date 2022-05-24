@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+make
+make lib
+make PREFIX=$1/usr install
