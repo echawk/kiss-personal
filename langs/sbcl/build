@@ -5,7 +5,7 @@ echo "\"${ver}\"" > version.lisp-expr
 
 # If you already have sbcl installed, build with sbcl instead.
 if command -v sbcl; then
-    ./make.sh --xc-host=sbcl --prefix=/usr
+    ./make.sh --xc-host=sbcl --prefix=/usr --fancy
 elif command -v ccl; then
     ./make.sh --xc-host=ccl --prefix=/usr
 elif command -v clisp; then
