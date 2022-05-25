@@ -1,9 +1,0 @@
-#!/bin/sh -e
-
-cat << EOF
-NOTE: Make sure to set the 'TPL_LIBRARY_PATH' to
-'/usr/share/trealla'
-
-export TPL_LIBRARY_PATH=/usr/share/trealla
-
-EOF
