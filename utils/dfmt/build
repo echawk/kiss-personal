@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+dub build
+mkdir -p "$1/usr/bin/"
+cp bin/dfmt "$1/usr/bin/"
