@@ -1,20 +1,22 @@
 #!/bin/sh -e
 
-make MYCFLAGS="$CFLAGS -fPIC" \
-     MYLDFLAGS="$LDFLAGS" \
-     posix
+make CC="${CC:-cc}" \
+    MYCFLAGS="$CFLAGS -fPIC" \
+    MYLDFLAGS="$LDFLAGS" \
+    posix
 
 sed "s/install -p/install/" Makefile > _
 mv -f _ Makefile
 
-make INSTALL_TOP="$1/usr" \
-     INSTALL_MAN="$1/usr/share/man/man1" \
-     INSTALL_DATA="cp -P" \
-     install
+make \
+    INSTALL_TOP="$1/usr" \
+    INSTALL_MAN="$1/usr/share/man/man1" \
+    INSTALL_DATA="cp -P" \
+    install
 
 # Generate pkgconfig file on the fly.
 mkdir "$1/usr/lib/pkgconfig/"
-cat > "$1/usr/lib/pkgconfig/lua.pc" <<EOF
+cat > "$1/usr/lib/pkgconfig/lua.pc" << EOF
 V=${2%.*}
 R=$2
 
