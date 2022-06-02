@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-if kiss list libedit; then
+if pkg-config --exists libedit; then
     sed "s/-lreadline/-ledit/" configure > _
     mv -f _ configure
     chmod +x configure

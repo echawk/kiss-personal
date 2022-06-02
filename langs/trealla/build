@@ -2,7 +2,7 @@
 ! command -v openssl && {
     export NOSSL=1
 }
-kiss list libedit && {
+pkg-config --exists libedit && {
     sed "s/-lreadline/-ledit/" Makefile > _
     mv -f _ Makefile
 }
