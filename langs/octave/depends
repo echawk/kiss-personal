@@ -9,4 +9,3 @@ lapack
 libtool 	make
 ncurses
 pcre
-zlib

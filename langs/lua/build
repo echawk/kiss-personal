@@ -15,7 +15,7 @@ make \
     install
 
 # Generate pkgconfig file on the fly.
-mkdir "$1/usr/lib/pkgconfig/"
+mkdir -p "$1/usr/lib/pkgconfig/"
 cat > "$1/usr/lib/pkgconfig/lua.pc" << EOF
 V=${2%.*}
 R=$2
