@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+command -v gfortran && fortran=all
+
+./configure \
+    --prefix=/usr \
+    --libdir=/usr/lib \
+    --sysconfdir=/etc/openmpi \
+    --enable-ipv6 \
+    --enable-builtin-atomics \
+    --enable-memchecker \
+    --enable-mpi-cxx \
+    --enable-mpi-fortran=${fortran:-none} \
+    --enable-pretty-print-stacktrace \
+    --enable-mpi-thread-multiple
+
+make
+make install
