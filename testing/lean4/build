@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+git submodule update --init --recursive
+
+export CMAKE_GENERATOR="Unix Makefiles"
+
+cmake -B _build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib
+
+make -C "_build"        stage2
+make -C "_build/stage2" install
+
+rm -rf "$1/usr/LICENSE"*
