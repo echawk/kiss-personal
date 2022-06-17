@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+make release
+mkdir -p "$1/usr/bin/"
+mkdir -p "$1/usr/lib/odin"
+
+cp odin    "$1/usr/lib/odin/odin"
+cp -r core "$1/usr/lib/odin/core"
+ln -s /usr/lib/odin/odin "$1/usr/bin/odin"
