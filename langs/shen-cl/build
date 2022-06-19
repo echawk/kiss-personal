@@ -10,7 +10,7 @@ mkdir -p compiled
 if command -v shen-sbcl; then
     make precompile SHEN=$(command -v shen-sbcl)
 else
-    echo '(load "scripts/build.shen") (build)' | SHEN_C_HOME="$PWD/shen-c" $PWD/shen-c/shen-c || true
+    echo '(load "scripts/build.shen") (build)' | SHEN_C_HOME="$PWD/shen-c" $PWD/shen-c/bin/shen-c || true
 fi
 
 for lisp in sbcl ccl ecl; do
