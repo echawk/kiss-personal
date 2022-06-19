@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+make PREFIX=/usr ROOT=$1 MANDIR=$1/usr/share/man/man1
+make PREFIX=/usr ROOT=$1 MANDIR=$1/usr/share/man/man1 install
