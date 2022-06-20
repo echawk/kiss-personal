@@ -1,0 +1,5 @@
+glib
+gobject-introspection make
+json-glib
+meson make
+vala
