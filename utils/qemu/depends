@@ -1,4 +1,3 @@
-cmake         make
 glib
 libffi
 linux-headers make
