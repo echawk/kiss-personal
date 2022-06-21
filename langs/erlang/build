@@ -3,8 +3,7 @@ export CFLAGS="$CFLAGS -w "
 export CXXFLAGS="$CXXFLAGS -w "
 ./otp_build autoconf
 ./configure \
-    --prefix=/usr \
-    --disable-hipe
+    --prefix=/usr
 for d in lib/odbc/c_src/*/; do
     sed '/LDFLAGS =/s/=/+=/' "$d/Makefile" > _
     mv -f _ "$d/Makefile"
