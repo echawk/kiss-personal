@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+export JAVA_HOME="/usr/lib/jvm/java-1.7-openjdk"
+export PATH="/usr/share/apache-ant/bin:$PATH"
+
+ant
+
+mkdir -p "$1/usr/share/java"
+cp dist/abcl.jar         "$1/usr/share/java"
+cp dist/abcl-contrib.jar "$1/usr/share/java"
+
+mkdir -p "$1/usr/bin"
+cat <<EOF > $1/usr/bin/abcl
+#!/usr/bin/env sh
+
+JAVA_HOME=\${JAVA_HOME:-$JAVA_HOME}
+
+exec \$JAVA_HOME/jre/bin/java \
+  -cp /usr/share/java/abcl.jar:\$CLASSPATH \
+  org.armedbear.lisp.Main \
+  \$@
+EOF
+chmod +x $1/usr/bin/abcl
