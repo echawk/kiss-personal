@@ -20,9 +20,9 @@ python2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared target
 cd $OLDPWD
 
 # _ssl is currently broken
-python2 pypy/tool/release/package.py --without-_ssl --archive-name pypy --targetdir .
+python2 pypy/tool/release/package.py --without-_ssl --archive-name pypy3 --targetdir .
 mkdir -p "$1/opt"
-tar xvf pypy.tar.bz2 -C "$1/opt"
+tar xvf pypy3.tar.bz2 -C "$1/opt"
 
 mkdir -p "$1/usr/bin/"
 ln -s "/opt/pypy/bin/pypy3"         "$1/usr/bin/pypy3"
