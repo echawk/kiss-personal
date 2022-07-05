@@ -15,12 +15,20 @@ if kiss list musl; then
 fi
 
 cd pypy/goal/
-python2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared targetpypystandalone
+if command -v pypy2; then
+    pypy2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared targetpypystandalone
+else
+    python2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared targetpypystandalone
+fi
 #PYTHONPATH=../.. ./pypy3-c ../../lib_pypy/pypy_tools/build_cffi_imports.py
 cd $OLDPWD
 
 # _ssl is currently broken
-python2 pypy/tool/release/package.py --without-_ssl --archive-name pypy3 --targetdir .
+if command -v pypy2; then
+    pypy2 pypy/tool/release/package.py --without-_ssl --archive-name pypy3 --targetdir .
+else
+    python2 pypy/tool/release/package.py --without-_ssl --archive-name pypy3 --targetdir .
+fi
 mkdir -p "$1/opt"
 tar xvf pypy3.tar.bz2 -C "$1/opt"
 
