@@ -20,7 +20,7 @@ if command -v pypy2; then
 else
     python2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared targetpypystandalone
 fi
-#PYTHONPATH=../.. ./pypy3-c ../../lib_pypy/pypy_tools/build_cffi_imports.py
+PYTHONPATH=../.. ./pypy3-c ../../lib_pypy/pypy_tools/build_cffi_imports.py
 cd $OLDPWD
 
 # _ssl is currently broken
