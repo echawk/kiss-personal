@@ -1,4 +1,13 @@
 #!/bin/sh -e
 
-make PREFIX=/usr ROOT=$1 MANDIR=$1/usr/share/man/man1
-make PREFIX=/usr ROOT=$1 MANDIR=$1/usr/share/man/man1 install
+export DESTDIR=$1
+
+sed "s/-Wall/-Wall -static/" Makefile > _
+mv -f _ Makefile
+
+mk() {
+    make PREFIX=/usr ROOT=$DESTDIR MANDIR=$DESTDIR/usr/share/man/man1 $@
+}
+
+mk
+mk install
