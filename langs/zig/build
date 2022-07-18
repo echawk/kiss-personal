@@ -2,8 +2,7 @@
 
 cmake -B build \
     -DCMAKE_BUILD_TYPE=None \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DZIG_STATIC=ON
+    -DCMAKE_INSTALL_PREFIX=/usr
 
 cmake --build   build
 cmake --install build
