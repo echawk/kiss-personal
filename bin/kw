@@ -11,8 +11,6 @@
 # Pretty simple.
 
 # Also, `kw` is safe to alias to kiss, so there's no funny business.
-# NOTE: currently this is NOT the case, as implementing u|U functionality
-# is keeping this from being the case.
 
 # Example: (enabling rls for rust)
 ##!/bin/sh
