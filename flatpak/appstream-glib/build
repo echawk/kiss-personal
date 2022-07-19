@@ -3,22 +3,19 @@
 patch -p1 < no-uuid.patch
 
 # Don't build tests.
-ed data/meson.build > /dev/null << EOF
-/subdir('tests')/d
-w
-q
-EOF
+sed "/subdir('tests')/d" data/meson.build > _
+mv -f _ data/meson.build
 
-meson \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --mandir=/usr/share/man \
+meson setup \
+    -Dprefix=/usr \
+    -Dsysconfdir=/etc \
+    -Dmandir=/usr/share/man \
     -Ddep11=false \
     -Dman=false \
     -Dstemmer=false \
     -Dintrospection=false \
     -Drpm=false \
-    . output
+    output
 
 ninja -C output
 ninja -C output install
