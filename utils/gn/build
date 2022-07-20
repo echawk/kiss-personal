@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+python3 ./build/gen.py --no-last-commit-position
+
+# This is hacky, but gn expects the build to occur in a full checkout.
+hash="$(git log -n 1 --pretty=format:"%H")"
+touch out/last_commit_position.h
+echo "#define LAST_COMMIT_POSITION \"1 ($hash)\"" >> out/last_commit_position.h
+echo "#define LAST_COMMIT_POSITION_NUM 1" >> out/last_commit_position.h
+
+ninja -C out
+
+mkdir -p "$1/usr/bin"
+cp out/gn "$1/usr/bin"
