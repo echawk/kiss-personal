@@ -1,0 +1,35 @@
+#!/bin/sh -e
+
+for lib in httplib2 six; do
+{
+    cd $lib
+
+    python3 setup.py build
+    python3 setup.py install \
+        --root="$PWD/../dist"
+
+    cd ../dist/usr/lib/python*/site-packages
+
+    PYTHONPATH=$PWD:$(python -c "import sys;print(':'.join(sys.path))")
+
+    cd -; cd ..
+    export PATH=$PWD/dist/usr/bin:$PATH
+    export PYTHONPATH
+}
+done
+
+# https://chromium.googlesource.com/infra/luci/luci-go/+/c6190a13f4b9/vpython#configuration
+export VPYTHON_BYPASS="manually managed python not supported by chrome operations"
+export PATH="$PWD/depot_tools/:$PATH"
+
+# Link system gn to buildtools, since that's where 'tools/build.py' expects it.
+mkdir -p buildtools
+ln -s /usr/bin/gn buildtools/gn
+
+# Not sure why we have to run this...
+#fetch --no-history dart
+#gclient config --spec
+#gclient sync
+
+# Build the dart sdk.
+python3 tools/build.py --no-goma --mode=release --arch=x64 create_sdk

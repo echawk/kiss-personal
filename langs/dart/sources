@@ -1,0 +1,4 @@
+git+https://github.com/dart-lang/sdk
+git+https://chromium.googlesource.com/chromium/tools/depot_tools.git depot_tools/
+https://files.pythonhosted.org/packages/source/h/httplib2/httplib2-0.20.4.tar.gz httplib2/
+https://files.pythonhosted.org/packages/source/s/six/six-1.16.0.tar.gz six/
