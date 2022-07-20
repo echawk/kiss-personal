@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+export JAVA_HOME="/usr/lib/jvm/java-1.7-openjdk"
+export PATH="/usr/share/apache-ant/bin:$PATH"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+ant clean dist
+
+cd dist/dist
+
+install -dm755 "$1/usr/share/java/ceylon/"
+cp -a contrib bin lib repo samples templates "$1/usr/share/java/ceylon/"
+find "$1/usr/share/java/ceylon/" -type d -print0 | xargs -0 chmod 755
+find "$1/usr/share/java/ceylon/" -type f -print0 | xargs -0 chmod 644
+
+find "$1/usr/share/java/ceylon/" -type f -name '*.bat' -print0 | xargs -0 rm
+chmod 755 "$1/usr/share/java/ceylon/bin/ceylon"
+
+install -dm755 "$1/usr/bin/"
+ln -s "/usr/share/java/ceylon/bin/ceylon" "$1/usr/bin/ceylon"
