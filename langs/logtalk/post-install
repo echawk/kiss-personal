@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+cat << EOF
+To complete the installation, run the following:
+
+$ . /etc/profile.d/logtalk_env.sh
+
+This is so that the logtalk binaries know where the logtalk
+installation is.
+EOF

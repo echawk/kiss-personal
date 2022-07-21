@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+LOGTALKPREFIX="$1/usr/lib/logtalk"
+
+mkdir -p "$LOGTALKPREFIX"
+mkdir -p "$1/usr/bin"
+
+./scripts/install.sh -p "$LOGTALKPREFIX"
+
+for f in "$LOGTALKPREFIX"/bin/*; do
+    cp "$f" "$1/usr/bin/"
+done
+
+mkdir -p "$1/etc/profile.d"
+cat << EOF > $1/etc/profile.d/logtalk_env.sh
+export LOGTALKHOME=/usr/lib/logtalk/share/logtalk-$2-stable/
+EOF
