@@ -9,8 +9,8 @@ sed "s/SA_NOMASK/SA_NODEFER/g" src/runtime/sys.c > _
 mv -f _ src/runtime/sys.c
 
 cd src
-make PREFIX=/usr world
-make PREFIX=/usr install
+make CC="$CC" PREFIX=/usr world
+make CC="$CC" PREFIX=/usr install
 cd "$OLDPWD"
 mkdir -p "$1/usr/share/man/man1"
 cp man/*.1   "$1/usr/share/man/man1"
