@@ -2,4 +2,4 @@
 
 make
 make lib
-make PREFIX=$1/usr install
+make PREFIX="$1/usr" install

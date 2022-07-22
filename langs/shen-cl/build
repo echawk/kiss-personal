@@ -8,7 +8,7 @@
 make fetch KernelVersion=22.4
 mkdir -p compiled
 if command -v shen-sbcl; then
-    make precompile SHEN=$(command -v shen-sbcl)
+    make precompile SHEN="$(command -v shen-sbcl)"
 else
     echo '(load "scripts/build.shen") (build)' | SHEN_C_HOME="$PWD/shen-c" $PWD/shen-c/bin/shen-c || true
 fi
@@ -21,7 +21,7 @@ done
 
 mkdir -p "$1/usr/bin/" "$1/usr/share/doc/shen-cl"
 for d in bin/*/; do
-    cp $d/shen "$1/usr/bin/shen-$(basename $d)"
+    cp "$d/shen" "$1/usr/bin/shen-$(basename "$d")"
 done
 
 cp -r kernel/doc/* "$1/usr/share/doc/shen-cl"

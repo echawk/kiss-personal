@@ -16,7 +16,7 @@ done
 dmd="$(command -v dmd)"
 
 mk() {
-    make -f posix.mak TARGET_CPU=X86 ENABLE_RELEASE=1 PIC=1 DMD=$dmd $@
+    make -f posix.mak TARGET_CPU=X86 ENABLE_RELEASE=1 PIC=1 DMD="$dmd" $@
 }
 
 mk -C dmd

@@ -16,12 +16,12 @@ fi
 
 cd pypy/goal/
 if command -v pypy2; then
-    pypy2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared targetpypystandalone
+    pypy2 ../../rpython/bin/rpython --opt=jit --make-jobs "$(nproc)" --shared targetpypystandalone
 else
-    python2 ../../rpython/bin/rpython --opt=jit --make-jobs $(nproc) --shared targetpypystandalone
+    python2 ../../rpython/bin/rpython --opt=jit --make-jobs "$(nproc)" --shared targetpypystandalone
 fi
 #PYTHONPATH=../.. ./pypy3-c ../../lib_pypy/pypy_tools/build_cffi_imports.py
-cd $OLDPWD
+cd "$OLDPWD"
 
 # _ssl is currently broken
 if command -v pypy2; then

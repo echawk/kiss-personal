@@ -9,7 +9,7 @@ mkdir -p "$1/usr/share/java"
 cp clojure.jar "$1/usr/share/java"
 
 mkdir -p "$1/usr/bin"
-cat <<EOF > $1/usr/bin/clojure
+cat <<EOF > "$1/usr/bin/clojure"
 #!/usr/bin/env sh
 
 JAVA_HOME=\${JAVA_HOME:-$JAVA_HOME}
@@ -19,4 +19,4 @@ exec \$JAVA_HOME/jre/bin/java \
   clojure.main \
   \$@
 EOF
-chmod +x $1/usr/bin/clojure
+chmod +x "$1/usr/bin/clojure"

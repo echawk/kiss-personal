@@ -10,7 +10,7 @@ cp dist/abcl.jar         "$1/usr/share/java"
 cp dist/abcl-contrib.jar "$1/usr/share/java"
 
 mkdir -p "$1/usr/bin"
-cat <<EOF > $1/usr/bin/abcl
+cat <<EOF > "$1/usr/bin/abcl"
 #!/usr/bin/env sh
 
 JAVA_HOME=\${JAVA_HOME:-$JAVA_HOME}
@@ -20,4 +20,4 @@ exec \$JAVA_HOME/jre/bin/java \
   org.armedbear.lisp.Main \
   \$@
 EOF
-chmod +x $1/usr/bin/abcl
+chmod +x "$1/usr/bin/abcl"

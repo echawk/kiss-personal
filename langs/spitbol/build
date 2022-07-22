@@ -4,7 +4,7 @@ sed "s/sudo//" makefile > _
 mv -f _ makefile
 
 mk() {
-    make CC=$CC $@
+    make CC="$CC" $@
 }
 
 mk bootsbl
