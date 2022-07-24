@@ -15,3 +15,8 @@ mk() {
 
 CFLAGS='' mk CFLAGS="$CPPFLAGS $CFLAGS"
 mk install
+
+# Create symlinks so it can be swapped via `kiss alt`.
+ln -s /usr/lib/libopenblas.so        "$1/usr/lib/libblas.so"
+ln -s /usr/lib/libopenblas.so.3      "$1/usr/lib/libblas.so.3"
+ln -s /usr/lib/pkgconfig/openblas.pc "$1/usr/lib/pkgconfig/blas.pc"
