@@ -1,5 +1,5 @@
 #!/bin/sh -e
-kiss list libX11  && x11="x11,"
+pkg-config --exists x11 && x11="x11,"
 
 ./configure \
     --prefix=/usr \
