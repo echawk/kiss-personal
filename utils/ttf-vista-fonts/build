@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
-cabextract --lowercase *.exe
-cabextract --lowercase -F '*.tt[fc]' *.cab
+cabextract --lowercase ./*.exe
+cabextract --lowercase -F '*.tt[fc]' ./*.cab
 
 mkdir -p "$1/usr/share/fonts/TTF"
-cp *.ttf "$1/usr/share/fonts/TTF"
+cp ./*.ttf "$1/usr/share/fonts/TTF"
