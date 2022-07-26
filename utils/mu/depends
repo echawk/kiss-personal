@@ -1,4 +1,4 @@
-autoconf make
 glib
 gmime
+meson make
 xapian
