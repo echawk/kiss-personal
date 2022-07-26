@@ -2,19 +2,9 @@
 
 export CFLAGS="$CFLAGS -static"
 
-# Fix parallel make.
-ed "Makefile.in" << EOF
-/-\$(SIZE) \$(Program)/
-a
-\$(CSOURCES): \$(DEFDIR)/builtext.h
-.
-w
-q
-EOF
+ver="$(echo "${2%.*}" | tr -d '.')"
 
-ver="$(echo ${2%.*} | tr -d '.')"
-
-for patch in bash${ver}-0??; do
+for patch in "bash${ver}-0"??; do
     patch -p0 < "$patch"
 done
 
