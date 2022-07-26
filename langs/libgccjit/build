@@ -4,17 +4,12 @@
 
 sys_arch=${3:-$(uname -m)}
 
-sed_i() {
-    for file; do :; done
-    sed "$@" > _
-    cat _ > "$file"
-    rm -f _
-}
-
 if [ "${sys_arch#i*86}" ]; then
-    # Do not create lib64 directories
-    sed_i '/m64=/s/lib64/lib/' gcc/gcc/config/i386/t-linux64
-    sed_i 's/lib64/lib/'       gcc/gcc/config/i386/linux64.h
+    # Do not use lib64 by default.
+    sed '/m64=/s/lib64/lib/' gcc/gcc/config/i386/t-linux64 > _
+    mv -f _ gcc/gcc/config/i386/t-linux64
+    sed 's/lib64/lib/' gcc/gcc/config/i386/linux64.h > _
+    mv -f _ gcc/gcc/config/i386/linux64.h
 fi
 
 # FIXME: there is an offset on the diff, causing 'busybox patch' to fail.
