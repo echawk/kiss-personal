@@ -1,5 +1,9 @@
 #!/bin/sh
 # Package linter for KISS Linux and derivatives.
+
+# Original by jedahan
+# This version by ehawkvu
+
 KISS_LINT_AUTOFIX=${KISS_LINT_AUTOFIX:-0}
 
 line_aux() {
