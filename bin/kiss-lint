@@ -154,6 +154,12 @@ checkpkg() {
                         fix() { printf "autoconf make\nautomake make\n" >> depends ; }
                         lint_with_fix # autoconf/automake check
 
+                        t() { grep -nE "\"" "$f" | grep -v "\\$" | line_aux ; }
+                        ok() { ! grep -nE "\"" "$f" | grep -qv "\\$" ; }
+                        msg() { echo "STYLE: unneeded quotes are around text that doesn't contain a variable (lines(s): $(t) in $f)" ; }
+                        fix() { : ; }
+                        lint_with_fix # usless quote check
+
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
