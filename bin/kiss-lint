@@ -161,7 +161,7 @@ checkpkg() {
                         lint_with_fix # usless quote check
 
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
-                        #$PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
+                        $PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
                             # shfmt: posix, 4 spaces, indent case, keep col alignment paddings, redirect is followed by space
                             t() { shfmt -p -i 4 -ci -kp -sr "$f" | diff - "$f" | grep '>' ; }
