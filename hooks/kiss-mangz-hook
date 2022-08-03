@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+# License: MIT
+# Author: Ethan Hawk
+
 case "$1" in
     post-build)
         # Compress any man pages that we find. It's safe to always 'succeed'.
