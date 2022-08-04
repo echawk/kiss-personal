@@ -1,0 +1,146 @@
+#!/bin/sh
+
+# This kw hook is meant to replace the now deprecated kissLTO repo.
+
+# kissLTO link: https://github.com/git-bruh/kissLTO
+
+# Our initial C/CXX/LD Flags, are modified in the first case statement below.
+export CFLAGS="-O3 -pipe -march=native -mtune=native -fno-math-errno -fdevirtualize-at-ltrans -fno-semantic-interposition -fipa-pta -flto=auto -fuse-linker-plugin -fgraphite-identity -floop-nest-optimize -fuse-ld=gold"
+export CXXFLAGS="$CFLAGS"
+export LDFLAGS="-Wl,-O1 -Wl,--as-needed $CFLAGS"
+
+# Add the CFLAGS/CXXFLAGS/LDFLAGS to the build script, since we can't set
+# the environment itself.
+add_flags() {
+    {
+        echo "#!/bin/sh -e"
+        echo "export CFLAGS=$CFLAGS"
+        echo "export CXXFLAGS=\$CFLAGS"
+        echo "export LDFLAGS=$LDFLAGS"
+        sed 1d "$2/build"
+    } > "$2/build"
+}
+
+saneflags() {
+    export CFLAGS="-O2 -pipe -march=native -mtune=native"
+    export CXXFLAGS="$CFLAGS"
+    unset LDFLAGS
+}
+
+flagsed() {
+    CFLAGS="$(printf %s "$CFLAGS" | sed "$1")"
+    CXXFLAGS="$(printf %s "$CXXFLAGS" | sed "$1")"
+    LDFLAGS="$(printf %s "$LDFLAGS" | sed "$1")"
+
+    export CFLAGS
+    export CXXFLAGS
+    export LDFLAGS
+}
+
+saneflags() {
+    export CFLAGS="-O2 -pipe -march=native -mtune=native"
+    export CXXFLAGS="$CFLAGS"
+    unset LDFLAGS
+}
+
+nolto() {
+    flagsed "s/-flto=auto//"
+}
+
+addflag() {
+    flagsed "s/$/ $1/"
+}
+
+delflag() {
+    flagsed "s/$1//"
+}
+
+clang_flags() {
+    # Unsupported flags.
+    delflag "-fipa-pta"
+    delflag "-fdevirtualize-at-ltrans"
+    delflag "-fgraphite-identity"
+    delflag "-floop-nest-optimize"
+}
+
+# Flag modification.
+case $1 in
+    alsa-lib |\
+    efivar)
+        addflag "-flto-partition=none"
+        ;;
+
+    curl |\
+    libressl |\
+    openssl |\
+    libtermkey |\
+    lua |\
+    lzo |\
+    ncurses)
+        addflag "-ffat-lto-objects"
+        ;;
+    binutils)
+        delflag "-fipa-pta"
+        ;;
+    gcc)
+        nolto
+        delflag "-fipa-pta"
+        ;;
+    firefox)
+        nolto
+        clang_flags
+        delflag "-fuse-ld=gold"
+        ;;
+    llvm)
+        addflag "-ffat-lto-objects"
+        # clang segfaults.
+        delflag "-fno-semantic-interposition"
+       ;;
+    git |\
+    github-cli |\
+    nodejs |\
+    python2 |\
+    ruby |\
+    rust |\
+    strace |\
+    webkit2gtk |\
+    xorg-server)
+        nolto
+            ;;
+
+    musl)
+        nolto
+        delflag "-fuse-ld=gold"
+        ;;
+    glibc)
+        saneflags
+        ;;
+    *)
+        if grep rust "$2/depends"; then
+            addflag "-ffat-lto-objects"
+        fi
+esac
+
+# Add our LTO Flags to the build script.
+add_flags
+
+# Package specific build script modification.
+case $1 in
+    binutils)
+        # Enable gold linker for binutils.
+        sed -E -i \
+            -e "s/(--enable-targets=).*$/\1$(cc -dumpmachine) \\/" \
+            -e "s/ld.bfd/ld.gold/" \
+            "$2/build"
+        ;;
+    ffmpeg)
+        sed -E -i "s~(--prefix=/usr)~\1 --enable-lto~" "$2/build"
+        ;;
+    gcc)
+        sed -i "s/^make$/make profiledbootstrap/" "$2/build"
+        ;;
+    zstd)
+        sed -i "s/HAVE_LZ4=0/HAVE_LZ4=0 zstd-pgo/" "$2/build"
+        ;;
+esac
+
