@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+cd harec
+./configure \
+    --prefix=/usr
+
+make
+make install
+cd "$OLDPWD"
+
+export PATH="$1/usr/bin/:$PATH"
+
+sed "s:/usr/local:/usr:" config.example.mk > config.mk
+
+LOCALVER=arch make -j1
+
+make install
