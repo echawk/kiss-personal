@@ -139,6 +139,9 @@ case $1 in
     gcc)
         sed -i "s/^make$/make profiledbootstrap/" "$2/build"
         ;;
+    python)
+        sed -i "s/configure/configure --with-lto --enable-optimizations/" "$2/build"
+        ;;
     zstd)
         sed -i "s/HAVE_LZ4=0/HAVE_LZ4=0 zstd-pgo/" "$2/build"
         ;;
