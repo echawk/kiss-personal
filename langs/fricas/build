@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+: > nostrip
+
+# shellcheck disable=2038
+# Old codebase, uses the SysV name for SIGCHLD.
+find . -type f | xargs -I{} sed -i "s/SIGCLD/SIGCHLD/g" {}
+
+./configure \
+    --prefix=/usr \
+    --disable-aldor \
+    --enable-gmp \
+    --with-lisp='sbcl --control-stack-size 512 --dynamic-space-size 6000'
+
+make -j1
+make -j1 install
