@@ -5,7 +5,7 @@
     make
 )
 
-make fetch KernelVersion=22.4
+make fetch KernelVersion=22.4 FetchCmd="curl -LO"
 mkdir -p compiled
 if command -v shen-sbcl; then
     make precompile SHEN="$(command -v shen-sbcl)"
