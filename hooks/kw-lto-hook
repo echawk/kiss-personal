@@ -63,7 +63,6 @@ case $1 in
     efivar)
         addflag "-flto-partition=none"
         ;;
-
     curl |\
     libressl |\
     openssl |\
@@ -100,8 +99,7 @@ case $1 in
     webkit2gtk |\
     xorg-server)
         nolto
-            ;;
-
+        ;;
     musl)
         nolto
         delflag "-fuse-ld=gold"
@@ -133,11 +131,11 @@ case $1 in
             "$2/build"
         ;;
     gcc)
-        # Change the make command to be PGO.
+        # Change the make command to be PGO, and to use sane CFLAGS in stage1 of bootstrap.
         # Add the configure flag to tell gcc to build with lto/bootstrap
         # Ensure that we perform a bootstrap build
         sed -E -i \
-            -e "s/^(make)$/\1 profiledbootstrap/" \
+            -e "s/^(make)$/\1 BOOT_CFLAGS=\"\${CFLAGS}\" STAGE1_CFLAGS=\"-O2 -pipe -march=native\" profiledbootstrap/" \
             -e "/prefix/s/(--prefix)/--with-build-config=bootstrap-lto \1/" \
             -e "/bootstrap=/d" \
             "$2/build"
