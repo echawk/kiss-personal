@@ -165,6 +165,12 @@ case $1 in
             KISS_HOOK='' kiss checksum
         )
         ;;
+    pigz)
+        # Static linking breaks?
+        sed -E -i \
+            -e "s/-static//" \
+            "$2/build"
+        ;;
     python)
         sed -E -i \
             -e "s/(configure)/\1 --with-lto --enable-optimizations/" \
