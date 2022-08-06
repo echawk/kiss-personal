@@ -4,6 +4,7 @@ cmake -B build \
     -DCMAKE_BUILD_TYPE=PGO \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_TESTING=OFF \
+    -DINSTALL_DOCUMENTATION=OFF \
     -DSKIP_SSL_TESTS=ON
 
 cmake --build   build
