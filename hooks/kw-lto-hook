@@ -171,6 +171,13 @@ case $1 in
             -e "s/-static//" \
             "$2/build"
         ;;
+    git)
+        # Static linking breaks?
+        sed -E -i \
+            -e "/^make LIBS/s/.*/make/" \
+            -e "/LDFLAGS -static/d" \
+            "$2/build"
+        ;;
     python)
         sed -E -i \
             -e "s/(configure)/\1 --with-lto --enable-optimizations/" \
