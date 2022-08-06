@@ -35,7 +35,7 @@ same_ver() {
 outdatedpkgs() {
     for d in "${KISS_ROOT:-/}"var/db/kiss/installed/*/ ; do (
         pkg="$(basename "$d")"
-        repo_dir="$(kiss search "$pkg" | grep -v "installed" | sed 1q)"
+        repo_dir="$(KISS_HOOK='' kiss search "$pkg" | grep -v "installed" | sed 1q)"
         if [ -n "$repo_dir" ]; then
             if ! same_ver ; then
                 echo "$pkg"
