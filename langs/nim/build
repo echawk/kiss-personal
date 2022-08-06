@@ -1,14 +1,18 @@
 #!/bin/sh -e
 
-(   
+if command -v nim; then
+    nim_exe="$(command -v nim)"
+else
+    # Bootstrap nim.
     cd csources
-
     # Build nim source files
     sh ./build.sh
-)
+    cd "$OLDPWD"
 
+    nim_exe="$PWD/bin/nim"
+fi
 # Build a release version of the "koch" maintenance program
-bin/nim compile --skipUserCfg --skipParentCfg --hints:off koch
+$nim_exe compile --skipUserCfg --skipParentCfg --hints:off koch
 
 # Build a release version of the nim compiler
 ./koch boot -d:release --skipUserCfg --skipParentCfg --hints:off
@@ -17,10 +21,9 @@ bin/nim compile --skipUserCfg --skipParentCfg --hints:off koch
 ./koch tools --skipUserCfg --skipParentCfg --hints:off
 
 # Build nimrtl.nim
-(   
-    cd lib
-    ../bin/nim c --app:lib -d:createNimRtl -d:release nimrtl.nim
-)
+cd lib
+$nim_exe c --app:lib -d:createNimRtl -d:release nimrtl.nim
+cd "$OLDPWD"
 
 #./koch install "$1"
 
