@@ -134,16 +134,29 @@ case $1 in
             "$2/build"
         ;;
     ffmpeg)
-        sed -E -i "s~(--prefix=/usr)~\1 --enable-lto~" "$2/build"
+        sed -E -i \
+            -e "s~(--prefix=/usr)~\1 --enable-lto~" \
+            "$2/build"
         ;;
     gcc)
-        sed -E -i "s/^(make)$/\1 profiledbootstrap/" "$2/build"
+        # Change the make command to be PGO.
+        # Add the configure flag to tell gcc to build with lto/bootstrap
+        # Ensure that we perform a bootstrap build
+        sed -E -i \
+            -e "s/^(make)$/\1 profiledbootstrap/" \
+            -e "/prefix/s/(--prefix)/--with-build-config=bootstrap-lto \1/" \
+            -e "/bootstrap=/d" \
+            "$2/build"
         ;;
     python)
-        sed -E -i "s/(configure)/\1 --with-lto --enable-optimizations/" "$2/build"
+        sed -E -i \
+            -e "s/(configure)/\1 --with-lto --enable-optimizations/" \
+            "$2/build"
         ;;
     zstd)
-        sed -E -i "s/(HAVE_LZ4=0)/\1 zstd-pgo/" "$2/build"
+        sed -E -i \
+            -e "s/(HAVE_LZ4=0)/\1 zstd-pgo/" \
+            "$2/build"
         ;;
 esac
 
