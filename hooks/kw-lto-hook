@@ -121,7 +121,7 @@ case $1 in
     binutils)
         # Enable gold linker for binutils.
         sed -E -i \
-            -e "s/(--enable-targets=).*$/\1$(cc -dumpmachine) \\/" \
+            -e "s/(--enable-targets=).*$/\1$(cc -dumpmachine) \\\\/" \
             -e "s/ld.bfd/ld.gold/" \
             "$2/build"
         ;;
