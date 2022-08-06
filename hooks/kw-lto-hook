@@ -191,7 +191,8 @@ case $1 in
         ;;
     zstd)
         sed -E -i \
-            -e "s/(HAVE_LZ4=0)/\1 zstd-pgo/" \
+            -e "/programs/d" \
+            -e "s#(HAVE_LZ4=0)#\1 -C programs/ zstd-pgo#" \
             "$2/build"
         ;;
 esac
