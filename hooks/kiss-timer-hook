@@ -48,6 +48,8 @@ case "$1" in
         print_time_elapsed "build" # Print time it took to build package.
         ;;
     post-install)
-        rm "$TIME_FILE"
+        if [ -e "$TIME_FILE" ]; then
+            rm "$TIME_FILE"
+        fi
         ;;
 esac
