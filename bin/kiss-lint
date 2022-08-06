@@ -164,6 +164,12 @@ checkpkg() {
                         fix() { : ; }
                         lint_with_fix # usless quote check
 
+                        t() { grep -nE "cmake" "$f" | line_aux ; }
+                        ok() { grep -qE "cmake" depends ; }
+                        msg() { echo "WARNING: 'cmake' is used, but not in depends (lines(s): $(t) in $f)" ; }
+                        fix() { printf "cmake make\n" >> depends ; }
+                        lint_with_fix # cmake check
+
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         $PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
