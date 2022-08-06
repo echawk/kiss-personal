@@ -2,10 +2,6 @@
 
 patch -p1 < musl-sched_h-calloc-poison.patch
 
-# Make sure gmp is built with generic options.
-cp gcc/gmp/configfsf.guess gcc/gmp/config.guess
-cp gcc/gmp/configfsf.sub   gcc/gmp/config.sub
-
 # Use lib not lib64 by default.
 sed '/m64=/s/lib64/lib/' gcc/gcc/config/i386/t-linux64 > _
 mv -f _ gcc/gcc/config/i386/t-linux64
