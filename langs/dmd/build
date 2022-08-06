@@ -4,6 +4,7 @@ d() { echo "$1" ; exit 1 ; }
 
 case "$(readlink "$(command -v ld)")" in
     ld.bfd);;
+    ld.gold);;
     *) d "Only 'ld' from 'binutils' is supported" ;;
 esac
 
