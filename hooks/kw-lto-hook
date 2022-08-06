@@ -12,14 +12,15 @@ export LDFLAGS="-Wl,-O1 -Wl,--as-needed $CFLAGS"
 # Add the CFLAGS/CXXFLAGS/LDFLAGS to the build script, since we can't set
 # the environment itself.
 add_flags() {
-    sed -i "1a export CFLAGS=\"$CFLAGS\"\nexport CXXFLAGS=\"\$CFLAGS\"\nexport LDFLAGS=\"$LDFLAGS\"" "$2/build"
-#    {
-#        echo "#!/bin/sh -e"
-#        echo "export CFLAGS=$CFLAGS"
-#        echo "export CXXFLAGS=\$CFLAGS"
-#        echo "export LDFLAGS=$LDFLAGS"
-#        sed 1d "$2/build"
-#    } > "$2/build"
+    path=$1
+    #sed -i "1a export CFLAGS=\"$CFLAGS\"\nexport CXXFLAGS=\"\$CFLAGS\"\nexport LDFLAGS=\"$LDFLAGS\"" "$2/build"
+    {
+        echo "#!/bin/sh -e"
+        echo "export CFLAGS=$CFLAGS"
+        echo "export CXXFLAGS=\$CFLAGS"
+        echo "export LDFLAGS=$LDFLAGS"
+        sed 1d "$path/build"
+    } > "$path/build"
 }
 
 saneflags() {
@@ -123,7 +124,7 @@ case $1 in
 esac
 
 # Add our LTO Flags to the build script.
-add_flags
+add_flags "$2"
 
 # Package specific build script modification.
 case $1 in
