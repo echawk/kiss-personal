@@ -69,15 +69,26 @@ case $1 in
     libtermkey |\
     lua |\
     lzo |\
-    ncurses)
+    ncurses|\
+    zlib|\
+    zstd)
         addflag "-ffat-lto-objects"
         ;;
-    binutils)
-        delflag "-fipa-pta"
+    ffmpeg|\
+    python)
+        # These packages have custom configuration for LTO.
+        nolto
         ;;
     gcc)
         nolto
         delflag "-fipa-pta"
+        ;;
+    binutils)
+        delflag "-fipa-pta"
+        ;;
+    chromium)
+        nolto
+        delflag "-fdevirtualize-at-ltrans"
         ;;
     firefox)
         nolto
@@ -108,8 +119,10 @@ case $1 in
         saneflags
         ;;
     *)
-        if grep rust "$2/depends"; then
-            addflag "-ffat-lto-objects"
+        if [ -e "$2/depends" ]; then
+            if grep rust "$2/depends"; then
+                addflag "-ffat-lto-objects"
+            fi
         fi
 esac
 
