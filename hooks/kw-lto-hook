@@ -139,6 +139,15 @@ case $1 in
             -e "/prefix/s/(--prefix)/--with-build-config=bootstrap-lto \1/" \
             -e "/bootstrap=/d" \
             "$2/build"
+
+        # Enable graphite optimizations
+        sed -E -i \
+            "/gcc$/a https://libisl.sourceforge.io/isl-0.25.tar.xz gcc/isl" \
+            "$2/sources"
+        (
+            cd "$2"
+            KISS_HOOK='' kiss checksum
+        )
         ;;
     python)
         sed -E -i \
