@@ -140,9 +140,12 @@ case $1 in
             -e "/bootstrap=/d" \
             "$2/build"
 
-        # Enable graphite optimizations
+        # Enable graphite optimizations.
         sed -E -i \
-            "/gcc$/a https://libisl.sourceforge.io/isl-0.25.tar.xz gcc/isl" \
+            "/prefix/s/(--prefix)/--with-isl \1/" \
+            "$2/build"
+        sed -E -i \
+            "/gcc$/a https://libisl.sourceforge.io/isl-0.23.tar.xz gcc/isl" \
             "$2/sources"
         (
             cd "$2"
