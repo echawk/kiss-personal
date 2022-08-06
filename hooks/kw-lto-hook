@@ -4,6 +4,12 @@
 
 # kissLTO link: https://github.com/git-bruh/kissLTO
 
+# Broken Packages (that build):
+# * clang
+
+# Won't Build
+# * rust
+
 # Our initial C/CXX/LD Flags, are modified in the first case statement below.
 export CFLAGS="-O3 -pipe -march=native -mtune=native -fno-math-errno -fdevirtualize-at-ltrans -fno-semantic-interposition -fipa-pta -flto=auto -fuse-linker-plugin -fgraphite-identity -floop-nest-optimize -fuse-ld=gold"
 export CXXFLAGS="$CFLAGS"
@@ -129,6 +135,11 @@ case $1 in
         ;;
     glibc)
         saneflags
+        ;;
+    # Other packages that I've tested.
+    chez-scheme |\
+    gprolog)
+        nolto
         ;;
     *)
         if [ -e "$2/depends" ]; then
