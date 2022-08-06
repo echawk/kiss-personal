@@ -57,6 +57,18 @@ clang_flags() {
     delflag "-floop-nest-optimize"
 }
 
+# Compiler check.
+case $CC in
+    clang)
+        # Remove GCC only flags.
+        clang_flags
+        ;;
+    tcc)
+        # tcc doesn't support these optimizations.
+        saneflags
+        ;;
+esac
+
 # Flag modification.
 case $1 in
     alsa-lib |\
@@ -99,7 +111,7 @@ case $1 in
         addflag "-ffat-lto-objects"
         # clang segfaults.
         delflag "-fno-semantic-interposition"
-       ;;
+        ;;
     git |\
     github-cli |\
     nodejs |\
