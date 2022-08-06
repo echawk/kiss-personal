@@ -178,6 +178,12 @@ case $1 in
             -e "/LDFLAGS -static/d" \
             "$2/build"
         ;;
+    curl)
+        # Static linking breaks?
+        sed -E -i \
+            -e "/Makefile.in/d" \
+            "$2/build"
+        ;;
     python)
         sed -E -i \
             -e "s/(configure)/\1 --with-lto --enable-optimizations/" \
