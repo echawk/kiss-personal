@@ -24,7 +24,6 @@ kiss list glibc || {
         -e "/gnu_get_libc_version/d" \
         lisp-kernel/pmcl-kernel.c > _
     mv -f _ lisp-kernel/pmcl-kernel.c
-    cat lisp-kernel/pmcl-kernel.c
 
     # Glibcisms are not Linuxisms.
     sed "185s/LINUX/__GLIBC__/" lisp-kernel/thread_manager.c > _
