@@ -2,6 +2,15 @@
 
 : > nostrip
 
+# CCL segfaults when linked with ld.gold
+for linker in ld.mold ld.lld ld.bfd; do
+    if command -v "$linker"; then
+        ln -s "$(command -v "$linker")" ld
+        break
+    fi
+done
+export PATH="$PWD:$PATH"
+
 # Without this flag appended, ccl segfaults.
 for f in lisp-kernel/*/Makefile; do
     sed -E "s/^(OSLIBS .*)/\1 -no-pie/" "$f" > _
