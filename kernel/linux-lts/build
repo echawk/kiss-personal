@@ -18,16 +18,18 @@ fi
 
 cp config .config
 
+# Only ld.bfd and ld.lld are supported.
+for linker in ld.bfd ld.lld; do
+    if command -v "$linker"; then
+        ln -s "$(command -v "$linker")" ld
+        break
+    fi
+done
+export PATH="$PWD:$PATH"
+
 make olddefconfig # Update the provided config.
 
-# If mold is the system linker, switch it out.
-if [ "$(kiss owns /usr/bin/ld)" = "mold" ]; then
-    kiss alternatives | grep '/usr/bin/ld' | kiss a -
-    make -j"$(nproc)"  # Force build with all cores.
-    kiss alternatives mold '/usr/bin/ld'
-else
-    make -j"$(nproc)"  # Force build with all cores.
-fi
+make -j"$(nproc)"  # Force build with all cores.
 
 mkdir -pv "$1/boot"
 install -Dm644 "arch/x86/boot/bzImage" "$1/boot/vmlinuz-$ver"
