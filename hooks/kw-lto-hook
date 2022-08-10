@@ -1,8 +1,11 @@
-#!/bin/sh
+#!/bin/sh -e
 
 # This kw hook is meant to replace the now deprecated kissLTO repo.
 
 # kissLTO link: https://github.com/git-bruh/kissLTO
+
+# GentooLTO make.conf
+# https://github.com/InBetweenNames/gentooLTO/blob/master/sys-config/ltoize/files/make.conf.lto.defines
 
 # Broken Packages (that build):
 # * clang
@@ -55,98 +58,121 @@ delflag() {
     flagsed "s/$1//"
 }
 
-clang_flags() {
-    # Unsupported flags.
-    delflag "-fipa-pta"
-    delflag "-fdevirtualize-at-ltrans"
+nographite() {
     delflag "-fgraphite-identity"
     delflag "-floop-nest-optimize"
 }
 
+clang_flags() {
+    # Unsupported flags.
+    delflag "-fipa-pta"
+    delflag "-fdevirtualize-at-ltrans"
+    nographite
+}
+
+# Supported Environment Variables:
+# 0 to disable, 1 to enable
+# * KW_LTO_LTO - toggles lto flag
+# * KW_LTO_GRA - toggles graphite flags
+# * KW_LTO_ON  - toggles saneflags
+KW_LTO_LTO=${KW_LTO_LTO:-1}
+KW_LTO_GRA=${KW_LTO_LTO:-1}
+KW_LTO_ON=${KW_LTO_LTO:-1}
+if [ "$KW_LTO_ON" -eq 0 ]; then
+    saneflags
+fi
+if [ "$KW_LTO_LTO" -eq 0 ]; then
+    nolto
+fi
+if [ "$KW_LTO_GRA" -eq 0 ]; then
+    nographite
+fi
+
 # Compiler check.
 case $CC in
-    clang)
-        # Remove GCC only flags.
-        clang_flags
-        ;;
-    tcc)
-        # tcc doesn't support these optimizations.
-        saneflags
-        ;;
+clang)
+    # Remove GCC only flags.
+    clang_flags
+    ;;
+tcc)
+    # tcc doesn't support these optimizations.
+    saneflags
+    ;;
 esac
 
 # Flag modification.
 case $1 in
-    alsa-lib |\
+alsa-lib | \
     efivar)
-        addflag "-flto-partition=none"
-        ;;
-    curl |\
-    libressl |\
-    openssl |\
-    libtermkey |\
-    lua |\
-    lzo |\
-    ncurses|\
-    zlib|\
+    addflag "-flto-partition=none"
+    ;;
+curl | \
+    libressl | \
+    openssl | \
+    libtermkey | \
+    lua | \
+    lzo | \
+    ncurses | \
+    zlib | \
     zstd)
-        addflag "-ffat-lto-objects"
-        ;;
-    ffmpeg|\
+    addflag "-ffat-lto-objects"
+    ;;
+ffmpeg | \
     python)
-        # These packages have custom configuration for LTO.
-        nolto
-        ;;
-    gcc)
-        nolto
-        delflag "-fipa-pta"
-        ;;
-    binutils)
-        delflag "-fipa-pta"
-        ;;
-    chromium)
-        nolto
-        delflag "-fdevirtualize-at-ltrans"
-        ;;
-    firefox)
-        nolto
-        clang_flags
-        delflag "-fuse-ld=gold"
-        ;;
-    llvm)
-        addflag "-ffat-lto-objects"
-        # clang segfaults.
-        delflag "-fno-semantic-interposition"
-        ;;
-    git |\
-    github-cli |\
-    nodejs |\
-    python2 |\
-    ruby |\
-    rust |\
-    strace |\
-    webkit2gtk |\
+    # These packages have custom configuration for LTO.
+    nolto
+    ;;
+gcc)
+    nolto
+    delflag "-fipa-pta"
+    ;;
+binutils)
+    delflag "-fipa-pta"
+    ;;
+chromium)
+    nolto
+    delflag "-fdevirtualize-at-ltrans"
+    ;;
+firefox)
+    nolto
+    clang_flags
+    delflag "-fuse-ld=gold"
+    ;;
+llvm)
+    addflag "-ffat-lto-objects"
+    # clang segfaults.
+    delflag "-fno-semantic-interposition"
+    ;;
+git | \
+    github-cli | \
+    nodejs | \
+    python2 | \
+    ruby | \
+    rust | \
+    strace | \
+    webkit2gtk | \
     xorg-server)
-        nolto
-        ;;
-    musl)
-        nolto
-        delflag "-fuse-ld=gold"
-        ;;
-    glibc)
-        saneflags
-        ;;
-    # Other packages that I've tested.
-    chez-scheme |\
+    nolto
+    ;;
+musl)
+    nolto
+    delflag "-fuse-ld=gold"
+    ;;
+glibc)
+    saneflags
+    ;;
+# Other packages that I've tested.
+chez-scheme | \
     gprolog)
-        nolto
-        ;;
-    *)
-        if [ -e "$2/depends" ]; then
-            if grep rust "$2/depends"; then
-                addflag "-ffat-lto-objects"
-            fi
+    nolto
+    ;;
+*)
+    if [ -e "$2/depends" ]; then
+        if grep rust "$2/depends"; then
+            addflag "-ffat-lto-objects"
         fi
+    fi
+    ;;
 esac
 
 # Add our LTO Flags to the build script.
@@ -154,69 +180,71 @@ add_flags "$2"
 
 # Package specific build script modification.
 case $1 in
-    binutils)
-        # Enable gold linker for binutils.
-        sed -E -i \
-            -e "s/(--enable-targets=).*$/\1$(cc -dumpmachine) \\\\/" \
-            -e "s/ld.bfd/ld.gold/" \
-            "$2/build"
-        ;;
-    ffmpeg)
-        sed -E -i \
-            -e "s~(--prefix=/usr)~\1 --enable-lto~" \
-            "$2/build"
-        ;;
-    gcc)
-        # Change the make command to be PGO, and to use sane CFLAGS in stage1 of bootstrap.
-        # Add the configure flag to tell gcc to build with lto/bootstrap
-        # Ensure that we perform a bootstrap build
-        sed -E -i \
-            -e "s/^(make)$/\1 BOOT_CFLAGS=\"\${CFLAGS}\" STAGE1_CFLAGS=\"-O2 -pipe -march=native\" profiledbootstrap/" \
-            -e "/prefix/s/(--prefix)/--with-build-config=bootstrap-lto \1/" \
-            -e "/bootstrap=/d" \
-            "$2/build"
+binutils)
+    # Enable gold linker for binutils.
+    sed -E -i \
+        -e "s/(--enable-targets=).*$/\1$(cc -dumpmachine) \\\\/" \
+        -e "s/ld.bfd/ld.gold/" \
+        "$2/build"
+    ;;
+ffmpeg)
+    # Build system expects lto to be enabled via configure.
+    sed -E -i \
+        -e "s~(--prefix=/usr)~\1 --enable-lto~" \
+        "$2/build"
+    ;;
+gcc)
+    # Change the make command to be PGO, and to use sane CFLAGS in stage1 of bootstrap.
+    # Add the configure flag to tell gcc to build with lto/bootstrap
+    # Ensure that we perform a bootstrap build
+    sed -E -i \
+        -e "s/^(make)$/\1 BOOT_CFLAGS=\"\${CFLAGS}\" STAGE1_CFLAGS=\"-O2 -pipe -march=native\" profiledbootstrap/" \
+        -e "/prefix/s/(--prefix)/--with-build-config=bootstrap-lto \1/" \
+        -e "/bootstrap=/d" \
+        "$2/build"
 
-        # Enable graphite optimizations.
-        sed -E -i \
-            "/prefix/s/(--prefix)/--with-isl \1/" \
-            "$2/build"
-        sed -E -i \
-            "/gcc$/a https://libisl.sourceforge.io/isl-0.23.tar.xz gcc/isl" \
-            "$2/sources"
-        (
-            cd "$2"
-            KISS_HOOK='' kiss checksum
-        )
-        ;;
-    pigz)
-        # Static linking breaks?
-        sed -E -i \
-            -e "s/-static//" \
-            "$2/build"
-        ;;
-    git)
-        # Static linking breaks?
-        sed -E -i \
-            -e "/^make LIBS/s/.*/make/" \
-            -e "/LDFLAGS -static/d" \
-            "$2/build"
-        ;;
-    curl)
-        # Static linking breaks?
-        sed -E -i \
-            -e "/Makefile.in/d" \
-            "$2/build"
-        ;;
-    python)
-        sed -E -i \
-            -e "s/(configure)/\1 --with-lto --enable-optimizations/" \
-            "$2/build"
-        ;;
-    zstd)
-        sed -E -i \
-            -e "/programs/d" \
-            -e "s#(HAVE_LZ4=0)#\1 -C programs/ zstd-pgo#" \
-            "$2/build"
-        ;;
+    # Enable graphite optimizations.
+    sed -E -i \
+        "/prefix/s/(--prefix)/--with-isl \1/" \
+        "$2/build"
+    sed -E -i \
+        "/gcc$/a https://libisl.sourceforge.io/isl-0.23.tar.xz gcc/isl" \
+        "$2/sources"
+    (
+        cd "$2"
+        KISS_HOOK='' kiss checksum
+    )
+    ;;
+pigz)
+    # Static linking breaks?
+    sed -E -i \
+        -e "s/-static//" \
+        "$2/build"
+    ;;
+git)
+    # Static linking breaks?
+    sed -E -i \
+        -e "/^make LIBS/s/.*/make/" \
+        -e "/LDFLAGS -static/d" \
+        "$2/build"
+    ;;
+curl)
+    # Static linking breaks?
+    sed -E -i \
+        -e "/Makefile.in/d" \
+        "$2/build"
+    ;;
+python)
+    # Build with PGO.
+    sed -E -i \
+        -e "s/(configure)/\1 --with-lto --enable-optimizations/" \
+        "$2/build"
+    ;;
+zstd)
+    # Build with PGO & remove static linking flags.
+    sed -E -i \
+        -e "/programs/d" \
+        -e "s#(HAVE_LZ4=0)#\1 -C programs/ zstd-pgo#" \
+        "$2/build"
+    ;;
 esac
-
