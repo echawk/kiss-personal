@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+v="$(ghc --numeric-version)"
+
+./bootstrap/bootstrap.py \
+    -d "./bootstrap/linux-$v.json" \
+    -w /usr/bin/ghc
+
+mkdir -p "$1/usr/bin"
+cp ./_build/bin/cabal "$1/usr/bin/cabal"
