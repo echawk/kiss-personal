@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+cabal v2-build \
+    --enable-static \
+    --enable-executable-static
+
+mkdir -p "$1/usr/bin"
+cp "$(find . -type f -name stack)" "$1/usr/bin/"
