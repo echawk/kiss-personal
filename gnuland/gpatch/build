@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -static"
+
+./configure \
+    --prefix=/usr \
+    --program-prefix=g
+
+make
+make install
+
+ln -s /usr/bin/gpatch "$1/usr/bin/patch"
