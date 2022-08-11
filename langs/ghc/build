@@ -21,7 +21,8 @@ ffi_lib=$(pkg-config libffi --libs-only-L); ffi_lib="${ffi_lib%% }"
     --disable-ld-override \
     CONF_CC_OPTS_STAGE0=" $ffi_lib "
 
-sed -i -e 's/unknown/pc/g' llvm-targets
+sed -e 's/unknown/pc/g' llvm-targets > _
+mv -f _ llvm-targets
 
 make
 make DESTDIR="$1" install
