@@ -2,9 +2,17 @@
 
 v="$(ghc --numeric-version)"
 
-./bootstrap/bootstrap.py \
-    -d "./bootstrap/linux-$v.json" \
-    -w /usr/bin/ghc
+if ! command -v cabal; then
+    ./bootstrap/bootstrap.py \
+        -d "./bootstrap/linux-$v.json" \
+        -w /usr/bin/ghc
+    export PATH="$PWD/_build/bin:$PATH"
+fi
+
+# Statically build cabal.
+cabal v2-build cabal \
+    --enable-static \
+    --enable-executable-static
 
 mkdir -p "$1/usr/bin"
-cp ./_build/bin/cabal "$1/usr/bin/cabal"
+cp "$(find dist-newstyle/ -type f -name cabal)" "$1/usr/bin/"
