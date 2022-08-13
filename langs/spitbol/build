@@ -3,11 +3,7 @@
 sed "s/sudo//" makefile > _
 mv -f _ makefile
 
-mk() {
-    make CC="$CC" $@
-}
-
-mk bootsbl
-mk BOOTBOL=./bootsbl spitbol
+make CC="$CC" bootsbl
+make CC="$CC" BOOTBOL=./bootsbl spitbol
 mkdir -p "$1/usr/bin"
-mk DEST="$1/usr/bin" install
+make CC="$CC" DEST="$1/usr/bin" install
