@@ -2,7 +2,7 @@
 
 make EMACS=/usr/bin/emacs
 mkdir -p "$1/usr/share/emacs/site-lisp/slime"
-cp -r *  "$1/usr/share/emacs/site-lisp/slime"
+cp -r ./*  "$1/usr/share/emacs/site-lisp/slime"
 mkdir -p "$1/usr/share/common-lisp/systems"
 ln -s /usr/share/emacs/site-lisp/slime/swank.asd \
     "$1/usr/share/common-lisp/systems"
