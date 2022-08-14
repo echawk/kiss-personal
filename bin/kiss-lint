@@ -170,6 +170,12 @@ checkpkg() {
                         fix() { printf "cmake make\n" >> depends ; }
                         lint_with_fix # cmake check
 
+                        t() { grep -nE "nproc" "$f" | line_aux ; }
+                        ok() { ! grep -qE "nproc" "$f" ; }
+                        msg() { echo "WARNING: 'nproc' is used, but is not portable across Unices, consider wrapping (lines(s): $(t) in $f)" ; }
+                        fix() { : ; }
+                        lint_with_fix # cmake check
+
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         $PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
