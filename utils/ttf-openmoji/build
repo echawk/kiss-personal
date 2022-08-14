@@ -1,4 +1,4 @@
 #!/bin/sh -e
-unzip *.zip
+unzip ./*.zip
 mkdir -p "$1/usr/share/fonts/TTF"
-cp *.ttf "$1/usr/share/fonts/TTF"
+cp ./*.ttf "$1/usr/share/fonts/TTF"
