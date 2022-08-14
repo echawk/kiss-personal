@@ -1,7 +1,13 @@
 #!/bin/sh -e
-./configure \
-    --prefix=/usr
 
-make pax LDFLAGS="$LDFLAGS -static"
+export LIBS=-lfts
+
+TARGET_OS=$(uname) CC=$CC CFLAGS="$CFLAGS -DGNU_SOURCE" LDFLAGS="$LDFLAGS" sh Build.sh -r
+
 mkdir -p "$1/usr/bin"
-cp pax "$1/usr/bin"
+for bin in pax tar cpio; do
+    cp "$bin" "$1/usr/bin"
+done
+
+mkdir -p "$1/usr/share/man/man1/"
+cp ./*.1 "$1/usr/share/man/man1/"
