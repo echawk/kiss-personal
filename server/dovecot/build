@@ -6,6 +6,8 @@ kiss list postgresql && CF="$CF --with-pgsql"
 kiss list mariadb    && CF="$CF --with-mysql"
 kiss list zstd       && CF="$CF --with-zstd"
 
+# Intended behavior
+# shellcheck disable=2086
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -23,5 +25,5 @@ kiss list zstd       && CF="$CF --with-zstd"
 make
 make install
 
-rm -rf "$1/etc"
-cp doc/mkcert.sh "$1/usr/lib/dovecot/mkcert.sh"
+rm -rf "${1:?}/etc"
+cp doc/mkcert.sh "${1:?}/usr/lib/dovecot/mkcert.sh"
