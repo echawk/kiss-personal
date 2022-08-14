@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+# Ignore unused variables, they're harmless.
+# shellcheck disable=2034
+
 read -r ver _ < "${0%/*}/version"
 
 KMVER=${ver%%.*}
