@@ -1,11 +1,16 @@
 #!/bin/sh -e
 
+# Intended behavior.
+# shellcheck disable=2068
 mk() {
     make SHELL=/usr/bin/bash $@
 }
 
 ./autobuild
-./configure --prefix=/usr
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc
+
 mk mlkit
 mk mlkit_libs
 mk DESTDIR="$1/" install

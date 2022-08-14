@@ -5,6 +5,8 @@ for p in libluv libtommath libffi libatomic_ops; do
     kiss list "$p" && cf="$cf --has-$p"
 done
 
+# Intended behavior.
+# shellcheck disable=2086
 perl Configure.pl \
     --prefix=/usr \
     $cf

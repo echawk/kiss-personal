@@ -1,14 +1,11 @@
 #!/bin/sh -e
 
-if command -v mlton; then
-    make with-mlton
-elif command -v mlkit; then
-    make with-mlkit
-elif command -v poly; then
-    make with-poly
-elif command -v mosml; then
-    make with-mosml
-fi
+for sml in mlton mlkit poly mosml; do
+    if command -v $sml; then
+        make with-$sml
+        break
+    fi
+done
 
 make INSTALLDIR="$1/opt/hamlet" install
 

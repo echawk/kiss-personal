@@ -17,6 +17,8 @@ done
 dmd="$(command -v dmd)"
 
 mk() {
+    # False positive.
+    # shellcheck disable=2068
     make -f posix.mak TARGET_CPU=X86 BUILD=release PIC=1 DMD="$dmd" $@
 }
 

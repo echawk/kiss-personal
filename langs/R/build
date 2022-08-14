@@ -35,6 +35,8 @@ for p in cairo lapack libpng libtiff-4 tk blas libjpeg x11; do
     fi
 done
 
+# Intended Behavior.
+# shellcheck disable=2086
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc/R \

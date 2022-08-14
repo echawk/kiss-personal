@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+cd gcl
+sed -i "/Cannot determine mpsize/s/.*/echo a/" configure
+./configure \
+    --enable-dynsysgmp \
+    --disable-xdr \
+    --prefix=/usr
+
+make
+make install
