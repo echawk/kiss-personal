@@ -13,6 +13,7 @@ mk() {
         "$@"
 }
 
+# shellcheck disable=2097,2098
 CFLAGS='' mk CFLAGS="$CPPFLAGS $CFLAGS"
 mk install
 
