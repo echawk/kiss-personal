@@ -1,8 +1,10 @@
 #!/bin/sh -e
 
+# Intended.
+# shellcheck disable=2153
 export CCFLAGS="$CFLAGS"
 
 bin/package make
 
 mkdir -p "$1/usr/bin"
-cp arch/$(bin/package host type)/bin/ksh "$1/usr/bin/"
+cp "arch/$(bin/package host type)/bin/ksh" "$1/usr/bin/"
