@@ -6,6 +6,7 @@ meson setup \
     -Ddoc=disabled \
     -Ddoxygen=disabled \
     -Dscriptlet-shell=/usr/bin/bash \
+    -Dpkg_config_path=/usr/lib/pkgconfig \
     output
 
 ninja -C output
