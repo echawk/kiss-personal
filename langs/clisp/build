@@ -4,7 +4,7 @@ export CFLAGS="$CFLAGS -falign-functions=4"
 export FORCE_UNSAFE_CONFIGURE=1
 
 # False positive.
-# shellcheck disable=3045
+# shellcheck disable=3045,2039
 ulimit -s 16384 2> /dev/null || :
 
 ./configure \
