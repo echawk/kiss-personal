@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+go build -o gogs
+
+mkdir -p "$1/usr/bin"
+cp gogs "$1/usr/bin"
