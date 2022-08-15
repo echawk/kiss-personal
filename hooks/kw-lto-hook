@@ -70,6 +70,11 @@ clang_flags() {
     nographite
 }
 
+usemold() {
+    delflag "-fuse-ld=gold"
+    addflag "-fuse-ld=mold"
+}
+
 # Supported Environment Variables:
 # 0 to disable, 1 to enable
 # * KW_LTO_LTO - toggles lto flag
@@ -99,6 +104,11 @@ tcc)
     saneflags
     ;;
 esac
+
+# Linker check.
+if command -v mold > /dev/null; then
+    usemold
+fi
 
 # Flag modification.
 case $1 in
