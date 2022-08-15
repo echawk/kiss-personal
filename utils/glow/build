@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+go build
+
+mkdir -p "$1/usr/bin"
+cp glow "$1/usr/bin"
