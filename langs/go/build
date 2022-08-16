@@ -25,7 +25,7 @@ export GO_LDFLAGS="-w -s"
 
 export GOROOT_FINAL=/usr/lib/go
 
-if [ -f "$KISS_ROOT/var/db/kiss/go/manifest" ]; then
+if command -v go; then
     export GOROOT_BOOTSTRAP=/usr/lib/go
 else
     export GOROOT_BOOTSTRAP="$PWD/lib/go-bootstrap"
