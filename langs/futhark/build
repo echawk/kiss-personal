@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+cabal v2-build \
+    --enable-static \
+    --enable-executable-static
+
+mkdir -p "$1/usr/bin"
+cp "$(find dist-newstyle/ -type f -name futhark)" "$1/usr/bin/"
