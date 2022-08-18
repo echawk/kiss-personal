@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+go build -o hugo
+
+mkdir -p "$1/usr/bin"
+cp hugo "$1/usr/bin"
