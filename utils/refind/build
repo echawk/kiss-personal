@@ -1,0 +1,33 @@
+#!/bin/sh -e
+
+for patch in *.patch; do
+    patch -p1 < "$patch"
+done
+
+# Hardcode RefindDir, so that refind-install can find refind_x64.efi
+# shellcheck disable=2016
+sed -e 's|RefindDir=\"\$ThisDir/refind\"|RefindDir="/usr/share/refind/"|g' \
+    refind-install > _
+mv -f _ refind-install
+chmod +x refind-install
+
+# Parallel build is broken.
+make -j1 all_gnuefi
+
+mkdir -p "$1/usr/share"
+for d in refind refind/drivers_x86_64 refind/tools_x86_64 man/man8; do
+    mkdir -p "$1/usr/share/$d"
+done
+cp refind/*.efi       "$1/usr/share/refind"
+cp refind.conf-sample "$1/usr/share/refind"
+cp gptsync/*.efi      "$1/usr/share/refind/tools_x86_64"
+cp drivers_*/*.efi    "$1/usr/share/refind/drivers_x86_64"
+cp docs/man/*.8       "$1/usr/share/man/man8"
+chmod -R 755 "$1"/usr/share/refind/*
+
+mkdir -p "$1/usr/bin"
+for bin in mkrlconf mvrefind refind-mkdefault refind-install; do
+    cp "$bin" "$1/usr/bin"
+done
+cp fonts/mkfont.sh "$1/usr/bin/refind-mkfont"
+cp -r icons "$1/usr/share/refind"
