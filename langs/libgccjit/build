@@ -12,12 +12,6 @@ if [ "${sys_arch#i*86}" ]; then
     mv -f _ gcc/gcc/config/i386/linux64.h
 fi
 
-# FIXME: there is an offset on the diff, causing 'busybox patch' to fail.
-(
-    cd gcc
-    patch -p1 < ../gccjit-musl-fix.patch
-)
-
 case "$sys_arch" in
     i*86)   archopts="--build=i686-pc-linux-musl" ;;
     x86_64) archopts="--build=x86_64-pc-linux-musl" ;;
