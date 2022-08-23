@@ -1,0 +1,6 @@
+curl
+glib
+libxml2
+libyaml
+lmdb
+meson make
