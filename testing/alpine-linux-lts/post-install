@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+conf_file=/etc/tinyramfs/alpine.config
+
+# Determine version.
+version="$(grep "alpinever" "$conf_file" | cut -d'=' -f2)"
+
+tinyramfs -k "$version" -c "$conf_file" /boot/initrd
+
+# Update grub config if installed.
+kiss list grub && grub-mkconfig -o /boot/grub/grub.cfg

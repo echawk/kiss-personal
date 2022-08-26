@@ -1,0 +1,34 @@
+#!/bin/sh -e
+
+# Get the latest lts version from git.
+version="$(curl -sL \
+    https://git.alpinelinux.org/aports/plain/main/linux-lts/APKBUILD \
+    | grep 'pkgver=' \
+    | cut -d'=' -f2)"
+
+# And download the appropriate tarball.
+curl -LO "https://dl-cdn.alpinelinux.org/alpine/edge/main/x86_64/linux-lts-$version-r0.apk"
+
+# This is safe to do, even with all the warnings about headers.
+tar xvf ./*.apk
+
+# Finally install the contents of the tarball.
+rm -- *.apk
+cp -r . "$1"
+
+mkdir -p "$1/etc/tinyramfs/"
+
+# Generate a tinyramfs config.
+cat <<EOF > "$1/etc/tinyramfs/alpine.config"
+
+alpinever="$(ls "$1/lib/modules/")"
+
+hooks="mdevd"
+
+compress="gzip -9"
+
+# Assuming UUID for root, will fix in future.
+root="$(awk '$2 ~ /^\/$/ { print $1 } ' < /etc/fstab | cut -d'=' -f2)"
+root_type="$(awk '$2 ~ /^\/$/ { print $3 }' < /etc/fstab)"
+
+EOF
