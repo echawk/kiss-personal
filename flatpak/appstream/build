@@ -2,8 +2,7 @@
 
 cd App*/
 
-sed -e "/subdir('po/d" \
-    -e "/subdir('docs/d" \
+sed -e "/subdir('docs/d" \
     meson.build > _
 mv -f _ meson.build
 
