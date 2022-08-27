@@ -3,7 +3,8 @@
 export CFLAGS="$CFLAGS -static"
 
 ./configure \
-    --prefix=/usr
+    --prefix=/usr \
+    --disable-nls
 
 make
 make install
