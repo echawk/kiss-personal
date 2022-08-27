@@ -7,5 +7,3 @@ kiss alternatives \
     | xargs -I{} \
     -P0 \
     sh -c "owner=\$(kiss owns {}); [ \$owner ] || printf 'warning: {} has no owner\n'"
-
-
