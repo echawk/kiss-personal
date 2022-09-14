@@ -1,16 +1,18 @@
 #!/bin/sh -e
 
-patch -p1 < posix-build.patch
-
 # Disable stripping of binaries.
 # This breaks Go.
 : > nostrip
+
+for p in *.patch; do
+    patch -p1 < "$p"
+done
 
 export CC="${CC:-cc}"
 export GOARCH=amd64
 export GO_LDFLAGS="-w -s"
 
-[ -f "$KISS_ROOT/var/db/kiss/installed/go/manifest" ] || {
+command -v go || {
     export GOROOT="$PWD/go1.4-bootstrap"
     export GOROOT_FINAL="$PWD/lib/go-bootstrap"
 
