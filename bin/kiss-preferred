@@ -4,8 +4,6 @@
 
 kiss alternatives \
     | cut -d' ' -f2 \
-    | xargs \
-    -P0 \
-    -I{} \
+    | xargs -P0 -I{} \
     sh -c "( kiss owns {}; echo {} ) | paste - -" \
     tr '\t' ' '
