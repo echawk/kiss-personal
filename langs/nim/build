@@ -25,23 +25,24 @@ cd lib
 $nim_exe c --app:lib -d:createNimRtl -d:release nimrtl.nim
 cd "$OLDPWD"
 
-#./koch install "$1"
+mkdir -p \
+    "$1/usr/bin/" \
+    "$1/etc/nim/" \
+    "$1/usr/lib/nim/"
 
-install -d "$1/usr/lib"
-
-cp -a lib      "$1/usr/lib/nim"
+cp -a lib/*    "$1/usr/lib/nim"
 cp -a compiler "$1/usr/lib/nim"
 
-install -Dm 644 compiler.nimble "$1"/usr/lib/nim/compiler
-install -m 755 lib/libnimrtl.so "$1"/usr/lib/libnimrtl.so
+mv -f compiler.nimble "$1/usr/lib/nim/compiler"
+cp lib/libnimrtl.so "$1/usr/lib/libnimrtl.so"
 
-install -Dm 644 config/* -t "$1"/etc/nim
-install -Dm 755 bin/*    -t "$1"/usr/bin
+cp config/* "$1/etc/nim/"
+cp bin/*    "$1/usr/bin/"
 
 # Workaround Nim's nonstandard header file placement
 # (https://bugs.archlinux.org/task/50252)
-mkdir -p "$1/usr/include"
-cp -dpR "$1/usr/lib/nim/"*.h "$1"/usr/include/
+mkdir -p "$1/usr/include/"
+cp lib/*.h "$1/usr/include"
 
 # Nimble looks for nimscriptapi.nim in /usr/bin/nimblepkg/, of all places
 mkdir -p "$1/usr/share/nimble"
