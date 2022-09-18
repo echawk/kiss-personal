@@ -10,8 +10,8 @@ CFLAGS="$CFLAGS -no-pie" ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
     --mandir=/usr/share/man \
-    --with-gmp \
-    --with-system-libffi
+    --with-gmp
+
 make
 make compiler
 make DESTDIR="$1" install
