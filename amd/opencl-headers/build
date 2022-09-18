@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+cd CL
+
+mkdir -p "$1/usr/include/CL/"
+cp *.h   "$1/usr/include/CL/"
