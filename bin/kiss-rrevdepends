@@ -3,7 +3,7 @@
 
 for repo in $(echo "$KISS_PATH:/var/db/kiss/installed" | tr ':' ' '); do
     for pkg in "$repo"/*; do
-        (   
+        (
             if grep -sq "$1" "$pkg/depends"; then
                 echo "$pkg"
             fi
