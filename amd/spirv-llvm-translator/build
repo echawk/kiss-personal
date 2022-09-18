@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+cmake -B build \
+    -G "Unix Makefiles" \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DCMAKE_SKIP_RPATH=ON \
+    -DLLVM_INCLUDE_TESTS=OFF \
+    -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=/usr/include/spirv/ \
+    -DBUILD_SHARED_LIBS=ON \
+    -Wno-dev
+
+make -C build
+make -C build llvm-spirv
+make -C build install
+
+mkdir -p "$1/usr/bin"
+cp build/tools/llvm-spirv/llvm-spirv "$1/usr/bin"
