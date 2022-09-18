@@ -1,6 +1,7 @@
 bison        make
 expat
 flex         make
+libclc
 libX11
 libXdamage
 libXext
