@@ -53,7 +53,7 @@ meson setup \
     -Dglx=auto \
     -Degl=enabled \
     -Dvalgrind="${valgrind:-false}" \
-    -Dzstd=false \
+    -Dzstd=disabled \
     -Dglvnd="${glvnd_enabled:-false}" \
     output
 
