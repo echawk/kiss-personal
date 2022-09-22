@@ -21,7 +21,7 @@ mkdir -p "$1/etc/tinyramfs/"
 # Generate a tinyramfs config.
 cat <<EOF > "$1/etc/tinyramfs/alpine.config"
 
-alpinever="$(ls "$1/lib/modules/")"
+alpinever=$(ls "$1/lib/modules/")
 
 hooks="mdevd"
 
