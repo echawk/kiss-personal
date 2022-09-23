@@ -49,7 +49,7 @@ meson setup \
     -Dplatforms=x11 \
     -Dgallium-drivers=radeonsi \
     -Dgallium-opencl=icd \
-    -Dvulkan-drivers=amd \
+    -Dvulkan-drivers='' \
     -Dglx=auto \
     -Degl=enabled \
     -Dvalgrind="${valgrind:-false}" \
