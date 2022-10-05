@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --disable-error-on-warning \
+    --program-suffix=1.8
+
+make
+make install
+
+sed '1s/guile/guile1.8/' "$1/usr/bin/guile-config1.8" > _
+mv -f _ "$1/usr/bin/guile-config1.8"
+
+chmod +x "$1/usr/bin/guile-config1.8"
+mv "$1/usr/share/aclocal/guile.m4" "$1/usr/share/aclocal/guile18.m4"
