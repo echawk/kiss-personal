@@ -3,4 +3,4 @@
 unzip ./*.zip
 
 mkdir -p "$1/usr/share/fonts/tex-gyre"
-cp  */*.otf "$1/usr/share/fonts/tex-gyre"
+cp  ./*/*.otf "$1/usr/share/fonts/tex-gyre"
