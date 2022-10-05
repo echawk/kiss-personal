@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+export GUILE=guile1.8
+
+./configure \
+    --prefix=/usr \
+    --disable-texi2html
+
+make
+make DESTDIR="$1" install

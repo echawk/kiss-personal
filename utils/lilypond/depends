@@ -1,0 +1,12 @@
+fontconfig
+fontforge make
+freetype-harfbuzz
+glib
+gmp
+guile1.8
+libtool
+pango
+rsync
+t1utils
+texlive-bin
+tex-gyre-fonts
