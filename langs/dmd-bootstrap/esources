@@ -1,0 +1,5 @@
+https://github.com/dlang/dmd/archive/75266348c8a2368945a339ab86d7c8960a9bfc08.tar.gz      dmd/
+https://github.com/dlang/druntime/archive/33ae38cef41564b12864470afaf8430eb7334d3b.tar.gz druntime/
+https://github.com/dlang/phobos/archive/30ac23a0889dd183221ce531a057171dd45296c4.tar.gz   phobos/
+patches/boot-musl-math.patch                                                              patches/
+patches/boot-musl.patch                                                                   patches/

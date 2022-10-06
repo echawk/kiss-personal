@@ -1,0 +1,2 @@
+git+https://github.com/wren-lang/wren wren/
+git+https://github.com/wren-lang/wren-cli wren-cli/
