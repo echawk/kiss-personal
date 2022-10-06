@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+
+# _e_xtended checksum - implements the 'variables' that so many in the
+# kiss community seem to hate.
+
+# You need one extra file in your package repo:
+# - esources
+
+# Which is essentially the same as your regular sources but with the
+# previously valid package markers.
+
+# It generates a 'sources' file from 'esources' with all of the variables
+# removed, then uses 'kiss c' to generate a new checksums file.
+
+read V _ < version
+
+VERSION=${V%+*}
+IDENT=${V#*+}
+MAJOR=${VERSION%%.*}
+MINOR=${VERSION#*.}
+MINOR=${MINOR%%.*}
+PATCH=${VERSION#*.}
+PATCH=${PATCH##*.} # I think?
+PACKAGE=$(basename "$PWD")
+
+sed -e "s/VERSION/$VERSION/g" \
+    -e "s/IDENT/$IDENT/g" \
+    -e "s/MAJOR/$MAJOR/" \
+    -e "s/MINOR/$MINOR/" \
+    -e "s/PATCH/$PATCH/" \
+    -e "s/PACKAGE/$PACKAGE/" \
+    esources > sources
+
+kiss checksum
