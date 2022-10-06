@@ -29,6 +29,12 @@ sed -e "s/VERSION/$VERSION/g" \
     -e "s/MINOR/$MINOR/" \
     -e "s/PATCH/$PATCH/" \
     -e "s/PACKAGE/$PACKAGE/" \
+    -e "s/\\VERSION/VERSION/g" \
+    -e "s/\\IDENT/IDENT/g" \
+    -e "s/\\MAJOR/MAJOR/" \
+    -e "s/\\MINOR/MINOR/" \
+    -e "s/\\PATCH/PATCH/" \
+    -e "s/\\PACKAGE/PACKAGE/" \
     esources > sources
 
 kiss checksum
