@@ -1,0 +1,3 @@
+https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-VERSION.tar.xz
+patches/kernel-no-perl.patch
+files/config
