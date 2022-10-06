@@ -1,0 +1,7 @@
+https://nginx.org/download/nginx-VERSION.tar.gz
+files/nginx.conf
+files/nginx.confd
+files/nginx.initd
+files/nginx.logrotate
+files/default.conf
+files/stream.conf
