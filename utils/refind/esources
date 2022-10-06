@@ -1,0 +1,3 @@
+https://sourceforge.net/projects/refind/files/VERSION/refind-src-VERSION.tar.gz
+patches/01-missing-always-inline.patch
+patches/10-refind-disable-fortify.patch
