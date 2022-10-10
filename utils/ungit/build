@@ -1,0 +1,5 @@
+#!/bin/sh -e
+mv ungit-*.tgz?no-extract ungit.tgz
+npm install -g --prefix "$1/usr" ungit.tgz
+
+chmod -R u=rwX,go=rX "$1"
