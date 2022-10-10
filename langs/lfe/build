@@ -7,5 +7,3 @@ cd "$1/usr/bin"
 for l in *; do
     ln -sf "../lib/lfe/bin/$l" "$l"
 done
-
-rm -rf "$1/usr/share/man"
