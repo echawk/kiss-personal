@@ -1,4 +1,4 @@
-https://github.com/dlang/dmd/archive/vVERSION.tar.gz      dmd
-https://github.com/dlang/druntime/archive/vVERSION.tar.gz druntime
-https://github.com/dlang/phobos/archive/vVERSION.tar.gz   phobos
+https://github.com/dlang/dmd/archive/v2.091.0.tar.gz      dmd
+https://github.com/dlang/druntime/archive/v2.091.0.tar.gz druntime
+https://github.com/dlang/phobos/archive/v2.091.0.tar.gz   phobos
 patches/backport-ld-exit.patch                            patches/
