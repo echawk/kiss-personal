@@ -2,10 +2,10 @@
 git submodule update --init --recursive
 sed 's/bool warn = true/bool warn = false/' \
     src/main.cpp > _
-                       mv -f _ src/main.cpp
-make \
-    CHECK_WHITESPACE=/bin/true \
-    UPX_LZMA_VERSION=0x465 \
-    all
-install -Dm755 src/upx.out "$1/usr/bin/upx"
-install -Dm644 doc/upx.1   "$1/usr/share/man/man1/upx.1"
+mv -f _ src/main.cpp
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr
+
+cmake --build   build
+cmake --install build
