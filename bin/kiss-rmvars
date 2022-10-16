@@ -1,7 +1,7 @@
 #!/bin/sh -x
 
 # Script to remove source variables from Kiss linux source files.
-
+[ -e version ] && [ -e sources ] && {
 read V _ < version
 
 VERSION=${V%+*}
@@ -20,3 +20,4 @@ sed -e "s/VERSION/$VERSION/g" \
     -e "s/PATCH/$PATCH/" \
     -e "s/PACKAGE/$PACKAGE/" \
     sources
+}
