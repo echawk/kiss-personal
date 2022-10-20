@@ -4,7 +4,8 @@
 # Needs `kw`.
 case $1 in
     clang)
-        cte="https://github.com/llvm/llvm-project/releases/download/llvmorg-VERSION/clang-tools-extra-VERSION.src.tar.xz tools/extra"
+        ver="$(cut -d' ' -f1 < "$2/version")"
+        cte="https://github.com/llvm/llvm-project/releases/download/llvmorg-$ver/clang-tools-extra-$ver.src.tar.xz tools/extra"
         echo "$cte" >> "$2/sources"
         (
             cd "$2"
