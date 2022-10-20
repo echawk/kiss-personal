@@ -76,7 +76,7 @@ usemold() {
 }
 
 # Supported Environment Variables:
-# 0 to disable, 1 to enable
+# 0 to disable, anything else to enable
 # * KW_LTO_LTO - toggles lto flag
 # * KW_LTO_GRA - toggles graphite flags
 # * KW_LTO_ON  - toggles saneflags
