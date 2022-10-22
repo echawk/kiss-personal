@@ -1,0 +1,40 @@
+#!/bin/sh -e
+
+# Utility to install python pip packages via kiss.
+
+pip_pkg="$1"
+
+[ -n "$pip_pkg" ] || exit 1
+
+version=$(
+curl -s "https://pypi.org/project/$pip_pkg/" \
+    | tr -d '\n' \
+    | sed "s/<p/\n<p/g" \
+    | grep "release__version" \
+    | sed 1q \
+    | awk '{print $3}')
+
+source="$(
+curl -s "https://pypi.org/project/$pip_pkg/#files" \
+    | grep \
+    -e "$pip_pkg" \
+    -e "$version" \
+    | grep "pythonhosted.*tar.gz" \
+    | cut -d'"' -f2)"
+
+
+mkdir -p "python-$pip_pkg" && cd "python-$pip_pkg"
+echo "$version 1" > version
+cat <<EOF > build
+#!/bin/sh -e
+
+python setup.py build \\
+    -j "\$(nproc)"
+python setup.py install \\
+    --prefix=/usr \\
+    --root="\$1" \\
+    --optimize=1
+EOF
+chmod +x build
+echo "$source" > sources
+kiss checksum
