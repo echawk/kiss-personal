@@ -2,6 +2,8 @@
 
 # Utility to install python pip packages via kiss.
 
+# TODO: also install packages for pypy3 (if installed)
+
 pip_pkg="$1"
 
 [ -n "$pip_pkg" ] || exit 1
