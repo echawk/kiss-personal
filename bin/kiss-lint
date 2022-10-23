@@ -103,7 +103,7 @@ checkpkg() {
                         head -n 1 "$f" | grep -q "sh -e" || echo "ERROR: '$f' is missing the '-e' flag in the shebang" &
 
                         (
-                            t="$(grep -nE "^\ *#\ *[a-z]" "$f" | grep -v "shellcheck" | line_aux)"
+                            t="$(grep -nE "^ *# *[a-z]" "$f" | grep -v "shellcheck" | line_aux)"
                             [ -n "$t" ] && echo "STYLE: '$f' has a comment that starts with a lower case letter (line(s): $t in $f)"
                         ) &
 
@@ -120,7 +120,7 @@ checkpkg() {
                         lint_with_fix
 
                         (
-                            t=$(grep -nE "^ *\/usr\/bin\/.*" "$f" | line_aux)
+                            t=$(grep -nE "^ */usr/bin/.*" "$f" | line_aux)
                             if [ -n "$t" ]; then
                                 echo "WARNING: use '\${KISS_ROOT:-/}usr/bin/' instead of '/usr/bin/' (line(s): $t in $f)"
                             fi
@@ -131,7 +131,8 @@ checkpkg() {
                         ) &
 
                         (
-                            if grep -qE "^\t" "$f"; then
+                            # https://stackoverflow.com/questions/1825552/grep-a-tab-in-unix#1825573
+                            if grep -qE "^$(printf '\t')" "$f"; then
                                 tr -d '\t' < "$f" | diff - "$f" > /dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
                             fi
                         ) &
