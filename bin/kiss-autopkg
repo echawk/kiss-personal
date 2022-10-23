@@ -24,7 +24,7 @@ update() {
             read -r oldver oldrel < version
             echo "$newver 1" > version
             if kiss download; then
-                kiss checksum
+                kiss echecksum
                 git add .
                 git commit -m "(kiss-autopkg)$pkg: bump to $newver"
             else
