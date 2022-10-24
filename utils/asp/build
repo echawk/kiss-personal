@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+sed -e "/^all/s/\$(MANPAGES)//" \
+    -e "/install.*MANPAGES/d" Makefile > _
+mv -f _ Makefile
+
+make PREFIX=/usr
+make PREFIX=/usr install
