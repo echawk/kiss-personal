@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+go build -o godef
+
+mkdir -p "$1/usr/bin/"
+cp godef "$1/usr/bin/"
