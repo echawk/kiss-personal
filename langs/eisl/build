@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+# Fix for musl.
+if kiss list musl; then
+    sed "s/REG_STARTEND/REG_EPAREN/" library/regex.lsp > _
+    mv -f _ library/regex.lsp
+fi
+
+# Fix tcl includes.
+sed "s!<tcl/tcl.h>!<tcl.h>!" library/tcltk.lsp > _
+mv -f _ library/tcltk.lsp
+
+make PREFIX=/usr DESTDIR="$1"
+make PREFIX=/usr DESTDIR="$1" install
