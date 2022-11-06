@@ -1,2 +1,2 @@
 gn make
-python3 make
+python make
