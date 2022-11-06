@@ -1,8 +1,6 @@
 #!/bin/sh -e
 cd src
 
-export CFLAGS="$CFLAGS -fcommon"
-
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
