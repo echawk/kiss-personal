@@ -1,5 +1,10 @@
 #!/bin/sh -e
 
+case "$(uname)" in
+    Linux) JOBS="$(nproc)";;
+    FreeBSD | Darwin | OpenBSD) JOBS="$(sysctl -n hw.ncpu)";;
+esac
+
 if kiss list musl; then
     sed "s/ctypes.util.find_library('c')/'libc.so'/" \
         rpython/rlib/clibffi.py > _
@@ -16,9 +21,9 @@ fi
 
 cd pypy/goal/
 if command -v pypy2; then
-    pypy2 ../../rpython/bin/rpython --opt=jit --make-jobs "$(nproc)" --shared targetpypystandalone
+    pypy2 ../../rpython/bin/rpython --opt=jit --make-jobs "$JOBS" --shared targetpypystandalone
 else
-    python2 ../../rpython/bin/rpython --opt=jit --make-jobs "$(nproc)" --shared targetpypystandalone
+    python2 ../../rpython/bin/rpython --opt=jit --make-jobs "$JOBS" --shared targetpypystandalone
 fi
 PYTHONPATH=../.. ./pypy-c ../../lib_pypy/pypy_tools/build_cffi_imports.py
 cd "$OLDPWD"
