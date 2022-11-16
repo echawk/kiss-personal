@@ -142,7 +142,7 @@ checkpkg() {
                         ) &
 
                         t() { grep -nE "(meson|ninja)" "$f" | line_aux ; }
-                        ok() { grep -qE "meson" depends ; }
+                        ok() { [ -e depends ] && grep -qE "meson" depends ; }
                         msg() { echo "WARNING: 'meson' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "meson make\n" >> depends ; }
                         lint_with_fix # meson/ninja check
@@ -154,7 +154,7 @@ checkpkg() {
                         lint_with_fix # python check
 
                         t() { grep -nE "(autoreconf|autogen.sh)" "$f" | line_aux ; }
-                        ok() { grep -qE "autoconf" depends ; }
+                        ok() { [ -e depends ] && grep -qE "autoconf" depends ; }
                         msg() { echo "WARNING: 'autoreconf/autogen.sh' is used, but 'autoconf' is not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "autoconf make\nautomake make\n" >> depends ; }
                         lint_with_fix # autoconf/automake check
@@ -166,7 +166,7 @@ checkpkg() {
                         lint_with_fix # usless quote check
 
                         t() { grep -nE "cmake" "$f" | line_aux ; }
-                        ok() { grep -qE "cmake" depends ; }
+                        ok() { [ -e depends ] && grep -qE "cmake" depends ; }
                         msg() { echo "WARNING: 'cmake' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "cmake make\n" >> depends ; }
                         lint_with_fix # cmake check
