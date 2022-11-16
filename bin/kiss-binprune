@@ -7,7 +7,18 @@ ff() {
     find "$kiss_cache_dir" -type f
 }
 
-for f in $(ff | sort -u | cut -d'@' -f1 | uniq -d); do
-    tot=$(ff | grep -c "${f}@")
-    ff | grep "${f}@" | sort -u | head -n $((tot - 1)) | xargs
-done
+files=$(
+    for f in $(ff | sort -u | cut -d'@' -f1 | uniq -d); do
+        tot=$(ff | grep -c "${f}@")
+        ff | grep "${f}@" | sort -u | head -n $((tot - 1)) | xargs
+    done
+)
+
+case $1 in
+    -size)
+    echo $files | xargs du | awk '{sum+=$1}END{print sum / 1000000 " GB"}'
+    ;;
+    *)
+    echo $files | tr ' ' '\n'
+    ;;
+esac
