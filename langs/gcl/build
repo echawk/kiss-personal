@@ -1,11 +1,24 @@
 #!/bin/sh -e
 
-cd gcl
-sed -i "/Cannot determine mpsize/s/.*/echo a/" configure
-./configure \
-    --enable-dynsysgmp \
-    --disable-xdr \
-    --prefix=/usr
+export CFLAGS="$CFLAGS -I/usr/include/tirpc/"
 
-make
+cd gcl
+
+# Fix memalign.
+sed "/GNUMALLOC/s/ifndef/ifdef/" o/alloc.c > _
+mv -f _ o/alloc.c
+
+# Remove info pages.
+rm -rf info
+sed "/pargcl_all/s/do-info//" makefile > _
+mv -f _ makefile
+
+setarch linux64 -R \
+    sh configure \
+    --prefix=/usr \
+    --enable-notify=no \
+    --enable-dynsysgmp \
+    --disable-xdr
+
+make -j1
 make install
