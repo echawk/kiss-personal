@@ -6,6 +6,8 @@ done
 
 export CFLAGS="$CFLAGS -fno-strict-aliasing"
 
+sed -e 's/python/python3/g' -i mono/mini/Makefile*
+
 ./autogen.sh \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -15,9 +17,11 @@ export CFLAGS="$CFLAGS -fno-strict-aliasing"
     --disable-boehm \
     --enable-parallel-mark \
     --with-mcs-docs=no \
-    --without-sigaltstack
+    --without-sigaltstack \
+    --disable-crash-reporting \
+    --disable-nls
 
-make
+PYTHON=/usr/bin/python make
 make install
 
 rm -rf "$1/usr/lib/*.la"
