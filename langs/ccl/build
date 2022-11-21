@@ -44,13 +44,23 @@ kiss list glibc || {
 
 }
 
-(
-    cd lisp-kernel/linuxx8664
-    make clean
-    make -j1
-)
 
-./lx86cl64 -n -Q -b -e '(ccl:rebuild-ccl :full t)' -e '(ccl:quit)'
+case "$(uname)" in
+    Linux)
+    cd lisp-kernel/linuxx8664
+    lsp=lx86cl64
+    ;;
+    FreeBSD)
+    cd lisp-kernel/freebsdx8664
+    lsp=fx86cl64
+    ;;
+esac
+make clean
+make -j1
+cd "$OLDPWD"
+
+
+exec "$lsp" -n -Q -b -e '(ccl:rebuild-ccl :full t)' -e '(ccl:quit)'
 
 find . -type d -name .svn -exec rm -rf '{}' +
 find . -name '*.o' -delete
@@ -59,12 +69,12 @@ find . -name '*.*fsl' -delete
 mkdir -p \
     "$1/usr/lib/ccl/" \
     "$1/usr/bin/"
-cp -r lx86cl64 "$1/usr/lib/ccl/"
-cp lx86cl64.image "$1/usr/lib/ccl/"
+cp -r "$lsp" "$1/usr/lib/ccl/"
+cp "$lsp.image" "$1/usr/lib/ccl/"
 
 cat > "$1/usr/bin/ccl" << EOF
 #!/bin/sh
-exec /usr/lib/ccl/lx86cl64 \$@
+exec /usr/lib/ccl/$lsp \$@
 EOF
 chmod +x "$1/usr/bin/ccl"
 
