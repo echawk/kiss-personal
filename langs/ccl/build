@@ -60,7 +60,7 @@ make -j1
 cd "$OLDPWD"
 
 
-exec "$lsp" -n -Q -b -e '(ccl:rebuild-ccl :full t)' -e '(ccl:quit)'
+"$lsp" -n -Q -b -e '(ccl:rebuild-ccl :full t)' -e '(ccl:quit)'
 
 find . -type d -name .svn -exec rm -rf '{}' +
 find . -name '*.o' -delete
