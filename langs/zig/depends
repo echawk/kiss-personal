@@ -1,3 +1,4 @@
 clang
+cmake make
 lld
 llvm
