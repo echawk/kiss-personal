@@ -20,8 +20,10 @@ done
 ./configure \
     --prefix=/usr \
     --program-suffix=3 \
+    --enable-posix \
     --disable-error-on-warning \
-    --disable-static
+    --disable-lto \
+    --disable-rpath
 
 make
 make check
