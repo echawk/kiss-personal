@@ -7,13 +7,13 @@
 
 make fetch KernelVersion=22.4 FetchCmd="curl -LO"
 mkdir -p compiled
-if command -v shen-sbcl; then
-    make precompile SHEN="$(command -v shen-sbcl)"
+if command -v shen-ccl; then
+    make precompile SHEN="$(command -v shen-ccl)"
 else
     echo '(load "scripts/build.shen") (build)' | SHEN_C_HOME="$PWD/shen-c" "$PWD/shen-c/bin/shen-c" || true
 fi
 
-for lisp in sbcl ccl ecl; do
+for lisp in ccl ecl; do
     if command -v $lisp; then
         make build-$lisp
     fi
