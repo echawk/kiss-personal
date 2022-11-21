@@ -1,5 +1,10 @@
 #!/bin/sh -e
 
+case "$(uname)" in
+    Linux) JOBS="$(nproc)";;
+    FreeBSD | Darwin | OpenBSD) JOBS="$(sysctl -n hw.ncpu)";;
+esac
+
 mk() {
     make \
         PREFIX=/usr \
@@ -8,7 +13,7 @@ mk() {
         NO_AFFINITY=1 \
         NO_STATIC=1 \
         INTERFACE64=1 \
-        NUM_THREADS="$(nproc)" \
+        NUM_THREADS="${JOBS:-1}" \
         MAJOR_VERSION=3 \
         "$@"
 }
