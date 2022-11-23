@@ -12,6 +12,8 @@
 # It generates a 'sources' file from 'esources' with all of the variables
 # removed, then uses 'kiss c' to generate a new checksums file.
 
+# TODO: run some tests to ensure that all edge cases are accounted for.
+
 [ -e esources ] && {
     read V _ < version
 
