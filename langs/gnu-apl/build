@@ -7,15 +7,8 @@ for f in gnu-apl.d/preferences gnu-apl.d/preferences.in; do
     mv -f _ "$f"
 done
 
-ed src/Error.hh << EOF
-/#include "UCS_string.hh"/
-a
-
-#include <cstring>
-.
-w
-q
-EOF
+sed "1i#include <cstring>" src/Error.hh > _
+mv -f _ src/Error.hh
 
 export CFLAGS="-std=gnu99 $CFLAGS"
 CXX_WERROR='no' \
