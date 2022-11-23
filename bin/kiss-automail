@@ -3,13 +3,15 @@
 # Send an email to the maintainer of a package in a git repository when
 # their package is out of date.
 
-# Depends on msmtp.
-KISS_AUTOMAIL_EMAIL=${KISS_AUTOMAIL_EMAIL:-error}
-[ "$KISS_AUTOMAIL_EMAIL" = error ] && exit 1
+# Depends on msmtp & git.
+KISS_AUTOMAIL_EMAIL=${KISS_AUTOMAIL_EMAIL:?KISS_AUTOMAIL_EMAIL must be set!}
+KISS_AUTOMAIL_PKGSF=${KISS_AUTOMAIL_PKGSF:-}
+KISS_AUTOMAIL_EMAILF=${KISS_AUTOMAIL_EMAILF:-/dev/null}
 
 [ -d "$1" ] && repodir="$1" || exit 1
 
-[ -f "$2" ] && blacklist="$2"
+[ -f "$KISS_AUTOMAIL_PKGSF" ] && blacklist="$KISS_AUTOMAIL_PKGSF"
+[ -e "$KISS_AUTOMAIL_EMAILF" ] && emaillist="$KISS_AUTOMAIL_EMAILF"
 
 filter() {
     if [ -n "$blacklist" ]; then
@@ -26,11 +28,13 @@ kiss outdated "$repodir" |
         hash="$(git blame $repodir/$pkg/version | cut -d' ' -f1)"
         oldver="$(cut -d' ' -f1 < $repodir/$pkg/version)"
         maintainer_email="$(git show -s --format='%ae' "$hash")"
-        cat <<EOF #| msmtp -a "$KISS_AUTOMAIL_EMAIL" "$maintainer_email"
+        if ! grep -q "$maintainer_email" "$emaillist"; then
+            cat <<EOF #| msmtp -a "$KISS_AUTOMAIL_EMAIL" "$maintainer_email"
 To: $maintainer_email
 From: $KISS_AUTOMAIL_EMAIL
 Subject: [$pkg] $oldver -> $newver
 There is an update for $pkg, currently at '$oldver', to version '$newver'.
 If you want to stop receiving these emails, add the relevant packages to the blacklist.
 EOF
+        fi
     done
