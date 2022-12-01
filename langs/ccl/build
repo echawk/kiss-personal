@@ -17,48 +17,42 @@ for f in lisp-kernel/*/Makefile; do
     mv -f _ "$f"
 done
 
-kiss list glibc || {
-
-    # Fixes for musl.
-
-    # Define _libc_xmmreg if we are not on glibc.
-    sed '/#include <fcntl.h>/a\#ifndef __GLIBC__\nstruct _libc_xmmreg {\nunsigned int element[4];\n};\n#endif\n' \
-        lisp-kernel/lisp-debug.c > _
-    mv -f _ lisp-kernel/lisp-debug.c
-
-    # Remove mcheck.h include.
-    # Remove gnu_get_libc_version, as it's obviously GLIBC specific.
-    sed -E \
-        -e "/#include <mcheck.h>/d" \
-        -e "/gnu_get_libc_version/d" \
-        lisp-kernel/pmcl-kernel.c > _
-    mv -f _ lisp-kernel/pmcl-kernel.c
-
-    # Glibcisms are not Linuxisms.
-    sed "185s/LINUX/__GLIBC__/" lisp-kernel/thread_manager.c > _
-    mv -f _ lisp-kernel/thread_manager.c
-
-    # Delete include of fpu_control.h as musl doesn't have this header.
-    sed "/#include <fpu_control.h>/d" lisp-kernel/x86-exceptions.c > _
-    mv -f _ lisp-kernel/x86-exceptions.c
-
-}
-
-
 case "$(uname)" in
     Linux)
-    cd lisp-kernel/linuxx8664
-    lsp=lx86cl64
-    ;;
+        kiss list glibc || {
+            # Fixes for musl.
+            # Define _libc_xmmreg if we are not on glibc.
+            sed '/#include <fcntl.h>/a\#ifndef __GLIBC__\nstruct _libc_xmmreg {\nunsigned int element[4];\n};\n#endif\n' \
+                lisp-kernel/lisp-debug.c > _
+            mv -f _ lisp-kernel/lisp-debug.c
+
+            # Remove mcheck.h include.
+            # Remove gnu_get_libc_version, as it's obviously GLIBC specific.
+            sed -E \
+                -e "/#include <mcheck.h>/d" \
+                -e "/gnu_get_libc_version/d" \
+                lisp-kernel/pmcl-kernel.c > _
+            mv -f _ lisp-kernel/pmcl-kernel.c
+
+            # Glibcisms are not Linuxisms.
+            sed "185s/LINUX/__GLIBC__/" lisp-kernel/thread_manager.c > _
+            mv -f _ lisp-kernel/thread_manager.c
+
+            # Delete include of fpu_control.h as musl doesn't have this header.
+            sed "/#include <fpu_control.h>/d" lisp-kernel/x86-exceptions.c > _
+            mv -f _ lisp-kernel/x86-exceptions.c
+        }
+        cd lisp-kernel/linuxx8664
+        lsp=lx86cl64
+        ;;
     FreeBSD)
-    cd lisp-kernel/freebsdx8664
-    lsp=fx86cl64
-    ;;
+        cd lisp-kernel/freebsdx8664
+        lsp=fx86cl64
+        ;;
 esac
 make clean
 make -j1
 cd "$OLDPWD"
-
 
 "$lsp" -n -Q -b -e '(ccl:rebuild-ccl :full t)' -e '(ccl:quit)'
 
