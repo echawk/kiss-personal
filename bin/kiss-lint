@@ -141,6 +141,8 @@ checkpkg() {
                         (
                             # https://stackoverflow.com/questions/1825552/grep-a-tab-in-unix#1825573
                             if grep -qE "^$(printf '\t')" "$f"; then
+                                # I know this cannot happen.
+                                # shellcheck disable=2094
                                 tr -d '\t' < "$f" | diff - "$f" > /dev/null 2>&1 || echo "STYLE: '$f' is using tabs for indentation, use 4 spaces instead" &
                             fi
                         ) &
@@ -245,7 +247,6 @@ PKGMGR=${PKGMGR%%-*}
 files="version build sources checksums depends post-install pre-remove"
 case $PKGMGR in
     kiss) KISS=1 files="$files README" ;; # Kiss has some extra features that cpt doesn't.
-    cpt)   CPT=1 files="$files meta" ;;
 esac
 
 if [ $# -gt 1 ]; then
@@ -257,7 +258,7 @@ if [ $# -gt 1 ]; then
     done
     wait
 else
-    [ $# -eq 1 ] && cd "$1"
+    [ $# -eq 1 ] && cd "$1" || exit 1
     checkpkg
 fi
 
