@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+#export CFLAGS="$CFLAGS -I/usr/lib/csv9.5.8/ta6le/"
+
+make -j1 prefix=/opt/shen-scheme/
+make -j1 prefix=/opt/shen-scheme/ install
+
+mkdir -p "$1/usr/bin/"
+ln -s /opt/shen-scheme/bin/shen-scheme "$1/usr/bin/shen-scheme"
