@@ -4,6 +4,9 @@
 # Original by jedahan
 # This version by ehawkvu
 
+# Return value. If any errors occur, this get's incremented for each one.
+retval=0
+
 KISS_LINT_AUTOFIX=${KISS_LINT_AUTOFIX:-0}
 
 line_aux() {
@@ -40,14 +43,19 @@ lint_with_fix() {
     fi
 }
 
+err() {
+    echo "ERROR: $1"
+    retval=$((retval + 1))
+}
+
 checkpkg() {
     for f in $files; do
         if [ -e "$f" ]; then
             case "$f" in
                 version)
                     read -r VER REL < "$f"
-                    [ -z "$VER" ] && echo "ERROR: version is not defined"
-                    [ -z "$REL" ] && echo "ERROR: release is not defined"
+                    [ -z "$VER" ] && err "version is not defined"
+                    [ -z "$REL" ] && err "release is not defined"
                     ;;
                 depends)
                     base="(baseinit|baselayout|busybox|bzip2|git|kiss|make|musl|zlib|xz|pigz)"
@@ -91,7 +99,7 @@ checkpkg() {
                     # check if file is executable
                     t() { ! [ -x "$f" ] && echo a ; }
                     ok() { [ -x "$f" ] ; }
-                    msg() { echo "ERROR: '$f' not executable" ; }
+                    msg() { err "'$f' not executable" ; }
                     fix() { chmod +x "$f" ; }
                     lint_with_fix
 
@@ -100,7 +108,7 @@ checkpkg() {
                         t="$(grep -n "mkdir" "$f" | grep -v -- "-p" | line_aux)"
                         [ -n "$t" ] && echo "WARNING: always use '-p' with 'mkdir' (line(s): $t in $f)"
 
-                        head -n 1 "$f" | grep -q "sh -e" || echo "ERROR: '$f' is missing the '-e' flag in the shebang" &
+                        head -n 1 "$f" | grep -q "sh -e" || err "'$f' is missing the '-e' flag in the shebang" &
 
                         (
                             t="$(grep -nE "^ *# *[a-z]" "$f" | grep -v "shellcheck" | line_aux)"
@@ -178,7 +186,7 @@ checkpkg() {
                         lint_with_fix # cmake check
 
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
-                        $PKGMGR list shellcheck-bin > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
+                        command -v shellcheck > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
                             # shfmt: posix, 4 spaces, indent case, keep col alignment paddings, redirect is followed by space
                             t() { shfmt -p -i 4 -ci -kp -sr "$f" | diff - "$f" | grep '>' ; }
@@ -204,7 +212,7 @@ checkpkg() {
                             [ "$VER" = "git" ] && [ "$(wc -l < "$f")" = "1" ] && echo "WARNING: version is '$VER', don't need 'checksums' file" &
 
                             ! [ "$(grep -cvE "^#|^$|^git\+" "$f")" -eq "$(wc -l < checksums)" ] &&
-                                echo "ERROR: mismatch in the number of line(s) for the '$f' and 'checksums' files" &
+                                err "mismatch in the number of line(s) for the '$f' and 'checksums' files" &
                         }
                     }
                     grep -qE "^http:" "$f" && echo "STYLE: '$f' use https sources when possible" &
@@ -214,16 +222,16 @@ checkpkg() {
                     grep -qE "^http.*(patch|diff)$" "$f" && echo "STYLE: '$f' avoid remote patches, store them in 'patches/'" &
 
                     (grep -E "^(files|patches)/" "$f" | cut -d' ' -f1 | while read -r source_f; do
-                        [ -e "$source_f" ] || echo "ERROR: '$source_f' does not exist" &
+                        [ -e "$source_f" ] || err "'$source_f' does not exist" &
                     done) &
                     ;;
             esac
         else
             case "$f" in
-                version | build | sources) echo "ERROR: '$f' does not exist" ;;
+                version | build | sources) err "'$f' does not exist" ;;
                 meta) echo "WARNING: '$f' does not exist" ;;
                 checksums)
-                    ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ "$(wc -l < "sources")" = "1" ] && echo "ERROR: '$f' does not exist" &
+                    ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ "$(wc -l < "sources")" = "1" ] && err "'$f' does not exist" &
                     ;;
                 *) ;;
             esac
@@ -252,3 +260,5 @@ else
     [ $# -eq 1 ] && cd "$1"
     checkpkg
 fi
+
+exit $retval
