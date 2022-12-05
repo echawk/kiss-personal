@@ -28,16 +28,16 @@
 
     sed -e "s/VERSION/$VERSION/g" \
         -e "s/IDENT/$IDENT/g" \
-        -e "s/MAJOR/$MAJOR/" \
-        -e "s/MINOR/$MINOR/" \
-        -e "s/PATCH/$PATCH/" \
-        -e "s/PACKAGE/$PACKAGE/" \
+        -e "s/MAJOR/$MAJOR/g" \
+        -e "s/MINOR/$MINOR/g" \
+        -e "s/PATCH/$PATCH/g" \
+        -e "s/PACKAGE/$PACKAGE/g" \
         -e "s/\\VERSION/VERSION/g" \
         -e "s/\\IDENT/IDENT/g" \
-        -e "s/\\MAJOR/MAJOR/" \
-        -e "s/\\MINOR/MINOR/" \
-        -e "s/\\PATCH/PATCH/" \
-        -e "s/\\PACKAGE/PACKAGE/" \
+        -e "s/\\MAJOR/MAJOR/g" \
+        -e "s/\\MINOR/MINOR/g" \
+        -e "s/\\PATCH/PATCH/g" \
+        -e "s/\\PACKAGE/PACKAGE/g" \
         esources > sources
 }
 
