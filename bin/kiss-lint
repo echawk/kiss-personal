@@ -151,6 +151,12 @@ checkpkg() {
                             [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
                         ) &
 
+                        t() { grep -nE "pkg-config" "$f" | line_aux ; }
+                        ok() { [ -e depends ] && grep -qE "pkgconf" depends ; }
+                        msg() { echo "WARNING: 'pkg-config' is used, but not in depends (lines(s): $(t) in $f)" ; }
+                        fix() { printf "pkgconf make\n" >> depends ; }
+                        lint_with_fix # pkgconf check
+
                         t() { grep -nE "ninja" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "samurai" depends ; }
                         msg() { echo "WARNING: 'ninja' is used, but not in depends (lines(s): $(t) in $f)" ; }
