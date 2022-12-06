@@ -151,11 +151,17 @@ checkpkg() {
                             [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
                         ) &
 
-                        t() { grep -nE "(meson|ninja)" "$f" | line_aux ; }
+                        t() { grep -nE "ninja" "$f" | line_aux ; }
+                        ok() { [ -e depends ] && grep -qE "samurai" depends ; }
+                        msg() { echo "WARNING: 'ninja' is used, but not in depends (lines(s): $(t) in $f)" ; }
+                        fix() { printf "samurai make\n" >> depends ; }
+                        lint_with_fix # ninja check
+
+                        t() { grep -nE "meson" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "meson" depends ; }
                         msg() { echo "WARNING: 'meson' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "meson make\n" >> depends ; }
-                        lint_with_fix # meson/ninja check
+                        lint_with_fix # meson check
 
                         t() { grep -nE "python" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -q "python" depends ; }
@@ -208,7 +214,7 @@ checkpkg() {
 
                     [ -n "$VER" ] && {
 
-                        ! [ "$VER" = "git" ] && [ "$KISS" = "1" ] && grep -q "$VER" "$f" && echo "STYLE: can replace '$VER' in '$f' with 'VERSION'" &
+                        ! [ "$VER" = "git" ] && [ "$KISS" = "1" ] && grep -q "$VER" "$f" && ! [ -e esources ] && echo "STYLE: can replace '$VER' in '$f' with 'VERSION'" &
 
                         [ -e checksums ] && {
                             [ "$VER" = "git" ] && [ "$(wc -l < "$f")" = "1" ] && echo "WARNING: version is '$VER', don't need 'checksums' file" &
