@@ -26,7 +26,8 @@
     PATCH=${PATCH##*.} # I think?
     PACKAGE=$(basename "$PWD")
 
-    sed -e "s/([^\\])VERSION/\1$VERSION/g" \
+    sed -E \
+        -e "s/([^\\])VERSION/\1$VERSION/g" \
         -e "s/([^\\])IDENT/\1$IDENT/g" \
         -e "s/([^\\])MAJOR/\1$MAJOR/g" \
         -e "s/([^\\])MINOR/\1$MINOR/g" \
