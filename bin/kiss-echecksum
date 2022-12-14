@@ -26,12 +26,12 @@
     PATCH=${PATCH##*.} # I think?
     PACKAGE=$(basename "$PWD")
 
-    sed -e "s/VERSION/$VERSION/g" \
-        -e "s/IDENT/$IDENT/g" \
-        -e "s/MAJOR/$MAJOR/g" \
-        -e "s/MINOR/$MINOR/g" \
-        -e "s/PATCH/$PATCH/g" \
-        -e "s/PACKAGE/$PACKAGE/g" \
+    sed -e "s/([^\\])VERSION/\1$VERSION/g" \
+        -e "s/([^\\])IDENT/\1$IDENT/g" \
+        -e "s/([^\\])MAJOR/\1$MAJOR/g" \
+        -e "s/([^\\])MINOR/\1$MINOR/g" \
+        -e "s/([^\\])PATCH/\1$PATCH/g" \
+        -e "s/([^\\])PACKAGE/\1$PACKAGE/g" \
         -e "s/\\VERSION/VERSION/g" \
         -e "s/\\IDENT/IDENT/g" \
         -e "s/\\MAJOR/MAJOR/g" \
