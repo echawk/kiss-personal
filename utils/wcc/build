@@ -1,3 +1,9 @@
 #!/bin/sh -e
 
+
+for f in src/*/Makefile; do
+    sed "s/-lbfd/-lz -lbfd/g" "$f" > _
+    mv -f _ "$f"
+done
+
 make
