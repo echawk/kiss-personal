@@ -13,7 +13,7 @@ curl -LO "https://dl-cdn.alpinelinux.org/alpine/edge/main/x86_64/linux-lts-$vers
 tar xvf ./*.apk
 
 # Finally install the contents of the tarball.
-rm -- *.apk
+rm -- *.apk ./.PKGINFO ./.SIGN*
 cp -r . "$1"
 
 mkdir -p "$1/etc/tinyramfs/"
@@ -25,7 +25,8 @@ alpinever=$(ls "$1/lib/modules/")
 
 hooks="mdevd"
 
-compress="gzip -9"
+monolith=''
+compress="cat"
 
 # Assuming UUID for root, will fix in future.
 root="$(awk '$2 ~ /^\/$/ { print $1 } ' < /etc/fstab | cut -d'=' -f2)"
