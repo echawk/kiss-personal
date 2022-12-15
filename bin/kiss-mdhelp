@@ -1,6 +1,8 @@
 #!/bin/sh
 # Convert a markdown file into a help document for KISS.
 
+# TODO: Rewrite this in a more sane language than shell.
+
 # FIXME: bug with using subsubsub sections: if another subsub section
 # occurs after a subsubsub section then the number of dashes will be too high.
 
