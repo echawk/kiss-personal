@@ -39,6 +39,8 @@ pkg-config --exists libglvnd > /dev/null 2>&1 || glvnd_enabled=false
 
 pkg-config --exists valgrind > /dev/null 2>&1 || valgrind=false
 
+pkg-config --exists wayland-protocols && platforms=x11,wayland
+
 meson setup \
     -Dprefix=/usr \
     -Dsysconfdir=/etc \
@@ -46,7 +48,7 @@ meson setup \
     -Dlocalstatedir=/var \
     -Dbuildtype=release \
     -Dglx-read-only-text=true \
-    -Dplatforms=x11 \
+    -Dplatforms="${platforms:-x11}" \
     -Dgallium-drivers=radeonsi \
     -Dgallium-opencl=icd \
     -Dvulkan-drivers='' \
