@@ -1,4 +1,4 @@
-https://nginx.org/download/nginx-1.23.2.tar.gz
+https://nginx.org/download/nginx-1.23.3.tar.gz
 files/nginx.conf
 files/nginx.confd
 files/nginx.initd
