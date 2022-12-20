@@ -269,8 +269,10 @@ if [ $# -gt 1 ]; then
         cd "$OLDPWD" || exit 1
     done
     wait
+elif [ $# -eq 1 ]; then
+    cd "$1" || exit 1
+    checkpkg
 else
-    [ $# -eq 1 ] && cd "$1" || exit 1
     checkpkg
 fi
 
