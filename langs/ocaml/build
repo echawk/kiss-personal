@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-patch -p1 < llvm-ranlib.patch
-
 export AS="cc -c"
 export ASPP="cc -c"
 
@@ -10,7 +8,6 @@ export ASPP="cc -c"
     --bindir /usr/bin \
     --libdir /usr/lib/ocaml \
     --mandir /usr/share/man \
-    --disable-force-safe-string \
     --with-pic
 
 make world.opt
