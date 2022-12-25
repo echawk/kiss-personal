@@ -1,5 +1,5 @@
 #!/bin/sh -e
-! command -v openssl && {
+! openssl version | grep OpenSSL && {
     export NOSSL=1
 }
 pkg-config --exists libedit && {
