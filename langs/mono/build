@@ -6,8 +6,6 @@ done
 
 export CFLAGS="$CFLAGS -fno-strict-aliasing"
 
-sed -e 's/python/python3/g' -i mono/mini/Makefile*
-
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -16,13 +14,15 @@ sed -e 's/python/python3/g' -i mono/mini/Makefile*
     --disable-boehm \
     --disable-rpath \
     --disable-static \
+    --enable-ninja \
     --enable-parallel-mark \
     --with-mcs-docs=no \
     --without-sigaltstack \
     --disable-crash-reporting \
     --disable-nls
 
-make
+sed -e 's/python/python3/g' -i mono/mini/Makefile*
+PYTHON=/usr/bin/python3 make
 make install
 
 rm -rf "$1/usr/lib/*.la"
