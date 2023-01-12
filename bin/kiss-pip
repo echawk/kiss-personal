@@ -12,15 +12,17 @@ version=$(
 curl -s "https://pypi.org/project/$pip_pkg/" \
     | tr -d '\n' \
     | sed "s/<p/\n<p/g" \
-    | grep "release__version" \
+    | grep "<p class=\"release__version\">" \
+    | grep -v "pre-release" \
     | sed 1q \
     | awk '{print $3}')
 
 source="$(
 curl -s "https://pypi.org/project/$pip_pkg/#files" \
     | grep \
-    -e "$pip_pkg" \
     -e "$version" \
+    | grep \
+    -e "$pip_pkg" \
     | grep "pythonhosted.*tar.gz" \
     | cut -d'"' -f2)"
 
