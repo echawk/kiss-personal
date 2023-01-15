@@ -38,6 +38,16 @@ python setup.py install \\
     --prefix=/usr \\
     --root="\$1" \\
     --optimize=1
+
+# If pypy3 is available, then build for pypy3.
+if command -v pypy3; then
+    pypy3 setup.py build \\
+        -j "\$(nproc)"
+    pypy3 setup.py install \\
+        --prefix=/opt/pypy3 \\
+        --root="\$1" \\
+        --optimize=1
+fi
 EOF
 chmod +x build
 echo "$source" > sources
