@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+sed -e 's/tinfo.a//' -e 's/tinfo//' CMakeLists.txt > _
+mv -f _ CMakeLists.txt
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DISPC_INCLUDE_EXAMPLES=OFF \
+    -DISPC_INCLUDE_TESTS=OFF \
+    -DISPC_NO_DUMPS=ON \
+    -DARM_ENABLED=OFF \
+    -DISPCRT_BUILD_TASK_MODEL=TBB
+
+cmake --build   build
+cmake --install build
