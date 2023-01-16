@@ -2,7 +2,7 @@
 
 # Utility to install python pip packages via kiss.
 
-# TODO: also install packages for pypy3 (if installed)
+# TODO: make sure to document dependencies in 'depends'
 
 pip_pkg="$1"
 
