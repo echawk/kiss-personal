@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+cmake -B build \
+      -DCMAKE_BUILD_TYPE=MinSizeRel \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_INSTALL_LIBDIR=lib \
+      -DTBB4PY_BUILD=OFF \
+      -DTBB_STRICT=OFF \
+      -DTBB_TEST=OFF
+
+cmake --build   build
+cmake --install build
