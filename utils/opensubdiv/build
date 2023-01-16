@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+cmake -B build \
+    -G "Unix Makefiles" \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DNO_EXAMPLES=ON \
+    -DNO_TUTORIALS=ON \
+    -DNO_REGRESSION=ON \
+    -DNO_DOC=ON \
+    -DNO_TESTS=ON \
+    -DNO_GLTESTS=ON \
+    -DNO_TBB=ON
+
+cmake --build   build
+cmake --install build
