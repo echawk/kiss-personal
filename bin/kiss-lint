@@ -16,12 +16,12 @@ checkposix() {
     # basically search a posix shell script for things that aren't posix
     (
         t="$(grep -nE "sed (-[a-zA-Z]*)*-i?[a-zA-Z]*i[a-zA-Z]*i?" "$f" | line_aux)"
-        [ -n "$t" ] && echo "WARNING: 'sed -i' is not portable, use 'sed file > _ ; mv -f _ file' (line(s): $t in $f)"
+        [ -n "$t" ] && warn "'sed -i' is not portable, use 'sed file > _ ; mv -f _ file' (line(s): $t in $f)"
     ) &
 
     t() { grep -v "#" "$f" | grep -nE " ?which " | line_aux ; }
     ok() { false ; }
-    msg() { echo "WARNING: 'which' is not specified by POSIX, use 'command -v' (lines(s): $(t) in $f)" ; }
+    msg() { warn "'which' is not specified by POSIX, use 'command -v' (lines(s): $(t) in $f)" ; }
     fix() { sed -E "s/ ?which / command -v /" "$f" > _ ;  mv -f _ "$f" ; }
     lint_with_fix
 }
@@ -47,7 +47,12 @@ err() {
     echo "ERROR: $1"
     retval=$((retval + 1))
 }
-
+warn() {
+    echo "WARNING: $1"
+}
+style() {
+    echo "STYLE: $1"
+}
 checkpkg() {
     for f in $files; do
         if [ -e "$f" ]; then
@@ -63,7 +68,7 @@ checkpkg() {
                         (
                             t="$(grep -nE "^$base" "$f" | line_aux)"
                             t="$(grep -E "^$base" "$f" | cut -d' ' -f1 | tr '\n' ',' | rev | cut -d',' -f2- | rev) is/are implicit deps (line(s): $t in $f)"
-                            echo "WARNING: $t"
+                            warn "$t"
                         ) &
                     fi
 
@@ -72,14 +77,14 @@ checkpkg() {
                         (
                             t="$(grep -nE "^$buildtools" "$f" | line_aux)"
                             t="$(grep -E "^$buildtools" "$f" | cut -d' ' -f1 | tr '\n' ',' | rev | cut -d',' -f2- | rev) is/are 'make' deps (line(s): $t in $f)"
-                            echo "WARNING: $t"
+                            warn "$t"
                         ) &
                     fi
 
                     # empty depends file
                     t() { ! [ -s "$f" ] && echo "a"; }
                     ok() { [ -s "$f" ] ;  }
-                    msg() { echo "WARNING: '$f' is empty, can be removed" ; }
+                    msg() { warn "'$f' is empty, can be removed" ; }
                     fix() { rm -v "$f" ; }
                     lint_with_fix
 
@@ -91,7 +96,7 @@ checkpkg() {
 
                     t() { [ -n "$(cut -d' ' -f1 "$f" | sort | uniq -d)" ] && echo a ; }
                     ok() { false ; }
-                    msg() { echo "WARNING: duplicate entries in $f" ; }
+                    msg() { warn "duplicate entries in $f" ; }
                     fix() { sort -u "$f" > _ ; mv -f _ "$f" ; }
                     lint_with_fix
                     ;;
@@ -106,7 +111,7 @@ checkpkg() {
                     if head -n 1 "$f" | grep -qE "env sh|bin/sh"; then
                         checkposix
                         t="$(grep -n "mkdir" "$f" | grep -v -- "-p" | line_aux)"
-                        [ -n "$t" ] && echo "WARNING: always use '-p' with 'mkdir' (line(s): $t in $f)"
+                        [ -n "$t" ] && warn "always use '-p' with 'mkdir' (line(s): $t in $f)"
 
                         head -n 1 "$f" | grep -q "sh -e" || err "'$f' is missing the '-e' flag in the shebang" &
 
@@ -117,20 +122,20 @@ checkpkg() {
 
                         t() { grep -n "kiss l" "$f" | grep -v "kiss list" | line_aux ; }
                         ok() { false ; }
-                        msg() { echo "WARNING: use 'kiss list' instead of 'kiss l' (line(s): $(t) in $f)" ; }
+                        msg() { warn "use 'kiss list' instead of 'kiss l' (line(s): $(t) in $f)" ; }
                         fix() { sed "s/kiss l/kiss list/" "$f" > _ ; mv -f _ "$f" ; }
                         lint_with_fix
 
                         t() { grep -n "kiss a " "$f" | grep -v "kiss alternatives" | line_aux ; }
                         ok() { false ; }
-                        msg() { echo "WARNING: use 'kiss alternatives' instead of 'kiss a' (line(s): $(t) in $f)" ; }
+                        msg() { warn "use 'kiss alternatives' instead of 'kiss a' (line(s): $(t) in $f)" ; }
                         fix() { sed "s/kiss a /kiss alternatives /g" "$f" > _ ; mv -f _ "$f" ; }
                         lint_with_fix
 
                         (
                             t=$(grep -nE "^ */usr/bin/.*" "$f" | line_aux)
                             if [ -n "$t" ]; then
-                                echo "WARNING: use '\${KISS_ROOT:-/}usr/bin/' instead of '/usr/bin/' (line(s): $t in $f)"
+                                warn "use '\${KISS_ROOT:-/}usr/bin/' instead of '/usr/bin/' (line(s): $t in $f)"
                             fi
                         ) &
                         (
@@ -153,31 +158,31 @@ checkpkg() {
 
                         t() { grep -nE "pkg-config" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "pkgconf" depends ; }
-                        msg() { echo "WARNING: 'pkg-config' is used, but not in depends (lines(s): $(t) in $f)" ; }
+                        msg() { warn "'pkg-config' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "pkgconf make\n" >> depends ; }
                         lint_with_fix # pkgconf check
 
                         t() { grep -nE "ninja" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "samurai" depends ; }
-                        msg() { echo "WARNING: 'ninja' is used, but not in depends (lines(s): $(t) in $f)" ; }
+                        msg() { warn "'ninja' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "samurai make\n" >> depends ; }
                         lint_with_fix # ninja check
 
                         t() { grep -nE "meson" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "meson" depends ; }
-                        msg() { echo "WARNING: 'meson' is used, but not in depends (lines(s): $(t) in $f)" ; }
+                        msg() { warn "'meson' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "meson make\n" >> depends ; }
                         lint_with_fix # meson check
 
                         t() { grep -nE "python" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -q "python" depends ; }
-                        msg() { echo "WARNING: 'python' is used in the build script, but not listed in depends (line(s): $(t) in $f)" ; }
+                        msg() { warn "'python' is used in the build script, but not listed in depends (line(s): $(t) in $f)" ; }
                         fix() { printf "python\n" >> depends ; }
                         lint_with_fix # python check
 
                         t() { grep -nE "(autoreconf|autogen.sh)" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "autoconf" depends ; }
-                        msg() { echo "WARNING: 'autoreconf/autogen.sh' is used, but 'autoconf' is not in depends (lines(s): $(t) in $f)" ; }
+                        msg() { warn "'autoreconf/autogen.sh' is used, but 'autoconf' is not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "autoconf make\nautomake make\n" >> depends ; }
                         lint_with_fix # autoconf/automake check
 
@@ -189,13 +194,13 @@ checkpkg() {
 
                         t() { grep -nE "cmake" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "cmake" depends ; }
-                        msg() { echo "WARNING: 'cmake' is used, but not in depends (lines(s): $(t) in $f)" ; }
+                        msg() { warn "'cmake' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "cmake make\n" >> depends ; }
                         lint_with_fix # cmake check
 
                         t() { grep -nE "nproc" "$f" | line_aux ; }
                         ok() { ! grep -qE "nproc" "$f" ; }
-                        msg() { echo "WARNING: 'nproc' is used, but is not portable across Unices, consider wrapping (lines(s): $(t) in $f)" ; }
+                        msg() { warn "'nproc' is used, but is not portable across Unices, consider wrapping (lines(s): $(t) in $f)" ; }
                         fix() { : ; }
                         lint_with_fix # cmake check
 
@@ -214,7 +219,7 @@ checkpkg() {
                 sources)
                     t() { [ -x "$f" ] && echo a ; }
                     ok() { false ; }
-                    msg() { echo "WARNING: '$f' is executable" ; }
+                    msg() { warn "'$f' is executable" ; }
                     fix() { chmod -x "$f" ; }
                     lint_with_fix
 
@@ -223,7 +228,7 @@ checkpkg() {
                         ! [ "$VER" = "git" ] && [ "$KISS" = "1" ] && grep -q "$VER" "$f" && ! [ -e esources ] && echo "STYLE: can replace '$VER' in '$f' with 'VERSION'" &
 
                         [ -e checksums ] && {
-                            [ "$VER" = "git" ] && [ "$(wc -l < "$f")" = "1" ] && echo "WARNING: version is '$VER', don't need 'checksums' file" &
+                            [ "$VER" = "git" ] && [ "$(wc -l < "$f")" = "1" ] && warn "version is '$VER', don't need 'checksums' file" &
 
                             ! [ "$(grep -cvE "^#|^$|^git\+" "$f")" -eq "$(wc -l < checksums)" ] &&
                                 err "mismatch in the number of line(s) for the '$f' and 'checksums' files" &
@@ -243,7 +248,7 @@ checkpkg() {
         else
             case "$f" in
                 version | build | sources) err "'$f' does not exist" ;;
-                meta) echo "WARNING: '$f' does not exist" ;;
+                meta) warn "'$f' does not exist" ;;
                 checksums)
                     ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ "$(wc -l < "sources")" = "1" ] && err "'$f' does not exist" &
                     ;;
