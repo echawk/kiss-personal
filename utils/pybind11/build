@@ -1,0 +1,17 @@
+#!/bin/sh -ex
+
+export DESTDIR="$1"
+
+sed "/add_subdirectory(tests)/d" CMakeLists.txt > _
+mv -f _ CMakeLists.txt
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=None \
+    -DPYTHON_EXECUTABLE=/usr/bin/python3 \
+    -DUSE_PYTHON_INCLUDE_DIR=FALSE \
+    -DPYBIND11_LTO_CXX_FLAGS= \
+    -DPYBIND11_INSTALL=ON
+
+cmake --build   build
+cmake --install build
