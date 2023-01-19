@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+# The repository doesn't have a good build system
+# shellcheck disable=2086
+${CXX:-c++} -o libpystring.so.1.1 $CXXFLAGS $LDFLAGS -fPIC -shared -Wl,-soname,libpystring.so.1 pystring.cpp
+sed "s/@VERSION@/$2/g" pystring.pc > _
+mv -f _ pystring.pc
+
+mkdir -p \
+    "$1/usr/include" \
+    "$1/usr/include/pystring" \
+    "$1/usr/lib/pkgconfig"
+
+mv libpystring.so.1.1      "$1/usr/lib"
+ln -s "libpystring.so.1.1" "$1/usr/lib/libpystring.so.1"
+ln -s "libpystring.so.1"   "$1/usr/lib/libpystring.so"
+mv pystring.pc             "$1/usr/lib/pkgconfig"
+
+mv pystring.h                 "$1/usr/include"
+ln -s /usr/include/pystring.h "$1/usr/include/pystring/pystring.h"
