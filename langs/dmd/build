@@ -10,20 +10,22 @@ esac
 
 export LDFLAGS="$LDFLAGS -lpthread"
 
-for p in patches/*; do
-    patch -p0 < "$p"
-done
+if [ -e patches/ ]; then
+    for p in patches/*; do
+        patch -p0 < "$p"
+    done
+fi
 
 dmd="$(command -v dmd)"
 
 mk() {
     # False positive.
     # shellcheck disable=2068
-    make -f posix.mak TARGET_CPU=X86 ENABLE_RELEASE=1 PIC=1 DMD="$dmd" $@
+    make -f posix.mak TARGET_CPU=X86 ENABLE_RELEASE=1 $@
 }
 
-mk -C dmd
-make -C dmd/docs
+HOST_DMD="$dmd" dmd -run ./dmd/compiler/src/build.d
+make -C dmd/compiler/docs
 
 case "$(uname -m)" in
     x86_64) _arch=64;;
@@ -32,7 +34,7 @@ esac
 
 dmd="$PWD/dmd/generated/linux/release/$_arch/dmd"
 
-mk -C druntime
+mk -C dmd/druntime
 mk -C phobos
 mk -C dtools
 
@@ -43,14 +45,14 @@ cat > "$1/etc/dmd.conf" <<- EOF
 DFLAGS=-I/usr/include/d -I/usr/include/d/druntime/import -L-L/usr/lib -L-L/usr/lib -L--no-warn-search-mismatch -L--export-dynamic -fPIC
 EOF
 
-cp dmd/docs/man/man1/*  "$1/usr/share/man/man1"
-cp dmd/docs/man/man5/*  "$1/usr/share/man/man5"
+cp dmd/generated/docs/man/man1/* "$1/usr/share/man/man1"
+cp dmd/generated/docs/man/man5/* "$1/usr/share/man/man5"
 cp phobos/generated/linux/release/*/libphobos2.a "$1/usr/lib/"
-cp druntime/generated/linux/release/*/libdruntime.a "$1/usr/lib"
-cp -r phobos/*.d        "$1/usr/include/d"
-cp -r phobos/etc        "$1/usr/include/d"
-cp -r phobos/std        "$1/usr/include/d"
-cp -r druntime/import   "$1/usr/include/d/druntime"
+cp dmd/generated/linux/release/*/libdruntime.a   "$1/usr/lib"
+cp -r phobos/*.d            "$1/usr/include/d"
+cp -r phobos/etc            "$1/usr/include/d"
+cp -r phobos/std            "$1/usr/include/d"
+cp -r dmd/druntime/import   "$1/usr/include/d/druntime"
 chmod +x "$1/usr/bin/dmd"
 rm -- dtools/generated/linux/$_arch/*.o
 cp dtools/generated/linux/$_arch/* "$1/usr/bin/"
