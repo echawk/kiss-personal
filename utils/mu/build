@@ -1,10 +1,7 @@
 #!/bin/sh -e
 
 # Disable tests.
-for f in $(find . -type f -name meson.build); do
-    sed "/subdir('tests')/d" "$f" > _
-    mv -f _ "$f"
-done
+find . -type f -name meson.build -exec sed -i "/subdir('tests')/d" {} \;
 
 meson setup \
     -Dprefix=/usr \
