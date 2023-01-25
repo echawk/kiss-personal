@@ -7,7 +7,11 @@
 # Return value. If any errors occur, this get's incremented for each one.
 retval=0
 
+# 1 to disable.
 KISS_LINT_AUTOFIX=${KISS_LINT_AUTOFIX:-0}
+
+# 0 to disable.
+KISS_LINT_SHELLCHECK=${KISS_LINT_SHELLCHECK:-1}
 
 line_aux() {
     cut -d':' -f1 | xargs | tr ' ' ','
@@ -205,7 +209,7 @@ checkpkg() {
                         lint_with_fix # cmake check
 
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
-                        command -v shellcheck > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
+                        [ "$KISS_LINT_SHELLCHECK" = "1" ] && command -v shellcheck > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
                         if command -v shfmt > /dev/null; then
                             # shfmt: posix, 4 spaces, indent case, keep col alignment paddings, redirect is followed by space
                             t() { shfmt -p -i 4 -ci -kp -sr "$f" | diff - "$f" | grep '>' ; }
