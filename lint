@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+KISS_LINT_SHELLCHECK=0 "$PWD/bin/kiss-lint" */*/
