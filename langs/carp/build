@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+cabal build \
+    --enable-static \
+    --enable-executable-static
+
+mkdir -p "$1/usr/bin" "$1/usr/share/carp/" "$1/etc/profile.d/"
+
+cp "$(find dist-newstyle/ -type f -name carp)" "$1/usr/bin/"
+cp -r core/ "$1/usr/share/carp/"
+cp -r docs/ "$1/usr/share/carp/"
+cp -r examples/ "$1/usr/share/carp/"
+
+cat <<EOF > $1/etc/profile.d/carp_env.sh
+export CARP_DIR=/usr/share/carp/
+EOF
