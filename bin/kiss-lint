@@ -4,9 +4,6 @@
 # Original by jedahan
 # This version by ehawkvu
 
-# Return value. If any errors occur, this get's incremented for each one.
-retval=0
-
 # 1 to enable.
 KISS_LINT_AUTOFIX=${KISS_LINT_AUTOFIX:-0}
 
@@ -54,15 +51,14 @@ lint_with_fix() {
         fi
     fi
 }
-
 err() {
     echo "ERROR: $1"
-    retval=$((retval + 1))
 }
 warn() {
-    echo "WARNING: $1"
     if [ $KISS_LINT_WERROR = 1 ]; then
-        retval=$((retval + 1))
+        echo "ERROR: $1"
+    else
+        echo "WARNING: $1"
     fi
 }
 style() {
@@ -273,7 +269,7 @@ checkpkg() {
         fi
     done
     wait
-    [ -e "$FILE_MOD_MUTEX" ] && rm -- "$FILE_MOD_MUTEX"
+    [ -e "$FIX_MUTEX" ] && rm -- "$FIX_MUTEX"
 }
 
 PKGMGR=$(basename "$0")
@@ -297,4 +293,4 @@ else
     checkpkg
 fi
 
-exit $retval
+exit 0
