@@ -1,5 +1,6 @@
 #!/bin/sh
 
 for pkg in $(ls | grep '^python-' | cut -d'-' -f2-); do
-    kiss-pip "$pkg"
+    kiss-pip "$pkg" &
 done
+wait
