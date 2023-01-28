@@ -3,4 +3,5 @@
 f="$(mktemp)"
 KISS_LINT_SHELLCHECK=0 "$PWD/bin/kiss-lint" */*/ > "$f"
 cat "$f"
+rm -v -- "$f"
 exit "$(grep "ERROR" < "$f" | wc -l)"
