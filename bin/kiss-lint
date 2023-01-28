@@ -7,11 +7,14 @@
 # Return value. If any errors occur, this get's incremented for each one.
 retval=0
 
-# 1 to disable.
+# 1 to enable.
 KISS_LINT_AUTOFIX=${KISS_LINT_AUTOFIX:-0}
 
 # 0 to disable.
 KISS_LINT_SHELLCHECK=${KISS_LINT_SHELLCHECK:-1}
+
+# 1 to enable.
+KISS_LINT_WERROR=${KISS_LINT_WERROR:-0}
 
 line_aux() {
     cut -d':' -f1 | xargs | tr ' ' ','
@@ -53,6 +56,9 @@ err() {
 }
 warn() {
     echo "WARNING: $1"
+    if [ $KISS_LINT_WERROR = 1 ]; then
+        retval=$((retval + 1))
+    fi 
 }
 style() {
     echo "STYLE: $1"
