@@ -63,7 +63,7 @@ warn() {
     echo "WARNING: $1"
     if [ $KISS_LINT_WERROR = 1 ]; then
         retval=$((retval + 1))
-    fi 
+    fi
 }
 style() {
     echo "STYLE: $1"
@@ -290,7 +290,6 @@ if [ $# -gt 1 ]; then
         checkpkg
         cd "$OLDPWD" || exit 1
     done
-    wait
 elif [ $# -eq 1 ]; then
     cd "$1" || exit 1
     checkpkg
