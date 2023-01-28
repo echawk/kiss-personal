@@ -30,12 +30,17 @@ checkposix() {
     ok() { false ; }
     msg() { warn "'which' is not specified by POSIX, use 'command -v' (lines(s): $(t) in $f)" ; }
     fix() { sed -E "s/ ?which / command -v /" "$f" > _ ;  mv -f _ "$f" ; }
-    lint_with_fix
+    lint_with_fix &
 }
 
 run_autoedit() {
     ! [ "$KISS_LINT_AUTOFIX" -eq 0 ] && {
+        until [ -e "$FIX_MUTEX" ]; do
+            sleep .01
+        done
+        rm -- "$FIX_MUTEX"
         $1
+        touch "$FIX_MUTEX"
     }
 }
 
@@ -64,6 +69,7 @@ style() {
     echo "STYLE: $1"
 }
 checkpkg() {
+    FIX_MUTEX="$(mktemp)"
     for f in $files; do
         if [ -e "$f" ]; then
             case "$f" in
@@ -96,19 +102,19 @@ checkpkg() {
                     ok() { [ -s "$f" ] ;  }
                     msg() { warn "'$f' is empty, can be removed" ; }
                     fix() { rm -v "$f" ; }
-                    lint_with_fix
+                    lint_with_fix &
 
                     t() { ! sort "$f" | diff - "$f" ; }
                     ok() { false ; }
                     msg() { echo "STYLE: '$f' is not sorted" ; }
                     fix() { sort "$f" > _ ; mv -f _ "$f" ; }
-                    lint_with_fix
+                    lint_with_fix &
 
                     t() { [ -n "$(cut -d' ' -f1 "$f" | sort | uniq -d)" ] && echo a ; }
                     ok() { false ; }
                     msg() { warn "duplicate entries in $f" ; }
                     fix() { sort -u "$f" > _ ; mv -f _ "$f" ; }
-                    lint_with_fix
+                    lint_with_fix &
                     ;;
                 build | post-install | pre-remove)
                     # check if file is executable
@@ -116,7 +122,7 @@ checkpkg() {
                     ok() { [ -x "$f" ] ; }
                     msg() { err "'$f' not executable" ; }
                     fix() { chmod +x "$f" ; }
-                    lint_with_fix
+                    lint_with_fix &
 
                     if head -n 1 "$f" | grep -qE "env sh|bin/sh"; then
                         checkposix
@@ -134,13 +140,13 @@ checkpkg() {
                         ok() { false ; }
                         msg() { warn "use 'kiss list' instead of 'kiss l' (line(s): $(t) in $f)" ; }
                         fix() { sed "s/kiss l/kiss list/" "$f" > _ ; mv -f _ "$f" ; }
-                        lint_with_fix
+                        lint_with_fix &
 
                         t() { grep -n "kiss a " "$f" | grep -v "kiss alternatives" | line_aux ; }
                         ok() { false ; }
                         msg() { warn "use 'kiss alternatives' instead of 'kiss a' (line(s): $(t) in $f)" ; }
                         fix() { sed "s/kiss a /kiss alternatives /g" "$f" > _ ; mv -f _ "$f" ; }
-                        lint_with_fix
+                        lint_with_fix &
 
                         (
                             t=$(grep -nE "^ */usr/bin/.*" "$f" | line_aux)
@@ -170,49 +176,49 @@ checkpkg() {
                         ok() { [ -e depends ] && grep -qE "pkgconf" depends ; }
                         msg() { warn "'pkg-config' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "pkgconf make\n" >> depends ; }
-                        lint_with_fix # pkgconf check
+                        lint_with_fix & # pkgconf check
 
                         t() { grep -nE "ninja" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "samurai" depends ; }
                         msg() { warn "'ninja' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "samurai make\n" >> depends ; }
-                        lint_with_fix # ninja check
+                        lint_with_fix & # ninja check
 
                         t() { grep -nE "meson" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "meson" depends ; }
                         msg() { warn "'meson' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "meson make\n" >> depends ; }
-                        lint_with_fix # meson check
+                        lint_with_fix & # meson check
 
                         t() { grep -nE "python" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -q "python" depends ; }
                         msg() { warn "'python' is used in the build script, but not listed in depends (line(s): $(t) in $f)" ; }
                         fix() { printf "python\n" >> depends ; }
-                        lint_with_fix # python check
+                        lint_with_fix & # python check
 
                         t() { grep -nE "(autoreconf|autogen.sh)" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "autoconf" depends ; }
                         msg() { warn "'autoreconf/autogen.sh' is used, but 'autoconf' is not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "autoconf make\nautomake make\n" >> depends ; }
-                        lint_with_fix # autoconf/automake check
+                        lint_with_fix & # autoconf/automake check
 
                         t() { grep -nE "\"" "$f" | grep -vE -e "\\$" -e '".*[ ]+.*' | line_aux ; }
                         ok() { ! grep -nE "\"" "$f" | grep -qv "\\$" ; }
                         msg() { echo "STYLE: unneeded quotes are around text that doesn't contain a variable (lines(s): $(t) in $f)" ; }
                         fix() { : ; }
-                        lint_with_fix # usless quote check
+                        lint_with_fix & # useless quote check
 
                         t() { grep -nE "cmake" "$f" | line_aux ; }
                         ok() { [ -e depends ] && grep -qE "cmake" depends ; }
                         msg() { warn "'cmake' is used, but not in depends (lines(s): $(t) in $f)" ; }
                         fix() { printf "cmake make\n" >> depends ; }
-                        lint_with_fix # cmake check
+                        lint_with_fix & # cmake check
 
                         t() { grep -nE "nproc" "$f" | line_aux ; }
                         ok() { ! grep -qE "nproc" "$f" ; }
                         msg() { warn "'nproc' is used, but is not portable across Unices, consider wrapping (lines(s): $(t) in $f)" ; }
                         fix() { : ; }
-                        lint_with_fix # cmake check
+                        lint_with_fix & # cmake check
 
                         #$PKGMGR list aspell > /dev/null && [ $(grep "#.*" "$f" | grep -vE "(shellcheck|lint)" | aspell list | wc -l) = 0 ] || echo "STYLE: '$f' has spelling mistakes" &
                         [ "$KISS_LINT_SHELLCHECK" = "1" ] && command -v shellcheck > /dev/null && shellcheck "$f" | grep -vE "(information:$|https:|^$)" &
@@ -222,7 +228,7 @@ checkpkg() {
                             ok() { false ; }
                             msg() { echo "STYLE: could format script with 'shfmt -p -i 4 -ci -kp -sr $f'" ; }
                             fix() { shfmt -p -i 4 -ci -kp -sr -w "$f" ; }
-                            lint_with_fix
+                            lint_with_fix &
                         fi
                     fi
                     ;;
@@ -231,7 +237,7 @@ checkpkg() {
                     ok() { false ; }
                     msg() { warn "'$f' is executable" ; }
                     fix() { chmod -x "$f" ; }
-                    lint_with_fix
+                    lint_with_fix &
 
                     [ -n "$VER" ] && {
 
@@ -267,6 +273,7 @@ checkpkg() {
         fi
     done
     wait
+    [ -e "$FILE_MOD_MUTEX" ] && rm -- "$FILE_MOD_MUTEX"
 }
 
 PKGMGR=$(basename "$0")
