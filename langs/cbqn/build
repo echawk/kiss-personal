@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+make CC="${CC:-cc}" REPLXX=1 f="$CFLAGS" c
+
+mkdir -p "$1/usr/bin/"
+cp BQN "$1/usr/bin/bqn"
