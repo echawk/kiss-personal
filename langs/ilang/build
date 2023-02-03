@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # FIXME: doesn't seem to compile with gcc or clang
-tcc *.c -o I
+tcc -static ./*.c -o I
 
 mkdir -p "$1/usr/bin/"
 cp I "$1/usr/bin/"
