@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+git clone https://github.com/martinus/robin-hood-hashing external/robin-hood-hashing
+
+cmake -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DVULKAN_HEADERS_INSTALL_DIR=/usr \
+    -DSPIRV_HEADERS_INSTALL_DIR=/usr \
+    -DSPIRV_TOOLS_INSTALL_DIR=/usr \
+    -DROBIN_HOOD_HASHING_INSTALL_DIR=./external/robin-hood-hashing \
+    -DBUILD_WSI_WAYLAND_SUPPORT=OFF
+
+cmake --build   build
+cmake --install build
