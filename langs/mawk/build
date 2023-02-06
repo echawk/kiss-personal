@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+./configure \
+    --prefix=/usr
+
+make
+make install
+
+# Enable alternatives.
+ln -s mawk   "$1/usr/bin/awk"
+ln -s mawk.1 "$1/usr/share/man/man1/awk.1"
