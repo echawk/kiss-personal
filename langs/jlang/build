@@ -1,0 +1,25 @@
+#!/bin/sh -e
+
+cat << EOF > jsrc/jversion.h
+#define jversion "903"
+#define jplatform "linux"
+#define jtype "beta"
+#define jlicense "GPL3"
+#define jbuilder "KISS"
+EOF
+
+cd make2
+export CC=clang
+sh "$PWD/build_all.sh"
+sh "$PWD/cpbin.sh"
+cd "$OLDPWD"
+
+mkdir -p \
+    "$1/usr/lib/j9/bin/" \
+    "$1/usr/bin/"
+
+# TODO: add custom wrapper script
+cp -a jenv/* "$1/"
+cp -a "./jlibrary/bin/"* "$1/usr/lib/j9/bin/"
+cp -a "./bin/linux/"*/* "$1/usr/lib/j9/bin/"
+#ln -s /usr/lib/j9/bin/jconsole "$1/usr/bin/jconsole"
