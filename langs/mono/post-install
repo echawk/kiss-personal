@@ -1,14 +1,10 @@
 #!/bin/sh -e
 
-/etc/ssl/update-certdata.sh
-
 yes | certmgr -ssl -m https://go.microsoft.com
 yes | certmgr -ssl -m https://nugetgallery.blob.core.windows.net
 yes | certmgr -ssl -m https://nuget.org
 
 cert-sync /etc/ssl/certs/ca-certificates.crt
-
-#!/bin/sh -e
 
 printf "+-----------------------------------------------------+
 |                    ATTENTION                        |
