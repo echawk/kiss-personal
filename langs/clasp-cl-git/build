@@ -1,15 +1,11 @@
 #!/bin/sh -e
 
-export CC=clang
-export CXX=clang++
-
 sbcl --script koga \
     --reproducible-build \
-    --broken-stdlib \
     --package-path="$1" \
-    --bin-path=/usr/bin \
+    --bin-path=/usr/bin/ \
     --share-path=/usr/share/clasp/ \
-    --lib-path=/usr/lib/clasp
+    --lib-path=/usr/lib/clasp/
 
 ninja -C build
 ninja -C build install
