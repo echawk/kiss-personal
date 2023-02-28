@@ -2,12 +2,12 @@
 
 for sml in mlton mlkit poly mosml; do
     if command -v $sml; then
-        make with-$sml
+        make -j1 with-$sml
         break
     fi
 done
 
-make INSTALLDIR="$1/opt/hamlet" install
+make -j1 INSTALLDIR="$1/opt/hamlet" install
 
 mkdir -p "$1/usr/bin/"
 cat << EOF > "$1/usr/bin/hamlet"
