@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+export CMAKE_GENERATOR="Unix Makefiles"
+
+patch -p1 < sqVirtualMachine.patch
+
+./unix/cmake/configure \
+    --prefix=/usr \
+    --without-quartz \
+    --with-x \
+    --enable-mpg-mmx
+
+make
+make  install

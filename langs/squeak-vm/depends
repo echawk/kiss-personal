@@ -1,0 +1,6 @@
+cairo
+cmake make
+freetype-harfbuzz
+glib
+pango
+util-linux
