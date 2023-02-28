@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+cabal build \
+    --enable-static \
+    --enable-executable-static
+
+mkdir -p "$1/usr/bin"
+cp "$(find dist-newstyle/ -type f -name hoogle)" "$1/usr/bin/"
