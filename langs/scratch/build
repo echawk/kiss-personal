@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+make build
+
+install -Dm755 src/scratch "$1"/usr/bin/scratch
+install -Dm644 Scratch.image "$1"/usr/lib/scratch/Scratch.image
+install -m644 Scratch.ini "$1"/usr/lib/scratch/Scratch.ini
+install -Dm644 src/scratch.desktop "$1"/usr/share/applications/scratch.desktop
+install -Dm644 src/man/scratch.1.gz "$1"/usr/share/man/man1/scratch.1.gz
+install -Dm644 src/scratch.xml "$1"/usr/share/mime/packages/scratch.xml
+install -D -m644 src/icons/128x128/scratch.png "$1"/usr/share/icons/hicolor/128x128/apps/scratch.png
+
+mv Help/ locale/ Media/ Projects/ README Plugins/ "$1/usr/lib/scratch/"
