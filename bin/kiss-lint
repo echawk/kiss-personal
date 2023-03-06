@@ -165,7 +165,7 @@ checkpkg() {
                         ) &
                         (
                             t="$(grep -nE "DESTDIR=\"?..\"?" "$f" | line_aux)"
-                            [ -n "$t" ] && echo "STYLE: 'DESTDIR' is already defined in the environment (line(s): $t in $f)"
+                            ! [ -n "$t" ] && warn "'DESTDIR' is not already defined in the environment (line(s): $t in $f)"
                         ) &
 
                         t() { grep -nE "pkg-config" "$f" | line_aux ; }
