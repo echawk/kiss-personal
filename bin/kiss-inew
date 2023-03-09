@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# kiss-[i]mproved[new]
+
+# kiss-new but with some bonus features.
+
+# TODO: automate the creation of esources?
+
+# Usage:
+# kiss-inew [buildtype] [name] [version] [source]
+
+buildtype=$1
+name=$2
+version=$3
+source=$4
+
+[ -z "$buildtype" ] && exit 1
+[ -z "$name" ] && exit 1
+
+kiss new "$name" "$version" "$source"
+
+cat << EOF > "$name/build"
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+EOF
+
+case $buildtype in
+    cmake)
+        cat << EOF >> "$name/build"
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr
+
+cmake --build   build
+cmake --install build
+EOF
+        echo "cmake make" > "$name/depends"
+        ;;
+    meson)
+        cat << EOF >> "$name/build"
+meson setup \
+    -Dprefix=/usr \
+    output
+
+ninja -C output
+ninja -C output install
+EOF
+        echo "meson make" > "$name/depends"
+        ;;
+    configure)
+        cat << EOF >> "$name/build"
+./configure \
+    --prefix=/usr
+
+make
+make install
+EOF
+        ;;
+esac
