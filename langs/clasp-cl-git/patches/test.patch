@@ -1,0 +1,17 @@
+diff --git a/src/sockets/sockets.cc b/src/sockets/sockets.cc
+index 684201f..bb2b9ed 100644
+--- a/src/sockets/sockets.cc
++++ b/src/sockets/sockets.cc
+@@ -927,6 +927,12 @@ void initialize_sockets_globals() {
+   _sym__PLUS_ENETUNREACH_PLUS_->defconstant(core::Integer_O::create((gc::Fixnum)ENETUNREACH));
+ 
+   SYMBOL_EXPORT_SC_(SocketsPkg, _PLUS_NETDB_INTERNAL_PLUS_);
++#ifndef NETDB_INTERNAL
++#define NETDB_INTERNAL -1
++#endif
++#ifndef NETDB_SUCCESS
++#define NETDB_SUCCESS 0
++#endif
+   _sym__PLUS_NETDB_INTERNAL_PLUS_->defconstant(core::Integer_O::create((gc::Fixnum)NETDB_INTERNAL));
+   SYMBOL_EXPORT_SC_(SocketsPkg, _PLUS_NETDB_SUCCESS_PLUS_);
+   _sym__PLUS_NETDB_SUCCESS_PLUS_->defconstant(core::Integer_O::create((gc::Fixnum)NETDB_SUCCESS));

@@ -1,0 +1,20 @@
+diff --git a/repos.sexp b/repos.sexp
+index 44e1b07..c9f9add 100644
+--- a/repos.sexp
++++ b/repos.sexp
+@@ -186,7 +186,7 @@
+  (:name :bdwgc
+   :repository "https://github.com/ivmai/bdwgc.git"
+   :directory "src/bdwgc/"
+-  :commit "v8.2.0")
++  :commit "v8.2.2")
+  (:name :libatomic_ops
+   :repository "https://github.com/ivmai/libatomic_ops.git"
+   :directory "src/libatomic_ops/"
+@@ -205,4 +205,4 @@
+   :repository "https://github.com/seqan/seqan.git"
+   :directory "extensions/seqan-clasp/seqan/"
+   :branch "master"
+-  :extension :seqan-clasp))
+\ No newline at end of file
++  :extension :seqan-clasp))

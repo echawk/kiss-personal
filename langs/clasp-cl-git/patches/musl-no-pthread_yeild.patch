@@ -1,0 +1,16 @@
+diff --git a/src/core/hashTable.cc b/src/core/hashTable.cc
+index 7751ff5..b6fddba 100644
+--- a/src/core/hashTable.cc
++++ b/src/core/hashTable.cc
+@@ -1005,7 +1005,11 @@ KeyValuePair* HashTable_O::rehash_upgrade_write_lock(bool expandTable, T_sp find
+ #ifdef _TARGET_OS_DARWIN
+     pthread_yield_np();
+ #else
++#ifdef __GLIBC__
+     pthread_yield();
++#else
++    sched_yield();
++#endif
+ #endif
+     goto tryAgain;
+   } else {
