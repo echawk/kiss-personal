@@ -22,14 +22,14 @@ kiss new "$name" "$version" "$source"
 cat << EOF > "$name/build"
 #!/bin/sh -e
 
-export DESTDIR="$1"
+export DESTDIR="\$1"
 
 EOF
 
 case $buildtype in
     cmake)
         cat << EOF >> "$name/build"
-cmake -B build \
+cmake -B build \\
     -DCMAKE_INSTALL_PREFIX=/usr
 
 cmake --build   build
@@ -39,8 +39,8 @@ EOF
         ;;
     meson)
         cat << EOF >> "$name/build"
-meson setup \
-    -Dprefix=/usr \
+meson setup \\
+    -Dprefix=/usr \\
     output
 
 ninja -C output
@@ -50,7 +50,7 @@ EOF
         ;;
     configure)
         cat << EOF >> "$name/build"
-./configure \
+./configure \\
     --prefix=/usr
 
 make
