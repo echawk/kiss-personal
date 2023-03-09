@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 # Use lib not lib64 by default.
 sed '/m64=/s/lib64/lib/' gcc/gcc/config/i386/t-linux64 > _
 mv -f _ gcc/gcc/config/i386/t-linux64

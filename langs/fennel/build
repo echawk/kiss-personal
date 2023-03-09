@@ -1,4 +1,7 @@
 #!/bin/sh -e
+
+export DESTDIR="$1"
+
 command -v luajit && export LUA='luajit'
 
 make build

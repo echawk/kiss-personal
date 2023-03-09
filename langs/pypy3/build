@@ -1,8 +1,10 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 case "$(uname)" in
-    Linux) JOBS="$(nproc)";;
-    FreeBSD | Darwin | OpenBSD) JOBS="$(sysctl -n hw.ncpu)";;
+    Linux) JOBS="$(nproc)" ;;
+    FreeBSD | Darwin | OpenBSD) JOBS="$(sysctl -n hw.ncpu)" ;;
 esac
 
 if kiss list musl; then

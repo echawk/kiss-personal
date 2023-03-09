@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 export USRDIR="$1/usr"
 export ETCDIR="$1/etc"
 

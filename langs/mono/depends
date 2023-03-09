@@ -4,3 +4,4 @@ cmake make
 libtool make
 linux-headers make
 python
+samurai make

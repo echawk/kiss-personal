@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 tar xvf click*
 
 cd miranda
@@ -11,4 +13,3 @@ mkdir -p "$1/usr/bin/" "$1/usr/lib/" "$1/usr/share/man/man1/"
 cp mira    "$1/usr/bin/"
 cp -r miralib "$1/usr/lib/"
 cp mira.1  "$1/usr/share/man/man1/"
-

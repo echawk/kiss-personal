@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 make CC="${CC:-cc}" REPLXX=1 f="$CFLAGS" c
 
 mkdir -p "$1/usr/bin/"

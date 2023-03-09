@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 if pkg-config --exists libedit; then
     sed "s/-lreadline/-ledit/" configure > _
     mv -f _ configure

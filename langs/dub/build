@@ -1,4 +1,7 @@
 #!/bin/sh -e
+
+export DESTDIR="$1"
+
 ./build.d
 mkdir -p "$1/usr/bin/"
 cp bin/dub "$1/usr/bin/dub"

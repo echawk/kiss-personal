@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 export JAVA_HOME="/usr/lib/jvm/java-1.7-openjdk/"
 export PATH="/usr/share/apache-ant/bin:$PATH"
 
@@ -9,7 +11,7 @@ mkdir -p "$1/usr/share/java"
 cp clojure.jar "$1/usr/share/java"
 
 mkdir -p "$1/usr/bin"
-cat <<EOF > "$1/usr/bin/clojure"
+cat << EOF > "$1/usr/bin/clojure"
 #!/usr/bin/env sh
 
 JAVA_HOME=\${JAVA_HOME:-$JAVA_HOME}

@@ -1,4 +1,7 @@
 #!/bin/sh -e
+
+export DESTDIR="$1"
+
 mv typescript-*.tgz?no-extract typescript.tgz
 npm install -g --prefix "$1/usr" typescript.tgz
 

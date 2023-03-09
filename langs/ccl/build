@@ -1,5 +1,7 @@
 #!/bin/sh -ex
 
+export DESTDIR="$1"
+
 : > nostrip
 
 # CCL segfaults when linked with ld.gold

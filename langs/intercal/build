@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 sed "/^int yydebug;/d" src/perpet.c > _
 mv -f _ src/perpet.c
 

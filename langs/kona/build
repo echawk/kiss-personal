@@ -1,4 +1,7 @@
 #!/bin/sh -e
+
+export DESTDIR="$1"
+
 sed -E "s/^(CFLAGS=-g)/\1 -static $CFLAGS/" Makefile > _
 mv -f _ Makefile
 

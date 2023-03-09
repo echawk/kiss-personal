@@ -9,7 +9,8 @@ GhcStage3HcOpts += -O3
 SplitSections    = YES
 EOF
 
-ffi_lib=$(pkg-config libffi --libs-only-L); ffi_lib="${ffi_lib%% }"
+ffi_lib=$(pkg-config libffi --libs-only-L)
+                                            ffi_lib="${ffi_lib%% }"
 
 ./configure \
     --prefix="/usr" \

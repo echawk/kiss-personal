@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 v="$(ghc --numeric-version)"
 
 if ! command -v cabal; then

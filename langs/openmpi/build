@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 command -v gfortran && fortran=all
 
 ./configure \
@@ -10,7 +12,7 @@ command -v gfortran && fortran=all
     --enable-builtin-atomics \
     --enable-memchecker \
     --enable-mpi-cxx \
-    --enable-mpi-fortran=${fortran:-none} \
+    --enable-mpi-fortran="${fortran:-none}" \
     --enable-pretty-print-stacktrace \
     --enable-mpi-thread-multiple
 

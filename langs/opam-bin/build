@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 mkdir -p "$1/usr/bin"
 mv opam* "$1/usr/bin/opam"
 chmod +x "$1/usr/bin/opam"

@@ -2,5 +2,6 @@ gfortran # or equivalent
 ncurses
 pcre2
 perl make
+pkgconf make
 readline
 xz

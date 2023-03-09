@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 # Disable stripping of binaries.
 # This breaks Go.
 : > nostrip
@@ -35,7 +37,7 @@ fi
 
 export GOROOT="$PWD/go-current"
 
-(
+(   
     cd "$GOROOT/src"
     ./make.bash --no-clean -v
 )

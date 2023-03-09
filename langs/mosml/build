@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 # Patch to add shebang support to mosml.
 # Proper shebang is: #!/usr/bin/mosml -s
 patch -p1 < shebang-support.patch

@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 make -C wren/projects/make/
 make -C wren-cli/projects/make/
 

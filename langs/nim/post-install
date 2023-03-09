@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-cat <<EOF
+cat << EOF
 To prevent issues with SSL/TLS errors, run the following commands as root:
 # mkdir -p /etc/ssl/certs/
 # ln -s ../cert.pem /etc/ssl/certs/ca-certificates.crt

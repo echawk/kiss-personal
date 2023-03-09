@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 for patch in *.patch; do
     patch -p1 < "$patch"
 done

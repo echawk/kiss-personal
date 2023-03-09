@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 cabal build \
     --enable-static \
     --enable-executable-static
@@ -11,6 +13,6 @@ cp -r core/ "$1/usr/share/carp/"
 cp -r docs/ "$1/usr/share/carp/"
 cp -r examples/ "$1/usr/share/carp/"
 
-cat <<EOF > "$1/etc/profile.d/carp_env.sh"
+cat << EOF > "$1/etc/profile.d/carp_env.sh"
 export CARP_DIR=/usr/share/carp/
 EOF

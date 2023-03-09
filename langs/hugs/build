@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 export PATH="$PWD:$PATH"
 
 patch -p1 < hsbase_inline.patch

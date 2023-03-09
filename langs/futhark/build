@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 cabal build \
     --enable-static \
     --enable-executable-static

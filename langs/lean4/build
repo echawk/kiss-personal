@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 git submodule update --init --recursive
 
 export CMAKE_GENERATOR="Unix Makefiles"

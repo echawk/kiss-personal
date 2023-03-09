@@ -1,10 +1,15 @@
 #!/bin/sh -e
 
-d() { echo "$1" ; exit 1 ; }
+export DESTDIR="$1"
+
+d() {
+      echo "$1"
+                  exit 1
+}
 
 case "$(readlink "$(command -v ld)")" in
-    ld.bfd);;
-    ld.gold);;
+    ld.bfd) ;;
+    ld.gold) ;;
     *) d "Only 'ld' from 'binutils' is supported" ;;
 esac
 
@@ -28,8 +33,8 @@ HOST_DMD="$dmd" dmd -run ./dmd/compiler/src/build.d
 make -C dmd/compiler/docs
 
 case "$(uname -m)" in
-    x86_64) _arch=64;;
-    i*86)   _arch=32;;
+    x86_64) _arch=64 ;;
+    i*86)   _arch=32 ;;
 esac
 
 dmd="$PWD/dmd/generated/linux/release/$_arch/dmd"

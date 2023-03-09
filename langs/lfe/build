@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 make compile
 make PREFIX="$1/usr" install
 

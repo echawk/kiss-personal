@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 make CC="${CC:-cc}" \
     MYCFLAGS="$CFLAGS -fPIC" \
     MYLDFLAGS="$LDFLAGS" \

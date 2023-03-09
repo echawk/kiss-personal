@@ -1,11 +1,24 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
+sed -i "/freopen/s/stdin = //" src/gctools/snapshotSaveLoad.cc
+
+patch -p1 < musl-dladdr.patch
+patch -p1 < musl-koga-libexecinfo-fix.patch
+patch -p1 < musl-no-pthread_yeild.patch
+patch -p1 < stdarg2.patch
+patch -p1 < stdargfix.patch
+patch -p1 < test.patch
+
 sbcl --script koga \
     --reproducible-build \
     --package-path="$1" \
     --bin-path=/usr/bin/ \
     --share-path=/usr/share/clasp/ \
     --lib-path=/usr/lib/clasp/
+
+sed -i "s/stdio.h>/stdio.h>\n#include <ucontext.h>/" src/bdwgc/mach_dep.c
 
 ninja -C build
 ninja -C build install

@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 make
 mkdir -p "$1/usr/bin/"
 cp shen "$1/usr/bin/shen-go"

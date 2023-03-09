@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 LOGTALKPREFIX="$1/usr/lib/logtalk"
 
 mkdir -p "$LOGTALKPREFIX"

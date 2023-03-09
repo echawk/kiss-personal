@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 make release
 mkdir -p "$1/usr/bin/"
 mkdir -p "$1/usr/lib/odin"

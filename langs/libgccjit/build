@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 # TODO Cleanup non-libgccjit items.
 
 sys_arch=${3:-$(uname -m)}

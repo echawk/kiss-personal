@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 #export CFLAGS="$CFLAGS -I/usr/lib/csv9.5.8/ta6le/"
 
 make -j1 prefix=/opt/shen-scheme/

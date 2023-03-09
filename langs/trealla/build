@@ -11,7 +11,7 @@ make
 make test # Failed tests don't cause the build to fail, so it's safe to call.
 
 mkdir -pv \
-    "$DESTDIR"/usr/bin/ \
-    "$DESTDIR"/usr/share/trealla/
-cp tpl "$DESTDIR"/usr/bin/tpl
-cp -r library "$DESTDIR"/usr/share/trealla/
+    "$1"/usr/bin/ \
+    "$1"/usr/share/trealla/
+cp tpl "$1"/usr/bin/tpl
+cp -r library "$1"/usr/share/trealla/

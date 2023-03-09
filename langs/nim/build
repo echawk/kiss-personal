@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 if command -v nim; then
     nim_exe="$(command -v nim)"
 else

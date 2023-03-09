@@ -15,7 +15,7 @@ rm -rf po
 
 # R refuses to build without these files which is weird considering that
 # they are not included in the source tarball
-(
+(   
     cd doc
     touch NEWS.rds
     touch NEWS.2.rds
@@ -26,11 +26,11 @@ conf_flags=""
 for p in cairo lapack libpng libtiff-4 tk blas libjpeg x11; do
     if pkg-config --exists $p; then
         case $p in
-            x11)       conf_flags="$conf_flags --with-x";;
-            tk)        conf_flags="$conf_flags --with-tcltk";;
-            libtiff-4) conf_flags="$conf_flags --with-tiff";;
-            libjpeg)   conf_flags="$conf_flags --with-jpeglib";;
-            *)         conf_flags="$conf_flags --with-$p";;
+            x11)       conf_flags="$conf_flags --with-x" ;;
+            tk)        conf_flags="$conf_flags --with-tcltk" ;;
+            libtiff-4) conf_flags="$conf_flags --with-tiff" ;;
+            libjpeg)   conf_flags="$conf_flags --with-jpeglib" ;;
+            *)         conf_flags="$conf_flags --with-$p" ;;
         esac
     fi
 done

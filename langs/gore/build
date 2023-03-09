@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 make
 mkdir -p "$1/usr/bin/"
 cp gore "$1/usr/bin/gore"

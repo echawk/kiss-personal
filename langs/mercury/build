@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 echo "EXTRA_CFLAGS += -w -Wno-error=array-parameter" >> Mmake.params
 
 ./configure \
