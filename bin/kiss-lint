@@ -262,7 +262,7 @@ checkpkg() {
                 version | build | sources) err "'$f' does not exist" ;;
                 meta) warn "'$f' does not exist" ;;
                 checksums)
-                    ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ "$(wc -l < "sources")" = "1" ] && err "'$f' does not exist" &
+                    ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ $(wc -l < "sources") -ge 1 ] && err "'$f' does not exist" &
                     ;;
                 *) ;;
             esac
