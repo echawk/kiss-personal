@@ -1,3 +1,5 @@
 #!/bin/sh -e
 
+unzip *.zip
+
 install -Dm644 ./fonts/ttf/*.ttf -t "$1/usr/share/fonts/TTF"
