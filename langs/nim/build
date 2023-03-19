@@ -13,18 +13,24 @@ else
 
     nim_exe="$PWD/bin/nim"
 fi
+
+case "$(uname)" in
+    Linux) JOBS="$( nproc)" ;;
+    FreeBSD | Darwin | OpenBSD) JOBS="$(sysctl -n hw.ncpu)" ;;
+esac
+
 # Build a release version of the "koch" maintenance program
-$nim_exe compile --skipUserCfg --skipParentCfg --hints:off koch
+$nim_exe compile --parallelBuild="$JOBS" --skipUserCfg --skipParentCfg --hints:off koch
 
 # Build a release version of the nim compiler
-./koch boot -d:release --skipUserCfg --skipParentCfg --hints:off
+./koch boot --parallelBuild="$JOBS" -d:release --skipUserCfg --skipParentCfg --hints:off
 
 # Build nimsuggest, nimgrep, and nimpretty
-./koch tools --skipUserCfg --skipParentCfg --hints:off
+./koch tools --parallelBuild="$JOBS" --skipUserCfg --skipParentCfg --hints:off
 
 # Build nimrtl.nim
 cd lib
-$nim_exe c --app:lib -d:createNimRtl -d:release nimrtl.nim
+$nim_exe c --parallelBuild="$JOBS" --app:lib -d:createNimRtl -d:release nimrtl.nim
 cd "$OLDPWD"
 
 mkdir -p \
@@ -35,7 +41,6 @@ mkdir -p \
 cp -a lib/*    "$1/usr/lib/nim"
 cp -a compiler "$1/usr/lib/nim"
 
-mv -f compiler.nimble "$1/usr/lib/nim/compiler"
 cp lib/libnimrtl.so "$1/usr/lib/libnimrtl.so"
 
 cp config/* "$1/etc/nim/"
