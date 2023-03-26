@@ -2,5 +2,7 @@
 
 export DESTDIR="$1"
 
+export LDFLAGS="$LDFLAGS -static"
+
 make
 make PREFIX=/usr install
