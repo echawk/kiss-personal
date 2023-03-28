@@ -3,6 +3,6 @@ geoip
 libxml2
 libxslt
 openssl
-pcre
+pcre2
 perl
 zlib
