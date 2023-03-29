@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+CC="$CC" CXX="$CXX" python scripts/mk_make.py --prefix=/usr
+
+cd build
+make
+make install
