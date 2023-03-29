@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+go build -o ivy
+mkdir -p "$1/usr/bin/"
+cp ivy "$1/usr/bin/"
