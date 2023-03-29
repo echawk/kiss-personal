@@ -1,0 +1,25 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+git submodule update --init --recursive
+
+cabal build \
+    --enable-static \
+    --enable-executable-static
+
+cabal new-run koka -- -e util/bundle
+
+sed -e '/^USE_SUDO/s/""/"never"/' \
+    -e '/install_dependencies$/d' \
+    util/install.sh > _
+mv -f _ util/install.sh
+chmod +x util/install.sh
+
+./util/install.sh -p "$1/usr" "$(find . -type f -name koka-*.tar.gz)"
+
+# Because we have to cheese the install script, we have to fix the symlink.
+rm "$1/usr/bin/koka"
+koka_exe="$(find . -type f -name koka-*.tar.gz | xargs basename | cut -d'-' -f1-2)"
+cd "$1/usr/bin/"
+ln -s koka "$koka_exe"
