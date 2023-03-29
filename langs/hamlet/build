@@ -2,6 +2,13 @@
 
 export DESTDIR="$1"
 
+# Fix weird build issues.
+if command -v mlyacc; then
+    ln -s "$(command -v mlyacc)" ml-yacc
+    ln -s "$(command -v mllex)" ml-lex
+    export PATH="$PWD:$PATH"
+fi
+
 for sml in mlton mlkit poly mosml; do
     if command -v $sml; then
         make -j1 with-$sml
