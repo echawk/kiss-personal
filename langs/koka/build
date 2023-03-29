@@ -16,10 +16,10 @@ sed -e '/^USE_SUDO/s/""/"never"/' \
 mv -f _ util/install.sh
 chmod +x util/install.sh
 
-./util/install.sh -p "$1/usr" "$(find . -type f -name koka-*.tar.gz)"
+./util/install.sh -p "$1/usr" "$(find . -type f -name "koka-*.tar.gz")"
 
 # Because we have to cheese the install script, we have to fix the symlink.
 rm "$1/usr/bin/koka"
-koka_exe="$(find . -type f -name koka-*.tar.gz | xargs basename | cut -d'-' -f1-2)"
+koka_exe="$(find . -type f -name "koka-*.tar.gz" -print0 | xargs -0 basename | cut -d'-' -f1-2)"
 cd "$1/usr/bin/"
-ln -s koka "$koka_exe"
+ln -s "$koka_exe" koka
