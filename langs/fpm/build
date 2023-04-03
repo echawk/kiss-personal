@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+gfortran -g -fbacktrace -O3 -static "fpm-$2.F90" -o fpm
+
+mkdir -p "$1/usr/bin/"
+cp fpm "$1/usr/bin/"
