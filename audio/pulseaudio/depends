@@ -1,0 +1,6 @@
+alsa-lib
+glib
+libsndfile
+libtool
+meson make
+samurai make

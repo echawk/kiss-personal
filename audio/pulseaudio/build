@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+meson setup \
+    -Dprefix=/usr \
+    -Ddoxygen=false \
+    -Dman=false \
+    -Dtests=false \
+    -Ddatabase='simple' \
+    -Dgtk=disabled \
+    output
+
+ninja -C output
+ninja -C output install
