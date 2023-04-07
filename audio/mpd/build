@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+meson setup \
+    -Dprefix=/usr \
+    -Dtest=false \
+    -Dsystemd=disabled \
+    -Ddbus=disabled \
+    -Dzeroconf=disabled \
+    -Dalsa=enabled \
+    output
+
+ninja -C output
+ninja -C output install
