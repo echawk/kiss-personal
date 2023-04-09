@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if command -v ckati; then
+    ckati --ninja
+    ninja -C .
+else
+    make
+fi
+
+mkdir -p "$1/usr/bin/"
+cp ckati "$1/usr/bin/ckati"
