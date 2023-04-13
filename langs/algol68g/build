@@ -3,6 +3,12 @@
 export DESTDIR="$1"
 
 ./configure \
-    --prefix=/usr
+    --prefix=/usr \
+    --disable-gsl \
+    --disable-mathib \
+    --disable-mpfr \
+    --disable-plotutils \
+    --disable-postgresql
+
 make
 make install
