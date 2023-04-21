@@ -1,0 +1,143 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index cc0f2a3..08a89c1 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -161,7 +161,7 @@ ELSEIF("${INTERFACE_TYPE}" STREQUAL "qt5" OR "${INTERFACE_TYPE}" STREQUAL "qt6")
+ 
+     SET(CMAKE_AUTOMOC ON)
+     FIND_PACKAGE(Qt${QT_VER}Concurrent REQUIRED)
+-    FIND_PACKAGE(Qt${QT_VER}DBus REQUIRED)
++    # FIND_PACKAGE(Qt${QT_VER}DBus REQUIRED)
+     FIND_PACKAGE(Qt${QT_VER}Network REQUIRED)
+     FIND_PACKAGE(Qt${QT_VER}Widgets REQUIRED)
+     FIND_PACKAGE(Qt${QT_VER}Xml REQUIRED)
+@@ -339,7 +339,7 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+ 
+ SET_TARGET_PROPERTIES(gimagereader PROPERTIES OUTPUT_NAME gimagereader-${INTERFACE_TYPE})
+ IF("${srcdir}" STREQUAL "qt")
+-    TARGET_LINK_LIBRARIES(gimagereader Qt${QT_VER}::Widgets Qt${QT_VER}::Network Qt${QT_VER}::DBus Qt${QT_VER}::Xml Qt${QT_VER}::PrintSupport Qt${QT_VER}::Concurrent)
++    TARGET_LINK_LIBRARIES(gimagereader Qt${QT_VER}::Widgets Qt${QT_VER}::Network  Qt${QT_VER}::Xml Qt${QT_VER}::PrintSupport Qt${QT_VER}::Concurrent)
+ ENDIF()
+ 
+ INSTALL(TARGETS gimagereader DESTINATION bin)
+diff --git a/qt/src/MainWindow.cc b/qt/src/MainWindow.cc
+index 417e1ce..9c99e10 100644
+--- a/qt/src/MainWindow.cc
++++ b/qt/src/MainWindow.cc
+@@ -18,8 +18,6 @@
+  */
+ 
+ #include <QCloseEvent>
+-#include <QDBusConnection>
+-#include <QDBusConnectionInterface>
+ #include <QDesktopServices>
+ #include <QDir>
+ #include <QMessageBox>
+@@ -513,16 +511,6 @@ void MainWindow::languageChanged(const Config::Lang& lang) {
+ 	if(!code.isEmpty() && !QtSpell::checkLanguageInstalled(code) && ConfigSettings::get<SwitchSetting>("dictinstall")->getValue()) {
+ 		NotificationAction actionDontShowAgain = {_("Don't show again"), [this]{ m_config->disableDictInstall(); }, true};
+ 		NotificationAction actionInstall = {_("Install"), [this]{ dictionaryAutoinstall(); }, false};
+-#ifdef Q_OS_LINUX
+-		if(getConfig()->useSystemDataLocations()) {
+-			QDBusConnectionInterface* iface = QDBusConnection::sessionBus().interface();
+-			iface->startService("org.freedesktop.PackageKit");
+-			if(!iface->isServiceRegistered("org.freedesktop.PackageKit").value()) {
+-				actionInstall = {_("Help"), [this]{ showHelp(); }, false}; // TODO #InstallSpelling
+-				qWarning("Could not find PackageKit on DBus, dictionary autoinstallation will not work");
+-			}
+-		}
+-#endif
+ 		const QString& name = m_recognitionMenu->getRecognitionLanguage().name;
+ 		addNotification(_("Spelling dictionary missing"), _("The spellcheck dictionary for %1 is not installed").arg(name), {actionInstall, actionDontShowAgain}, &m_notifierHandle);
+ 	}
+@@ -539,23 +527,6 @@ void MainWindow::dictionaryAutoinstall() {
+ 
+ 	if(!isWindows && MAIN->getConfig()->useSystemDataLocations()) {
+ 		// Place this in a ifdef since DBus stuff cannot be compiled on Windows
+-#ifdef Q_OS_LINUX
+-		QStringList files;
+-		for(const QString& langCulture : m_config->searchLangCultures(code)) {
+-			files.append("/usr/share/myspell/" + langCulture + ".dic");
+-			files.append("/usr/share/hunspell/" + langCulture + ".dic");
+-		}
+-		QDBusMessage req = QDBusMessage::createMethodCall("org.freedesktop.PackageKit", "/org/freedesktop/PackageKit", "org.freedesktop.PackageKit.Modify", "InstallProvideFiles");
+-		req.setArguments(QList<QVariant>() << QVariant::fromValue((quint32)winId()) << QVariant::fromValue(files) << QVariant::fromValue(QString("always")));
+-		QDBusMessage reply = QDBusConnection::sessionBus().call(req, QDBus::BlockWithGui, 3600000);
+-		if(reply.type() == QDBusMessage::ErrorMessage) {
+-			if(QMessageBox::Help == QMessageBox::critical(this, _("Error"), _("Failed to install spelling dictionary: %1").arg(reply.errorMessage()), QMessageBox::Ok | QMessageBox::Help, QMessageBox::Ok)) {
+-				showHelp("#InstallSpelling");
+-			}
+-		}
+-		m_recognitionMenu->rebuild();
+-		popState();
+-#endif
+ 	} else {
+ 		QString url = "https://cgit.freedesktop.org/libreoffice/dictionaries/tree/";
+ 		QString plainurl = "https://cgit.freedesktop.org/libreoffice/dictionaries/plain/";
+diff --git a/qt/src/TessdataManager.cc b/qt/src/TessdataManager.cc
+index 99256fa..ec4fcaa 100644
+--- a/qt/src/TessdataManager.cc
++++ b/qt/src/TessdataManager.cc
+@@ -17,8 +17,6 @@
+  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#include <QDBusConnection>
+-#include <QDBusConnectionInterface>
+ #include <QDialogButtonBox>
+ #include <QDir>
+ #include <QFile>
+@@ -62,16 +60,6 @@ TessdataManager::TessdataManager(QWidget* parent)
+ }
+ 
+ bool TessdataManager::setup() {
+-#ifdef Q_OS_LINUX
+-	if(MAIN->getConfig()->useSystemDataLocations()) {
+-		QDBusConnectionInterface* iface = QDBusConnection::sessionBus().interface();
+-		iface->startService("org.freedesktop.PackageKit");
+-		if(!iface->isServiceRegistered("org.freedesktop.PackageKit").value()) {
+-			QMessageBox::critical(MAIN, _("Error"), _("A session connection to the PackageKit backend is required for managing system-wide tesseract language packs, but it was not found. This service is usually provided by a software-management application such as Gnome Software. Please install software which provides the necessary PackageKit interface, use other system package management software to manage the tesseract language packs directly, or switch to using the user tessdata path in the configuration dialog."));
+-			return false;
+-		}
+-	}
+-#endif
+ 	MAIN->pushState(MainWindow::State::Busy, _("Fetching available languages"));
+ 	QString messages;
+ 	bool success = fetchLanguageList(messages);
+@@ -214,36 +202,6 @@ void TessdataManager::applyChanges() {
+ #endif
+ 	if(!isWindows && MAIN->getConfig()->useSystemDataLocations()) {
+ 		// Place this in a ifdef since DBus stuff cannot be compiled on Windows
+-#ifdef Q_OS_LINUX
+-		QStringList installFiles;
+-		QStringList removeFiles;
+-		for(int row = 0, nRows = m_languageList->count(); row < nRows; ++row) {
+-			QListWidgetItem* item = m_languageList->item(row);
+-			QString prefix = item->data(Qt::UserRole).toString();
+-			if(item->checkState() == Qt::Checked && !availableLanguages.contains(prefix)) {
+-				installFiles.append(tessDataDir.absoluteFilePath(QString("%1.traineddata").arg(prefix)));
+-			} else if(item->checkState() != Qt::Checked && availableLanguages.contains(prefix)) {
+-				removeFiles.append(tessDataDir.absoluteFilePath(QString("%1.traineddata").arg(prefix)));
+-			}
+-		}
+-
+-		if(!installFiles.isEmpty()) {
+-			QDBusMessage req = QDBusMessage::createMethodCall("org.freedesktop.PackageKit", "/org/freedesktop/PackageKit", "org.freedesktop.PackageKit.Modify", "InstallProvideFiles");
+-			req.setArguments(QList<QVariant>() << QVariant::fromValue((quint32)winId()) << QVariant::fromValue(installFiles) << QVariant::fromValue(QString("always")));
+-			QDBusMessage reply = QDBusConnection::sessionBus().call(req, QDBus::BlockWithGui, 3600000);
+-			if(reply.type() == QDBusMessage::ErrorMessage) {
+-				errorMsg = reply.errorMessage();
+-			}
+-		}
+-		if(errorMsg.isEmpty() && !removeFiles.isEmpty()) {
+-			QDBusMessage req = QDBusMessage::createMethodCall("org.freedesktop.PackageKit", "/org/freedesktop/PackageKit", "org.freedesktop.PackageKit.Modify", "RemovePackageByFiles");
+-			req.setArguments(QList<QVariant>() << QVariant::fromValue((quint32)winId()) << QVariant::fromValue(removeFiles) << QVariant::fromValue(QString("always")));
+-			QDBusMessage reply = QDBusConnection::sessionBus().call(req, QDBus::BlockWithGui, 3600000);
+-			if(reply.type() == QDBusMessage::ErrorMessage) {
+-				errorMsg = reply.errorMessage();
+-			}
+-		}
+-#endif
+ 	} else {
+ 		QStringList errors;
+ 		QDir scriptDir = QDir(tessDataDir.absoluteFilePath("script"));
