@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+mkdir -p "$1/usr/share/tessdata/"
+cp ./*.traineddata "$1/usr/share/tessdata/"
