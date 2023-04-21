@@ -1,0 +1,10 @@
+cmake make
+fontconfig
+freetype-harfbuzz
+libidn
+libjpeg-turbo
+libpng
+libunistring
+openssl
+tiff
+zlib
