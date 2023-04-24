@@ -1,8 +1,2 @@
-git+https://github.com/clasp-developers/clasp/
-patches/test.patch
-patches/stdargfix.patch
-patches/stdarg2.patch
-patches/musl-dladdr.patch
-patches/musl-no-pthread_yeild.patch
+git+https://github.com/ehawkvu/clasp/@musl
 patches/musl-koga-libexecinfo-fix.patch
-patches/bdwgc-8.2.2.patch
