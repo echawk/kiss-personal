@@ -1,0 +1,10 @@
+cmake make
+ffmpeg
+imath
+mesa
+opencolorio
+openexr
+openimageio
+portaudio
+qt5
+qt5-x11extras

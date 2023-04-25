@@ -1,0 +1,79 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ecd36e7..f16fb15 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -108,9 +108,6 @@ set(QT_LIBRARIES
+   LinguistTools
+   Concurrent
+ )
+-if (UNIX AND NOT APPLE)
+-  list(APPEND QT_LIBRARIES DBus)
+-endif()
+ if (BUILD_QT6)
+   set(QT_NAME Qt6)
+ else()
+@@ -226,7 +223,7 @@ if (WIN32)
+ elseif (APPLE)
+   list(APPEND OLIVE_LIBRARIES "-framework IOKit")
+ elseif(UNIX)
+-  list(APPEND OLIVE_LIBRARIES Qt${QT_VERSION_MAJOR}::DBus)
++  list(APPEND OLIVE_LIBRARIES)
+ endif()
+ 
+ # Generate Git hash
+diff --git a/app/widget/viewer/viewerpreventsleep.cpp b/app/widget/viewer/viewerpreventsleep.cpp
+index 42d8c5a..d2ed142 100644
+--- a/app/widget/viewer/viewerpreventsleep.cpp
++++ b/app/widget/viewer/viewerpreventsleep.cpp
+@@ -6,8 +6,6 @@
+ #include <windows.h>
+ #elif defined(Q_OS_MAC)
+ #include <IOKit/pwr_mgt/IOPMLib.h>
+-#elif defined(Q_OS_LINUX)
+-#include <QtDBus/QtDBus>
+ #endif
+ 
+ namespace olive {
+@@ -32,42 +30,6 @@ void PreventSleep(bool on)
+     IOPMAssertionRelease(assertionID);
+     assertionID = 0;
+   }
+-#elif defined(Q_OS_LINUX)
+-  QDBusConnection bus = QDBusConnection::sessionBus();
+-  if(bus.isConnected()) {
+-    static const QStringList sleep_services = {
+-      QStringLiteral("org.freedesktop.ScreenSaver"),
+-      //QStringLiteral("org.gnome.SessionManager")
+-    };
+-    static const QStringList sleep_paths = {
+-      QStringLiteral("/org/freedesktop/ScreenSaver"),
+-      //QStringLiteral("/org/gnome/SessionManager")
+-    };
+-    static QVector<uint> sleep_cookies;
+-
+-    // Initialize vector to 0
+-    if (sleep_cookies.isEmpty()) {
+-      sleep_cookies.resize(sleep_services.size());
+-      sleep_cookies.fill(0);
+-    }
+-
+-    for (int i=0; i<sleep_cookies.size(); i++) {
+-      QDBusInterface interface(sleep_services.at(i), sleep_paths.at(i), sleep_services.at(i), bus);
+-      if (interface.isValid()) {
+-        QDBusReply<uint> reply;
+-
+-        if (on) {
+-          reply = interface.call(QStringLiteral("Inhibit"), QStringLiteral("Olive Video Editor"), QStringLiteral("Video Playback"));
+-        } else {
+-          reply = interface.call(QStringLiteral("UnInhibit"), sleep_cookies.at(i));
+-        }
+-
+-        if (reply.isValid()) {
+-          sleep_cookies[i] = reply.value();
+-        }
+-      }
+-    }
+-  }
+ #endif
+ }
+ 
