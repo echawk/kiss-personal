@@ -1,0 +1,9 @@
+alsa-lib
+glib
+libsndfile
+libudev-zero
+linux-headers make
+lua make
+meson make
+ncurses
+pkgconf make
