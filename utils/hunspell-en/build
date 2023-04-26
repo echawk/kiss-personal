@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+for z in ./*.zip; do
+    unzip "$z"
+done
+
+patch -p1 < hunspell-en-allow-non-typographical.marks.patch
+
+mkdir -p "$1/usr/share/hunspell/"
+cp ./*.dic ./*.aff "$1/usr/share/hunspell/"
+
+cd "$1/usr/share/hunspell/"
+for lang in ./*.aff; do
+    l=$(basename "$lang" | sed -e "s/.aff//" -e "s/-large//")
+    ln -s "$l-large.aff" "$l.aff"
+    ln -s "$l-large.dic" "$l.dic"
+done

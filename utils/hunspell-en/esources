@@ -1,0 +1,5 @@
+https://downloads.sourceforge.net/project/wordlist/speller/VERSION/hunspell-en_US-large-VERSION.zip
+https://downloads.sourceforge.net/project/wordlist/speller/VERSION/hunspell-en_AU-large-VERSION.zip
+https://downloads.sourceforge.net/project/wordlist/speller/VERSION/hunspell-en_CA-large-VERSION.zip
+https://downloads.sourceforge.net/project/wordlist/speller/VERSION/hunspell-en_GB-large-VERSION.zip
+patches/hunspell-en-allow-non-typographical.marks.patch
