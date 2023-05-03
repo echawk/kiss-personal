@@ -2,5 +2,7 @@
 
 : > nostrip
 
+export CFLAGS="$CFLAGS -w"
+
 make -j1
 make INSTALLROOT="$1" PREFIX=/usr LIBDIR=/usr/lib install
