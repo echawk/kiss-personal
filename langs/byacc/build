@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+./configure \
+    --prefix=/usr \
+    --program-prefix=b \
+    --enable-btyacc
+
+make
+make install
+
+ln -s byacc "$1/usr/bin/yacc"
