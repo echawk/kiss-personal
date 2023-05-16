@@ -1,0 +1,21 @@
+alsa-lib
+atk
+cairo
+cmake make
+expat
+ffmpeg
+freetype-harfbuzz
+gcc
+gdk-pixbuf
+glib
+gtk+3
+lame
+libmad
+libogg
+libsndfile
+libsoxr
+libvorbis
+pango
+portaudio
+sqlite
+wxWidgets
