@@ -1,7 +1,8 @@
 #!/bin/sh -e
 
 # Enable building with netbsd-curses.
-sed 's/tinfow tinfo/tinfow tinfo terminfo/g;/Unable to find xsltproc/d' auto.def > _
+sed 's/tinfow tinfo/tinfow tinfo terminfo/g;/Unable to find xsltproc/d;
+    s@xmlcatalog@/bin/true@' auto.def > _
 mv -f _ auto.def
 
 ./configure \
@@ -11,7 +12,7 @@ mv -f _ auto.def
     --ssl \
     --sasl \
     --disable-nls \
-    --disable-idn \
+    --disable-idn2 \
     --zlib
 
 # Don't actually build the docs (some of the xsltproc html stuff requires
