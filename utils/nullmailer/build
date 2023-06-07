@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+autoreconf -vif
+
+./configure \
+    --prefix=/usr \
+    --sbindir=/usr/bin \
+    --libexecdir=/usr/lib/nullmailer \
+    --localstatedir=/var \
+    --sysconfdir=/etc \
+    --enable-tls
+
+make
+make install
