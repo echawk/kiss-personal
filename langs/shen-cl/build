@@ -2,28 +2,9 @@
 
 export DESTDIR="$1"
 
-(   
-    cd shen-c
-    make
-)
+unzip ./*.zip
+cd "S$2/"
+sbcl --load install.lsp
 
-make fetch KernelVersion=22.4 FetchCmd="curl -LO"
-mkdir -p compiled
-if command -v shen-ccl; then
-    make precompile SHEN="$(command -v shen-ccl)"
-else
-    echo '(load "scripts/build.shen") (build)' | SHEN_C_HOME="$PWD/shen-c" "$PWD/shen-c/bin/shen-c" || true
-fi
-
-for lisp in ccl ecl; do
-    if command -v $lisp; then
-        make build-$lisp
-    fi
-done
-
-mkdir -p "$1/usr/bin/" "$1/usr/share/doc/shen-cl"
-for d in bin/*/; do
-    cp "$d/shen" "$1/usr/bin/shen-$(basename "$d")"
-done
-
-cp -r kernel/doc/* "$1/usr/share/doc/shen-cl"
+mkdir -p "$1/usr/bin/"
+cp sbcl-shen.exe "$1/usr/bin/shen-sbcl"
