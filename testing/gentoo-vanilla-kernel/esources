@@ -1,0 +1,4 @@
+https://cdn.kernel.org/pub/linux/kernel/vMAJOR.x/linux-VERSION.tar.xz
+https://github.com/projg2/gentoo-kernel-config/archive/refs/tags/IDENT.tar.gz
+https://raw.githubusercontent.com/projg2/fedora-kernel-config-for-gentoo/VERSION-gentoo/kernel-x86_64-fedora.config
+patches/kernel-no-perl.patch

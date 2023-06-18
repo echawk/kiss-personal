@@ -1,0 +1,28 @@
+#!/bin/sh -e
+
+# shellcheck disable=2021
+
+# Generate a tinyramfs(5) config on the fly.
+gentoo_tinyramfs_config="$(mktemp)"
+cat << EOF > "$gentoo_tinyramfs_config"
+hooks=mdevd
+
+compress="gzip -9"
+
+# Assuming UUID for root, will fix in future.
+#root="$(awk '$2 ~ /^\/$/ { print $1 } ' < /etc/fstab)"
+root="/dev/$(lsblk | awk '$7 ~ "^/$" {print $1}' | tr -dc '[a-z0-9]')"
+root_type="$(awk '$2 ~ /^\/$/ { print $3 }' < /etc/fstab)"
+EOF
+
+# NOTE: KISS_ROOT isn't respected here, because that is a unsupported use case.
+read -r ver _ < /var/db/kiss/installed/gentoo-vanilla-kernel/version
+ver="$(echo "$ver" | cut -d'+' -f1)"
+
+tinyramfs -f -k "$ver" -c "$gentoo_tinyramfs_config" \
+    "/boot/initramfs-$ver-gentoo-vanilla.img"
+
+grub-mkconfig -o /boot/grub/grub.cfg
+
+# Remove our temporary configuration.
+rm -- "$gentoo_tinyramfs_config"

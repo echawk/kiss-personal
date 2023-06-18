@@ -1,0 +1,23 @@
+#!/bin/sh -ex
+
+ver=$(echo "$2" | cut -d'+' -f1)
+
+# Use ccache if available.
+if command -v ccache; then
+    export PATH="/usr/lib/ccache/bin:$PATH"
+fi
+
+# Remove perl make dependency.
+patch -p1 < kernel-no-perl.patch
+
+cat kernel-x86_64-fedora.config base.config no-debug.config > .config
+
+make olddefconfig
+make -j "$(nproc)"
+make INSTALL_MOD_PATH="$1/usr" INSTALL_MOD_STRIP=1 modules_install
+
+# NOTE: The appending of '$ver-gentoo-vanilla' is imporant for the initramfs.
+mkdir -p "$1/boot"
+cp arch/x86/boot/bzImage "$1/boot/vmlinuz-$ver-gentoo-vanilla"
+cp System.map            "$1/boot/System.map-$ver-gentoo-vanilla"
+cp .config               "$1/boot/Config-$ver-gentoo-vanilla"

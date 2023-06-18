@@ -1,0 +1,4 @@
+https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.117.tar.xz
+https://github.com/projg2/gentoo-kernel-config/archive/refs/tags/g7.tar.gz
+https://raw.githubusercontent.com/projg2/fedora-kernel-config-for-gentoo/5.15.117-gentoo/kernel-x86_64-fedora.config
+patches/kernel-no-perl.patch
