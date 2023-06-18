@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+sed "/OK_BASH_VERS/s/'5.1'/'5.1' | '5.2'/" configure.ac > _
+mv -f _ configure.ac
+
+autoreconf -vif
+
+./configure \
+    --prefix=/usr
+
+make
+make install
