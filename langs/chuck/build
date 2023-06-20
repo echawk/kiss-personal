@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+sed "/include <termio.h>/s/termio/termios/" src/core/util_console.cpp > _
+mv -f _ src/core/util_console.cpp
+
+make -C src linux-alsa
+mkdir -p "$1/usr/bin/" "$1/usr/share/doc/chuck/"
+cp src/chuck "$1/usr/bin/"
+cp -r examples "$1/usr/share/doc/chuck/"
