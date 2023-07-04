@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+dub build --build=release --config=client
+dub build --build=release --config=server
+
+mkdir -p "$1/usr/bin/"
+cp ./bin/dcd-* "$1/usr/bin/"
