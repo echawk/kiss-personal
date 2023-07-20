@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_SKIP_RPATH=ON \
+    -DCLANG_LINK_CLANG_DYLIB=ON \
+    -DLLVM_LINK_LLVM_DYLIB=ON \
+    -DLLDB_USE_SYSTEM_SIX=1 \
+    -DLLVM_ENABLE_SPINX=OFF \
+    -Wno-dev
+
+cmake --build   build
+cmake --install build

@@ -1,0 +1,7 @@
+clang
+cmake make
+libedit
+libxml2
+llvm
+ncurses
+python
