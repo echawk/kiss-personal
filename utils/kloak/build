@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+sed "s/gcc/\$(CC)/" Makefile > _
+mv -f _ Makefile
+
+make
+
+mkdir -p "$1/usr/bin"
+cp kloak    "$1/usr/bin"
+cp eventcap "$1/usr/bin"
