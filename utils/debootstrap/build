@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+sed -E \
+    -e "/install/s/-[og] root//g" \
+    -e "/chown/d" \
+    -e 's/sbin/bin/g' \
+    Makefile > _
+mv -f _ Makefile
+
+make DESTDIR="$1" install
+mkdir -p "$1/usr/share/man/man8/"
+cp debootstrap.8 "$1/usr/share/man/man8/"
