@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+export CFLAGS="$CFLAGS -w"
+export CXXFLAGS="$CXXFLAGS -w"
+
+for p in *.patch; do
+    patch -p1 < "$p"
+done
+
+./configure \
+    --prefix=/usr \
+    --disable-documentation
+
+make
+make install

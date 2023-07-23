@@ -1,0 +1,8 @@
+curl
+glib
+json-glib
+libelf
+libsoup
+libxml2
+libyaml
+ostree
