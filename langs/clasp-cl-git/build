@@ -2,7 +2,9 @@
 
 export DESTDIR="$1"
 
-patch -p1 < musl-koga-libexecinfo-fix.patch
+if kiss list musl; then
+    patch -p1 < musl-koga-libexecinfo-fix.patch
+fi
 
 sbcl --script koga \
     --reproducible-build \
@@ -12,6 +14,7 @@ sbcl --script koga \
     --lib-path=/usr/lib/clasp/
 
 sed -i "s/stdio.h>/stdio.h>\n#include <ucontext.h>/" src/bdwgc/mach_dep.c
+sed -i "s/-fuse-ld=gold//" build/build.ninja
 
 ninja -C build
 ninja -C build install
