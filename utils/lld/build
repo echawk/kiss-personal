@@ -2,8 +2,11 @@
 
 export DESTDIR="$1"
 
-install -Dm644 libunwind/include/mach-o/compact_unwind_encoding.h include/mach-o/compact_unwind_encoding.h
+install -Dm644 \
+    libunwind/include/mach-o/compact_unwind_encoding.h \
+    lld/include/mach-o/compact_unwind_encoding.h
 
+cd lld
 cmake -B build \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_BUILD_TYPE=Release \
