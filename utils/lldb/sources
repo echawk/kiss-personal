@@ -1,1 +1,2 @@
-https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/lldb-15.0.7.src.tar.xz
+https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/lldb-15.0.7.src.tar.xz lldb
+https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/cmake-15.0.7.src.tar.xz cmake
