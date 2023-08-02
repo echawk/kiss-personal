@@ -36,10 +36,6 @@ case "$(uname)" in
                 lisp-kernel/pmcl-kernel.c > _
             mv -f _ lisp-kernel/pmcl-kernel.c
 
-            # Glibcisms are not Linuxisms.
-            sed "185s/LINUX/__GLIBC__/" lisp-kernel/thread_manager.c > _
-            mv -f _ lisp-kernel/thread_manager.c
-
             # Delete include of fpu_control.h as musl doesn't have this header.
             sed "/#include <fpu_control.h>/d" lisp-kernel/x86-exceptions.c > _
             mv -f _ lisp-kernel/x86-exceptions.c
@@ -56,7 +52,7 @@ make clean
 make -j1
 cd "$OLDPWD"
 
-"$lsp" -n -Q -b -e '(ccl:rebuild-ccl :full t)' -e '(ccl:quit)'
+"$lsp" -n -Q -b -e '(ccl:rebuild-ccl :clean t)' -e '(ccl:quit)'
 
 find . -type d -name .svn -exec rm -rf '{}' +
 find . -name '*.o' -delete
