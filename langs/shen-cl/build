@@ -4,7 +4,18 @@ export DESTDIR="$1"
 
 unzip ./*.zip
 cd "S$2/"
-sbcl --load install.lsp
+
+patch -p1 < ../ccl-and-ecl-support.patch
 
 mkdir -p "$1/usr/bin/"
-cp sbcl-shen.exe "$1/usr/bin/shen-sbcl"
+for lisp in sbcl ccl clisp; do
+    case "$lisp" in
+        clisp)
+            "$lisp" install.lsp
+            ;;
+        *)
+        "$lisp" --load install.lsp
+        ;;
+    esac
+    cp "$lisp-shen.exe" "$1/usr/bin/shen-$lisp"
+done

@@ -1,0 +1,50 @@
+diff --git a/Primitives/char-stinput.lsp b/Primitives/char-stinput.lsp
+index d0c7cab..9b09019 100644
+--- a/Primitives/char-stinput.lsp
++++ b/Primitives/char-stinput.lsp
+@@ -8,3 +8,10 @@
+ #+CLISP
+ (DEFUN shen.char-stinput? (Stream) 
+   (IF (EQ Stream *stinput*) 'true 'false))
++
++#+CCL
++(DEFUN shen.char-stinput? (Stream) 
++  (IF (EQ Stream *stinput*) 'true 'false))
++
++#+ECL 
++(DEFUN shen.char-stinput? (Stream) 'false)
+diff --git a/Primitives/globals.lsp b/Primitives/globals.lsp
+index b3b52b3..e4ffbaf 100644
+--- a/Primitives/globals.lsp
++++ b/Primitives/globals.lsp
+@@ -14,4 +14,10 @@
+ (SETQ *release* "2.0.0")      
+ 
+ #+CLISP
+-(SETQ *release* "2.49")
+\ No newline at end of file
++(SETQ *release* "2.49")
++
++#+CCL
++(SETQ *release* "1.12.1")      
++
++#+ECL
++(SETQ *release* "21.2.1")
+diff --git a/install.lsp b/install.lsp
+index aa88b03..7950209 100644
+--- a/install.lsp
++++ b/install.lsp
+@@ -109,4 +109,11 @@
+ (EXT:SAVEINITMEM "clisp-shen.exe" :EXECUTABLE 0 :QUIET T :INIT-FUNCTION 'shen.shen)
+ 
+ #+CLISP
+-(BYE)   
+\ No newline at end of file
++(BYE)
++
++#+CCL
++(CCL:SAVE-APPLICATION "ccl-shen.exe" :PREPEND-KERNEL T :TOPLEVEL-FUNCTION 'shen.shen)
++
++#+CCL
++(QUIT)
++
