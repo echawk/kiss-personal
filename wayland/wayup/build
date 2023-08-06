@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+# shellcheck disable=2086
+${CC:-cc} $CFLAGS wayup.c -o wayup -lwayland-client
+
+mkdir -p "$1/usr/bin/"
+cp wayup "$1/usr/bin/"
