@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+mkdir -p path
+ln -s /usr/bin/gawk "$PWD/path/awk"
+ln -s /usr/bin/gpatch "$PWD/path/patch"
+export PATH="$PWD/path:$PATH"
+
+./bootstrap
+
+./configure \
+    --prefix=/usr \
+    --libexecdir=/usr/lib \
+    --disable-nls \
+    --disable-rpath \
+    --with-ncurses \
+    makeinfo=true \
+    help2man=true
+
+make
+make DESTDIR="$1" install
