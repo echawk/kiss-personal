@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+cd src
+go build -mod=vendor
+mkdir -p "$1/usr/bin"
+cp goredo "$1/usr/bin"
+cd "$1/usr/bin/"
+./goredo -symlinks
