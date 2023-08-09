@@ -1,0 +1,8 @@
+cairo
+glib
+gtk+3
+libepoxy
+meson make
+pango
+samurai make
+wayland
