@@ -16,6 +16,12 @@ if kiss list musl; then
     mv -f _ src/koga/units.lisp
 fi
 
+# If you don't want to go through
+# the hassle of building sbcl, you can
+# replace `sbcl --script koga` with:
+
+# ecl --norc --shell koga
+
 sbcl --script koga \
     --reproducible-build \
     --package-path="$1" \
