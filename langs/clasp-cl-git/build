@@ -2,8 +2,18 @@
 
 export DESTDIR="$1"
 
+if ! [ "$(kiss owns /usr/bin/install)" -eq "coreutils" ]; then
+    cat <<EOF
+In order to install clasp, you need to ensure that 'install' is provided
+by the GNU coreutils.
+EOF
+    exit 1
+fi
+
 if kiss list musl; then
-    patch -p1 < musl-koga-libexecinfo-fix.patch
+    sed '/#+freebsd/a#+linux (append-ldlibs configuration "-lexecinfo")' \
+        src/koga/units.lisp > _
+    mv -f _ src/koga/units.lisp
 fi
 
 sbcl --script koga \
@@ -13,8 +23,13 @@ sbcl --script koga \
     --share-path=/usr/share/clasp/ \
     --lib-path=/usr/lib/clasp/
 
-sed -i "s/stdio.h>/stdio.h>\n#include <ucontext.h>/" src/bdwgc/mach_dep.c
-sed -i "s/-fuse-ld=gold//" build/build.ninja
+# This is an admittedly hacky fix, but it does work.
+sed "s/stdio.h>/stdio.h>\n#define NO_GETCONTEXT/" src/bdwgc/mach_dep.c > _
+mv -f _ src/bdwgc/mach_dep.c
+
+# This is done to respect the system linker.
+sed "s/-fuse-ld=gold//" build/build.ninja > _
+mv -f _ build/build.ninja
 
 ninja -C build
 ninja -C build install
