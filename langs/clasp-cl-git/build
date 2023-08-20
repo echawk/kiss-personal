@@ -2,7 +2,7 @@
 
 export DESTDIR="$1"
 
-if ! [ "$(kiss owns /usr/bin/install)" -eq "coreutils" ]; then
+if ! [ "$(kiss owns /usr/bin/install)" = "coreutils" ]; then
     cat <<EOF
 In order to install clasp, you need to ensure that 'install' is provided
 by the GNU coreutils.
