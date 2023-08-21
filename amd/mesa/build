@@ -25,7 +25,6 @@ meson setup \
     -Dglx-read-only-text=true \
     -Dplatforms="${platforms:-x11}" \
     -Dgallium-drivers=radeonsi \
-    -Dgallium-opencl=icd \
     -Dvulkan-drivers='' \
     -Dglx=auto \
     -Degl=enabled \
