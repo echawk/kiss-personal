@@ -2,16 +2,9 @@
 
 export DESTDIR="$1"
 
-if pkg-config --exists bdw-gc; then
-    cat << EOF
-Please remove 'gc' from your system before continuing with the build,
-otherwise there will be a circular dependency.
-EOF
-    exit 1
-fi
+./configure \
+    --prefix=/usr \
+    --enable-static
 
-cmake -B build \
-    -DCMAKE_INSTALL_PREFIX=/usr
-
-cmake --build   build
-cmake --install build
+make
+make install
