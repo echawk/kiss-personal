@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+./configure \
+    --prefix=/usr \
+    --libdir=/usr/lib/lighttpd \
+    --sbindir=/usr/bin \
+    --sysconfdir=/etc/lighttpd \
+    --with-attr \
+    --with-gdbm \
+    --with-openssl \
+    --with-lua
+
+make
+make install
