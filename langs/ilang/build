@@ -2,8 +2,7 @@
 
 export DESTDIR="$1"
 
-# FIXME: doesn't seem to compile with gcc or clang
-tcc -static ./*.c -o I
+${CC:-cc} $CFLAGS -static ./*.c -o I
 
 mkdir -p "$1/usr/bin/"
 cp I "$1/usr/bin/"
