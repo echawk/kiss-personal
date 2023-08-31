@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+export CFLAGS="$CFLAGS -fno-semantic-interposition"
+export LDFLAGS="$LDFLAGS -fno-semantic-interposition"
+
 patch -p1 < python2-always-pip.patch
 
 ./configure \
