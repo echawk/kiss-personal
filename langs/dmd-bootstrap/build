@@ -2,6 +2,10 @@
 
 export DESTDIR="$1"
 
+sed "/__USE_FILE_OFFSET64/s/_FILE_OFFSET_BITS == 64/false/" \
+    druntime/src/core/sys/posix/config.d > _
+mv -f _ druntime/src/core/sys/posix/config.d
+
 for p in patches/*; do
     patch -p0 < "$p"
 done

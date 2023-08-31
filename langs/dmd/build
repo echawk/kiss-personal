@@ -2,15 +2,17 @@
 
 export DESTDIR="$1"
 
-d() {
-      echo "$1"
-                  exit 1
-}
+sed "/__USE_FILE_OFFSET64/s/_FILE_OFFSET_BITS == 64/false/" \
+    dmd/druntime/src/core/sys/posix/config.d > _
+mv -f _ dmd/druntime/src/core/sys/posix/config.d
 
 case "$(readlink "$(command -v ld)")" in
     ld.bfd) ;;
     ld.gold) ;;
-    *) d "Only 'ld' from 'binutils' is supported" ;;
+    *)
+    echo "Only 'ld' from 'binutils' is supported"
+    exit 1
+    ;;
 esac
 
 export LDFLAGS="$LDFLAGS -lpthread"
