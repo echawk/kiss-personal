@@ -2,6 +2,8 @@
 
 export DESTDIR="$1"
 
+# Intended.
+# shellcheck disable=2086
 ${CC:-cc} $CFLAGS -static ./*.c -o I
 
 mkdir -p "$1/usr/bin/"
