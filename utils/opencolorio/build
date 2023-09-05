@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+# shellcheck disable=2155
+
 export DESTDIR="$1"
 
 export CFLAGS="$CFLAGS $(pkg-config --cflags minizip-ng)"
