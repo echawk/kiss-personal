@@ -2,6 +2,10 @@
 
 export DESTDIR="$1"
 
+export CFLAGS="$CFLAGS $(pkg-config --cflags minizip-ng)"
+export CXXFLAGS="$CXXFLAGS $(pkg-config --cflags minizip-ng)"
+export LDFLAGS="$LDFLAGS $(pkg-config --libs minizip-ng)"
+
 cmake -B build \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_BUILD_TYPE=Release \
