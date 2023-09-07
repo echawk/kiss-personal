@@ -3,9 +3,9 @@
 export DESTDIR="$1"
 
 if command -v idris2; then
-    make PREFIX="/usr/" -j1 all
+    make -j1 PREFIX="/usr/" all
 else
-    make PREFIX="/usr" SCHEME=scheme bootstrap
+    make -j1 PREFIX="/usr" SCHEME=scheme bootstrap
 fi
 make PREFIX="$1/usr" IDRIS2_PREFIX="$1/usr" install
 
