@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export INSTALL_ROOT="$1"
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --datadir=/usr/share/php \
+    --mandir=/usr/share/man \
+    --with-config-file-path=/etc \
+    --with-config-file-scan-dir=/etc/php/conf.d
+
+make
+make install
