@@ -14,6 +14,7 @@ tar xvf ./*.apk
 # Finally install the contents of the tarball.
 rm -- *.apk ./.PKGINFO ./.SIGN*
 cp -r . "$1"
+rm -- "$1/alpine.config"
 
 mkdir -p "$1/etc/tinyramfs/"
 
