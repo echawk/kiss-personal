@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+sed "s/local//" Makefile > _
+mv -f _ Makefile
+
+make
+make install
+
+cd "$1/usr/bin/"
+ln -s pdpmake make
