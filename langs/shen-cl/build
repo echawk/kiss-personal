@@ -10,6 +10,10 @@ cd "S$2/"
 
 patch -p1 < ../ccl-and-ecl-support.patch
 
+# Need to fix a random file using Windows pathing instead of UNIX.
+sed "/tbos/s/\\\\/\//" StLib/Encrypt/encrypt.shen > _
+mv -f _ StLib/Encrypt/encrypt.shen
+
 mkdir -p "$1/usr/bin/"
 for lisp in sbcl ccl clisp; do
     if command -v "$lisp"; then
