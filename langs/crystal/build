@@ -8,17 +8,26 @@ cv=$(crystal -v | sed -n -E "/^Crystal/s/^.* ([0-9\.]+).*$/\1/p")
 export CRYSTAL_CONFIG_VERSION="$cv"
 export EXPORT_CC="CC=cc"
 
+cat > Makefile.local <<EOF
+progress = 1
+verbose = 1
+FLAGS= --verbose --link-flags=-no-pie
+LLVM_CONFIG=/usr/bin/llvm-config
+
+EOF
+
 make crystal \
-    CRYSTAL_CONFIG_PATH="/usr/lib/crystal" \
+    CRYSTAL_CONFIG_BUILD_COMMIT= \
+    CRYSTAL_CONFIG_PATH="lib:/usr/lib/crystal/shards:/usr/lib/crystal/core" \
     CRYSTAL_CACHE_DIR=".tmp/crystal" \
-    LLVM_CONFIG="/usr/bin/llvm-config" \
     release=1 \
-    static=1 \
-    FLAGS="--no-debug" \
-    CRYSTAL_PATH="src"
+    static=1 #\
+    #CRYSTAL_PATH="src"
+    #LLVM_CONFIG="/usr/bin/llvm-config" \
 
-mkdir -p "$1/usr/bin"
+mkdir -p "$1/usr/bin" "$1/usr/share/man/man1/"
 cp .build/crystal "$1/usr/bin/crystal"
+cp man/crystal.1 "$1/usr/share/man/man1/"
 
-mkdir -p "$1/usr/lib"
-cp -a src "$1/usr/lib/crystal"
+mkdir -p "$1/usr/lib/crystal/core" "$1/usr/lib/crystal/shards"
+cp -a src/* "$1/usr/lib/crystal/core/"
