@@ -52,3 +52,14 @@ EOF
 chmod +x build
 echo "$source" > sources
 kiss checksum
+
+source_tarball="$(kiss download 2>/dev/null | grep "tar." | cut -d' ' -f2)"
+pkg_info_file="$(tar tf $source_tarball | grep "PKG-INFO$" | sed 1q)"
+tar xfO "$source_tarball" "$pkg_info_file" \
+    | grep "Requires-Dist" \
+    | cut -d: -f2 \
+    | cut -d";" -f1 \
+    | sed -E -e "s/^ //" -e "s/[<>].+$//" \
+    | sort -u \
+    | grep "[A-Za-z]" \
+    | sed "s/^/#python-/" > depends
