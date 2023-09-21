@@ -2,25 +2,33 @@
 
 # Get the latest lts version from git.
 version="$(curl -sL \
-    https://git.alpinelinux.org/aports/plain/main/linux-lts/APKBUILD \
-    | sed -n '/pkgver=/{s/pkgver=//p;q}')"
+    https://git.alpinelinux.org/aports/plain/main/linux-lts/APKBUILD |
+      sed -n '/pkgver=/{s/pkgver=//p;q}')"
 
-# And download the appropriate tarball.
-curl -LO "https://dl-cdn.alpinelinux.org/alpine/edge/main/x86_64/linux-lts-$version-r0.apk"
+# Check for cached tarball, and if it doesn't exist,
+# download the latest lts from alpine.
+if ! [ -e linux-lts.apk ]; then
+    curl -LO "https://dl-cdn.alpinelinux.org/alpine/edge/main/x86_64/linux-lts-$version-r0.apk"
+    mv "linux-lts-$version-r0.apk" "linux-lts.apk"
+fi
 
 # This is safe to do, even with all the warnings about headers.
-tar xvf ./*.apk
+tar xvf ./linux-lts.apk
 
 # Finally install the contents of the tarball.
-rm -- *.apk ./.PKGINFO ./.SIGN*
+rm -- ./.PKGINFO ./.SIGN*
 cp -r . "$1"
 rm -- "$1/alpine.config"
+rm -- "$1/linux-lts.apk"
 
 mkdir -p "$1/etc/tinyramfs/"
 
 # Generate a tinyramfs config.
-cat - alpine.config <<EOF > "$1/etc/tinyramfs/alpine.config"
+cat - alpine.config << EOF > "$1/etc/tinyramfs/alpine.config"
 
 alpinever=$version-0-lts
 
 EOF
+
+mkdir -p "$1/usr/share/alpine-linux-lts/source/"
+cp linux-lts.apk "$1/usr/share/alpine-linux-lts/source/"

@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -ex
 
 conf_file=/etc/tinyramfs/alpine.config
 
@@ -9,3 +9,14 @@ tinyramfs -f -k "$version" -c "$conf_file" /boot/initrd.img
 
 # Update grub config if installed.
 kiss list grub && grub-mkconfig -o /boot/grub/grub.cfg
+
+# Cache our downloaded source here.
+installdir=/var/db/kiss/installed/alpine-linux-lts/
+if [ -d "$installdir" ]; then
+    if ! grep -q linux-lts.apk  "$installdir/sources"; then
+        printf "/usr/share/alpine-linux-lts/source/linux-lts.apk" \
+            >> "$installdir/sources"
+        cd "$installdir"
+        KISS_HOOK='' kiss checksum
+    fi
+fi
