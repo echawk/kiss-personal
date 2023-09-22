@@ -1,0 +1,22 @@
+#!/bin/sh -ex
+
+conf_file=/etc/tinyramfs/arch.config
+
+# Determine version.
+version="$(grep "archver" "$conf_file" | cut -d'=' -f2)"
+
+tinyramfs -f -m "/usr/lib/modules/" -k "$version" -c "$conf_file" /boot/initrd-lts.img
+
+# Update grub config if installed.
+kiss list grub && grub-mkconfig -o /boot/grub/grub.cfg || :
+
+# Cache our downloaded source here.
+installdir=/var/db/kiss/installed/arch-linux-lts/
+if [ -d "$installdir" ]; then
+    if ! grep -q linux-lts.tar.zst "$installdir/sources"; then
+        printf "/usr/share/arch-linux-lts/source/linux-lts.tar.zst " \
+            >> "$installdir/sources"
+        cd "$installdir"
+        KISS_HOOK='' kiss checksum
+    fi
+fi

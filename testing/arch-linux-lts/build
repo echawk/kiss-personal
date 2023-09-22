@@ -1,0 +1,36 @@
+#!/bin/sh -e
+
+# Get the latest lts version from git.
+version="$(curl -sL https://gitlab.archlinux.org/archlinux/packaging/packages/linux-lts/-/raw/main/PKGBUILD?ref_type=heads \
+      | sed -n '/pkgver=/{s/pkgver=//p;q}')"
+
+# Check for cached tarball, and if it doesn't exist,
+# download the latest lts from arch.
+if ! [ -e linux-lts.tar.zst ]; then
+    curl -LO "https://mirror.arizona.edu/archlinux/core/os/x86_64/linux-lts-$version-1-x86_64.pkg.tar.zst"
+    mv "linux-lts-$version-1-x86_64.pkg.tar.zst" "linux-lts.tar.zst"
+fi
+
+# This is safe to do, even with all the warnings about headers.
+tar xvf ./linux-lts.tar.zst
+
+# Finally install the contents of the tarball.
+rm -- ./.PKGINFO ./.MTREE ./.BUILDINFO
+cp -r . "$1"
+rm -- "$1/arch.config"
+rm -- "$1/linux-lts.tar.zst"
+
+mkdir -p "$1/boot/"
+cp "$(find "$1" -name vmlinuz)" "$1/boot/vmlinuz-lts"
+
+mkdir -p "$1/etc/tinyramfs/"
+
+# Generate a tinyramfs config.
+cat - arch.config << EOF > "$1/etc/tinyramfs/arch.config"
+
+archver=$(find "$1" -name $version-*-lts | rev | cut -d'/' -f1 | rev)
+
+EOF
+
+mkdir -p "$1/usr/share/arch-linux-lts/source/"
+cp linux-lts.tar.zst "$1/usr/share/arch-linux-lts/source/"
