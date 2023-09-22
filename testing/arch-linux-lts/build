@@ -26,10 +26,19 @@ cp "$(find "$1" -name vmlinuz)" "$1/boot/vmlinuz-lts"
 mkdir -p "$1/etc/tinyramfs/"
 
 # Generate a tinyramfs config.
-cat - arch.config << EOF > "$1/etc/tinyramfs/arch.config"
+cat> "$1/etc/tinyramfs/arch.config" << EOF
 
 archver=$(find "$1" -name $version-*-lts | rev | cut -d'/' -f1 | rev)
 
+hooks="proc,mdevd"
+
+compress="cat"
+
+# Assuming UUID for root, will fix in future.
+root="$(awk '$2 ~ /^\/$/ { print $1 } ' < /etc/fstab)"
+root_type="$(awk '$2 ~ /^\/$/ { print $3 }' < /etc/fstab)"
+
+hostonly=yes
 EOF
 
 mkdir -p "$1/usr/share/arch-linux-lts/source/"
