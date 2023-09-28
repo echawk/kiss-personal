@@ -29,7 +29,7 @@ cat> "$1/etc/tinyramfs/arch.config" << EOF
 
 archver=$(find "$1" -name "$version-*-lts" | rev | cut -d'/' -f1 | rev)
 
-hooks="proc,mdevd"
+hooks="mdevd"
 
 compress="cat"
 
