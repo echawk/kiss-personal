@@ -2,7 +2,7 @@
 
 export DESTDIR="$1"
 
-export JAVA_HOME="/usr/lib/jvm/java-1.7-openjdk"
+export JAVA_HOME="${JAVA_HOME:-/usr/lib/jvm/java-1.7-openjdk}"
 export PATH="/usr/share/apache-ant/bin:$PATH"
 
 ant
