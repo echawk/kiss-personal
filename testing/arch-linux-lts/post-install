@@ -8,7 +8,7 @@ version="$(grep "archver" "$conf_file" | cut -d'=' -f2)"
 tinyramfs -f -m "/usr/lib/modules/" -k "$version" -c "$conf_file" /boot/initrd-lts.img
 
 # Update grub config if installed.
-if kiss list grub; then  
+if kiss list grub; then
     grub-mkconfig -o /boot/grub/grub.cfg || :
 fi
 
