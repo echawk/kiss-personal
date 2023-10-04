@@ -21,9 +21,7 @@ make crystal \
     CRYSTAL_CONFIG_PATH="lib:/usr/lib/crystal/shards:/usr/lib/crystal/core" \
     CRYSTAL_CACHE_DIR=".tmp/crystal" \
     release=1 \
-    static=1 #\
-    #CRYSTAL_PATH="src"
-    #LLVM_CONFIG="/usr/bin/llvm-config" \
+    static=1
 
 mkdir -p "$1/usr/bin" "$1/usr/share/man/man1/"
 cp .build/crystal "$1/usr/bin/crystal"
