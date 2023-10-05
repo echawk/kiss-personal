@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+./configure
+make PREFIX=/usr LDCONFIG=
+make PREFIX=/usr LDCONFIG= DESTDIR="$1" install
