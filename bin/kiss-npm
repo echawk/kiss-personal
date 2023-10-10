@@ -1,0 +1,31 @@
+#!/bin/sh -e
+
+pkg=$1
+
+mkdir -p "npm-$pkg"
+cd "npm-$pkg"
+
+version=$(
+    curl -s "https://www.npmjs.com/package/$pkg?activeTab=versions" |
+        sed "s/href/\n/g" |
+        awk "/package\/$pkg\/v/ {print \$1}" |
+        sed 1q |
+        tr -d '"' |
+        rev | cut -d'/' -f1 | rev
+)
+
+source="https://registry.npmjs.org/$pkg/-/$pkg-$version.tgz?no-extract"
+
+cat > build << EOF
+#!/bin/sh -e
+
+mv $pkg-*.tgz?no-extract $pkg.tgz
+npm install -g --prefix "\$1/usr" $pkg.tgz
+
+chmod -R u=rwX,go=rX "\$1"
+EOF
+chmod +x build
+
+echo "$version 1" > version
+echo "$source" > sources
+kiss checksum
