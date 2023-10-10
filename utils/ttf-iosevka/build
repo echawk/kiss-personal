@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+mkdir -p "$1/usr/share/fonts/TTF/"
+for z in ./*.zip; do
+    unzip "$z"
+done
+cp ./*.ttc "$1/usr/share/fonts/TTF/"
