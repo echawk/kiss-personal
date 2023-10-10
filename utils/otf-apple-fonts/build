@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+mkdir -p "$1/usr/share/fonts/OTF/"
+
+for dmg in ./*.dmg; do
+    d="$(7z -ba l "$dmg" | sed q | rev | cut -d' ' -f1 | rev)"
+    7z x "$dmg"
+    cd "$d"
+    7z x ./*.pkg
+    7z x Payload*
+    cp -r Library/Fonts/* "$1/usr/share/fonts/OTF/"
+    cd "$OLDPWD"
+done
