@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+7z e win11.iso sources/install.wim
+7z e install.wim 1/Windows/Fonts/"*".ttf
+7z e install.wim 1/Windows/Fonts/"*".ttc
+
+mkdir -p "$1/usr/share/fonts/TTF/"
+cp ./*.ttf "$1/usr/share/fonts/TTF/"
+cp ./*.ttc "$1/usr/share/fonts/TTF/"
