@@ -2,4 +2,6 @@
 
 # Prints out the order to build the dependencies of a package.
 
-kiss-pkggraph "$1" | tsort
+for pkg in $@; do
+    kiss-pkggraph "$pkg"
+done | tsort
