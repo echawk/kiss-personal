@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+unzip ./*.zip
+mkdir -p "$1/usr/share/fonts/TTF/"
+find . -type f -name '*.ttf' -print0 |
+    xargs -0 -I{} cp {} "$1/usr/share/fonts/TTF/"
