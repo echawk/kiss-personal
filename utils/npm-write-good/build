@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+mv write-good-*.tgz?no-extract write-good.tgz
+npm install -g --prefix "$1/usr" write-good.tgz
+
+chmod -R u=rwX,go=rX "$1"
