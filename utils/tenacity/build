@@ -2,8 +2,12 @@
 
 export DESTDIR="$1"
 
+git submodule update --init
+
 cmake -B build \
-    -DCMAKE_INSTALL_PREFIX=/usr
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DVCPKG=OFF
 
 cmake --build   build
 cmake --install build
