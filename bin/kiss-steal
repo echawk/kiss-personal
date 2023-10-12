@@ -11,7 +11,7 @@ pkg=$1
 
 [ -z "$pkg" ] && exit 1
 
-kiss n "$pkg" 1> /dev/null && cd "$pkg"
+kiss new "$pkg" 1> /dev/null && cd "$pkg"
 
 distros="ataraxia alpine arch void sabotage"
 for distro in $distros; do
