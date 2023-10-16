@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+meson setup \
+    -Dprefix=/usr \
+    -Ddocs=disabled \
+    -Dexamples=disabled \
+    setup
+
+ninja -C setup
+ninja -C setup install
