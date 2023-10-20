@@ -1,0 +1,9 @@
+cairo
+freetype-harfbuzz
+glib
+libX11
+libXinerama
+libxkbcommon
+pango
+wayland
+wayland-protocols make
