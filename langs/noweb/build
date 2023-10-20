@@ -1,0 +1,43 @@
+#!/bin/sh -e
+
+# shellcheck disable=2016
+
+export DESTDIR="$1"
+
+sed \
+    -e 's+BIN=/usr/local/noweb+BIN=\$\(MyDestdir\)/usr/bin+' \
+    -e 's+LIB=/usr/local/noweb/lib+LIB=\$\(MyDestdir\)/usr/lib/noweb+' \
+    -e 's+LIBSRC=awk+LIBSRC=icon+' \
+    -e 's+ICONC=iconc+ICONC=icont+' \
+    -e 's+MAN=/usr/local/noweb/man+MAN=\$\(MyDestdir\)/usr/share/man+' \
+    -e 's+/usr/local/tex/inputs+\$\(MyDestdir\)/usr/share/texmf/tex/generic/noweb+' \
+    -e 's+mkdir+install -d+' -e 's+> \$\(BIN\)+> \$1/bin/+' \
+    -e 's+ELISP=/dev/null+ELISP=\$\(MyDestdir\)/usr/share/emacs/site-lisp+' \
+    src/Makefile > _
+mv -f _ src/Makefile
+
+sed \
+    -e 's+LIB=/dev/null.*$+LIB=\$\(MyDestdir\)/usr/lib/noweb+' \
+    contrib/Makefile > _
+mv -f _ contrib/Makefile
+
+sed \
+    -e 's+^WWW=.*$+WWW\$\(MyDestdir\)=/usr/share/noweb/www+' \
+    src/xdoc/Makefile > _
+mv -f _ src/xdoc/Makefile
+
+sed '132,133d' src/icon/pdcached.icn > _
+mv -f _ src/icon/pdcached.icn
+
+sed '138,139d' src/icon/pdcached.icn > _
+mv -f _ src/icon/pdcached.icn
+
+cd src
+make touch boot
+make all
+
+install -d "$1"/usr/share/texmf/tex/generic
+install -d "$1"/usr/lib/noweb/
+install -d "$1"/usr/share/emacs/site-lisp
+make PREFIX=/usr MyDestdir="$1" install || true
+find "$1" -type f -exec sed -i "s+${1}+/+g" '{}' ';'
