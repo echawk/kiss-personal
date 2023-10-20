@@ -1,0 +1,31 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+# 1 & 2: `xset r rate 300 50`
+# 3: foot -> st
+# 4: bemenu -> dmenu
+# 5: keyboard always determines focus
+# 6: remove the firefox rule & replace w/ garbage
+# 7: `setxkbmap -option caps:swapescape`
+# 8: Alt+Shift+Q -> close window
+sed -e "/repeat_rate/s/25/50/" \
+    -e "/repeat_delay/s/600/300/" \
+    -e "/termcmd/s/foot/terminal/" \
+    -e "/menucmd/s/bemenu-run/launcher/" \
+    -e "/sloppyfocus/s/1/0/" \
+    -e "/firefox/s/firefox/asdf/" \
+    -e "/.options = NULL/s/NULL/\"caps:swapescape\"/" \
+    -e "/XKB_KEY_Q/s/quit/killclient/" \
+    config.def.h > _
+mv -f _ config.def.h
+
+# If Xwayland is available, compile support for it.
+if pkg-config --exists xwayland; then
+    sed -e '/-DXWAYLAND/s/^#//' \
+        -e '/xcb-icccm/s/^#//' config.mk > _
+    mv -f _ config.mk
+fi
+
+make
+make PREFIX="/usr" install

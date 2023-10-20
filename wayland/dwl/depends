@@ -1,0 +1,6 @@
+libinput
+libxcb
+libxkbcommon
+wayland
+wlroots
+xcb-util-wm
