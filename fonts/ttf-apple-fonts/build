@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+# shellcheck disable=2016
+
+mkdir -p "$1/usr/share/fonts/TTF/"
+cd "$1/usr/share/fonts/TTF/"
+
+kiss manifest otf-apple-fonts |
+    grep -E "/usr/share/fonts/OTF/.+" |
+    while read -r font; do
+        case "$font" in
+            *.ttf)
+                cp "$font" .
+                ;;
+            *.otf)
+                fontforge \
+                    -lang=ff -c 'Open($1); Generate($2); Close();' \
+                    "$font" \
+                    "$(basename "$font" | sed "s/otf/ttf/")"
+                ;;
+        esac
+    done
