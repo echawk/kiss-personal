@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+ver="$(echo "$2" | cut -d'+' -f1)"
+
+mv kernel-x86_64-fedora.config .config
+
+if command -v ccache; then
+    export PATH="/usr/lib/ccache/bin:$PATH"
+fi
+
+make olddefconfig
+make -j "$(nproc)"
+make INSTALL_MOD_PATH="$1/usr" modules_install
+
+mkdir -p "$1/boot"
+cp arch/x86/boot/bzImage "$1/boot/vmlinuz-$ver"
+cp System.map            "$1/boot/System.map-$ver"
+cp .config               "$1/boot/Config-$ver"
