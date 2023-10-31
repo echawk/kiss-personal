@@ -2,10 +2,9 @@
 
 export DESTDIR="$1"
 
-sed "s/sudo//" makefile > _
-mv -f _ makefile
+sed "s/sudo//" Makefile > _
+mv -f _ Makefile
 
-make CC="$CC" bootsbl
-make CC="$CC" BOOTBOL=./bootsbl spitbol
-mkdir -p "$1/usr/bin"
-make CC="$CC" DEST="$1/usr/bin" install
+make CC="$CC" destprefix="$1/usr" bootsbl
+make CC="$CC" destprefix="$1/usr" BASEBOL=./bootsbl spitbol
+make CC="$CC" destprefix="$1/usr" install
