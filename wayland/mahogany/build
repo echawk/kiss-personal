@@ -1,5 +1,7 @@
 #!/usr/bin/sbcl --script
-;; -*- mode: lisp-mode -*-
+;; -*- mode: lisp -*-
+
+(declaim (sb-ext:muffle-conditions cl:warning))
 
 ;; Yes, this is a hack, but there really isn't any other way to do
 ;; this in a *nice* way.
@@ -31,7 +33,7 @@
 (mapc
  ;; Ideally this would be a 'dolist' however uiop:run-program was
  ;; giving errors, which is odd to say the least.
- (lambda (cmd) (uiop:run-program cmd))
+ (lambda (cmd) (print (uiop:run-program cmd :output *standard-output*)))
  (mapcar
   (lambda (cmd-lst)
     (if (= (length cmd-lst) 1)
