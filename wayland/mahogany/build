@@ -1,0 +1,52 @@
+#!/usr/bin/sbcl --script
+;; -*- mode: lisp-mode -*-
+
+;; Yes, this is a hack, but there really isn't any other way to do
+;; this in a *nice* way.
+;; It's a known problem in the CL world.
+(load (merge-pathnames (car (directory "~/")) ".sbclrc"))
+
+(setq *dest-dir* (nth 1 sb-ext:*posix-argv*))
+(setq *version* (nth 2 sb-ext:*posix-argv*))
+
+#-QUICKLISP
+(error "no quicklisp available")
+
+(setq ql-local-proj-dir (car quicklisp:*local-project-directories*))
+
+;; Ensure that local-project directory exists.
+(ensure-directories-exist ql-local-proj-dir)
+
+;; We have to install these packages...
+(dolist (repo '("sdilts/cl-xkbcommon" "sdilts/cl-wayland"))
+  (let* ((dir (subseq repo (search "/" repo) (length repo)))
+         (proj-dir (merge-pathnames ql-local-proj-dir dir)))
+    (unless (uiop:directory-exists-p proj-dir)
+      (uiop:run-program
+       (concatenate 'string
+                    "git -C "
+                    (uiop:native-namestring ql-local-proj-dir)
+                    " " "https://github.com/" repo)))))
+
+(mapc
+ ;; Ideally this would be a 'dolist' however uiop:run-program was
+ ;; giving errors, which is odd to say the least.
+ (lambda (cmd) (uiop:run-program cmd))
+ (mapcar
+  (lambda (cmd-lst)
+    (if (= (length cmd-lst) 1)
+        (car cmd-lst)
+      (format nil "~{~a~}" cmd-lst)))
+  `(
+    ;; Don't clone wlroots...
+    ("rm -rf heart/subprojects/")
+    ;; Ensure the program is not stripped of info.
+    ("touch nostrip")
+    ("make")
+    ;; Unfortunately, because kiss exposes DESTDIR, we have to
+    ;; rm the trailing home directory & be clever when installing lib.
+    ("rm -rf " ,*dest-dir* "/home/")
+    ("mkdir -p " ,*dest-dir* "/usr/bin/")
+    ("mkdir -p " ,*dest-dir* "/usr/lib/")
+    ("cp" " " "build/mahogany" " " ,*dest-dir* "/usr/bin/")
+    ("cp" " " "build/heart/libheart.so" " " ,*dest-dir* "/usr/lib/"))))
