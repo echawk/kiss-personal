@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+#make check
+
+mkdir -p "$1/usr/bin/"
+cp lddtree.sh "$1/usr/bin/lddtree"
+chmod +x "$1/usr/bin/lddtree"
