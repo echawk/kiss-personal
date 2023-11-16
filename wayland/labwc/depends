@@ -1,0 +1,9 @@
+cairo
+glib
+libinput
+libxkbcommon
+libxml2
+meson make
+pango
+wayland
+wlroots
