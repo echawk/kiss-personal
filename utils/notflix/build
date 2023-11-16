@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir -p "$1/usr/bin/"
+cp notflix "$1/usr/bin/"
