@@ -1,2 +1,1 @@
-git+https://github.com/CakeML/cakeml
-git+https://github.com/HOL-Theorem-Prover/HOL HOL/
+https://github.com/CakeML/cakeml/releases/download/v2233/cake-x64-64.tar.gz
