@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-if kiss list polyml; then
+if command -v poly; then
     poly --script tools/smart-configure.sml
 elif kiss list mosml; then
     mosml < tools/smart-configure.sml
@@ -9,10 +9,9 @@ fi
 bin/build
 bin/build cleanForReloc
 
-mkdir -p "$1/opt/hol"
+mkdir -p "$1/opt/hol" "$1/usr/bin"
 cp -r . "$1/opt/hol"
-mkdir -p "$1/usr/bin"
 
-for b in "/opt/hol/bin/hol" "/opt/hol/bin/hol.noquote" "/opt/hol/bin/Holmake"; do
-    ln -s "$b" "$1/usr/bin/$(basename "$b")"
+for b in hol hol.noquote Holmake; do
+    ln -s "/opt/hol/bin/$b" "$1/usr/bin/$b"
 done
