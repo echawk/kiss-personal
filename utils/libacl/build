@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+patch -p1 < lfs64.patch
+
+./configure \
+    --prefix=/usr
+
+make
+make install
