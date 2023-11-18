@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 mkdir -p "$1/usr/bin/"
 cp notflix "$1/usr/bin/"
