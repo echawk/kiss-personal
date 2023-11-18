@@ -2,6 +2,7 @@
 
 export DESTDIR="$1"
 
-export LDFLAGS="$LDFLAGS -lexecinfo"
+patch -p1 < no-execinfo.patch
+
 ./build --prefix=/usr
 ./install --destdir="$1"

@@ -1,1 +1,2 @@
 https://miasap.se/obnc/downloads/obnc_VERSION.tar.gz
+patches/no-execinfo.patch

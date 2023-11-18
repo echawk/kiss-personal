@@ -1,0 +1,30 @@
+diff --git a/src/StackTraceLinux.c b/src/StackTraceLinux.c
+index fec04cf..e69045d 100644
+--- a/src/StackTraceLinux.c
++++ b/src/StackTraceLinux.c
+@@ -17,7 +17,9 @@ along with OBNC.  If not, see <http://www.gnu.org/licenses/>.*/
+ 
+ #include "StackTrace.h"
+ #include "Util.h"
++#ifdef HAVE_EXECINFO_H
+ #include <execinfo.h> /*GNU specific*/
++#endif
+ #include <signal.h> /*POSIX*/
+ #include <assert.h>
+ #include <stdio.h>
+@@ -87,6 +89,7 @@ static void PrintStackTrace(int signum)
+ 		printContext();
+ 		fprintf(stderr, "\n");
+ 	}
++#ifdef HAVE_EXECINFO_H
+ 	count = backtrace(returnAddresses, LEN(returnAddresses));
+ 	lines = backtrace_symbols(returnAddresses, count);
+ 	fprintf(stderr, "Fatal signal raised, stack trace:\n");
+@@ -99,6 +102,7 @@ static void PrintStackTrace(int signum)
+ 		}
+ 	}
+ 	free(lines);
++#endif
+ }
+ 
+ 
