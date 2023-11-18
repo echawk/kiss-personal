@@ -1,5 +1,6 @@
 boost
 cmake make
+eigen
 embree
 ffmpeg
 fftw

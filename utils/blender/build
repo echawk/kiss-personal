@@ -20,6 +20,7 @@ cmake -B build \
     -DWITH_HARU=OFF \
     -DWITH_INTERNATIONAL=OFF \
     -DWITH_GHOST_WAYLAND=OFF \
+    -DWITH_DOC_MANPAGE=OFF \
     -DPYTHON_VERSION="$(python3 -c 'import sys; print("%i.%i" % (sys.version_info.major, sys.version_info.minor))')"
 
 cmake --build   build
