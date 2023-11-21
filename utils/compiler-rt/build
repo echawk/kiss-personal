@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+llvmver="${2%%.*}"
+
+cd compiler-rt
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCOMPILER_RT_INSTALL_PATH="/usr/lib/clang/$llvmver/" \
+    -DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
+    -Wno-dev
+
+cmake --build   build
+cmake --install build
