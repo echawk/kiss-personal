@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+make -C src loader.elf build.h
+make -C src proot care
+
+mkdir -p "$1/usr/bin/"
+cp src/proot "$1/usr/bin/proot"
+cp src/care  "$1/usr/bin/care"
