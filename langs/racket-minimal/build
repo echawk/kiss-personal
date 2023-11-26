@@ -10,6 +10,8 @@ fi
 
 cd src
 
+# Intended.
+# shellcheck disable=2086
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
