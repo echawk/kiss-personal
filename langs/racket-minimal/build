@@ -4,12 +4,17 @@ export DESTDIR="$1"
 
 rm -Rf src/foreign/libffi
 
+if command -v scheme; then
+    scheme_cfg="--enable-scheme=$(command -v scheme)"
+fi
+
 cd src
 
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
     --enable-shared \
+    ${scheme_cfg:-} \
     --disable-docs
 
 make
