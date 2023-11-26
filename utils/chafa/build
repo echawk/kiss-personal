@@ -3,7 +3,8 @@
 export DESTDIR="$1"
 
 ./configure \
-    --prefix=/usr
+    --prefix=/usr \
+    --without-webp
 
 make
 make install
