@@ -2,11 +2,12 @@
 
 export DESTDIR="$1"
 
-v="$(ghc --numeric-version)"
+v="$(ghc --numeric-version | cut -d'.' -f1-2)"
 
 if ! command -v cabal; then
+    bootfile="$(find bootstrap/ -name "*$v*")"
     ./bootstrap/bootstrap.py \
-        -d "./bootstrap/linux-$v.json" \
+        -d "$bootfile" \
         -w /usr/bin/ghc
     export PATH="$PWD/_build/bin:$PATH"
 fi
