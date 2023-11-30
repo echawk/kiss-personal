@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+patch -p1 < lfs64.patch
+
+export DESTDIR="$1"
+
 # Remove bash dependency.
 sed 's/SHELL = bash -o pipefail/SHELL = sh/g' Makefile > _
 mv -f _ Makefile
