@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+sed 's/op_test() {/& return 0;/' boot-strap > _
+mv -f _ boot-strap
+chmod +x boot-strap
+
+./boot-strap --prefix=/usr op=build
+
+INSTALL=install ./boot-strap --install-destdir="$1" --prefix=/usr op=install
+
+rm -rf "$1/usr/share/man/"
+mkdir -p "$1/usr/share/man/man1/"
+cp bmake.1 "$1/usr/share/man/man1/"
