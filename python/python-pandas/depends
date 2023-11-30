@@ -22,7 +22,6 @@
 #python-pymysql
 #python-pyreadstat
 #python-pytest
-#python-pytest-asyncio
 #python-pytest-xdist
 #python-python-dateutil
 #python-pytz
