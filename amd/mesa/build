@@ -25,7 +25,8 @@ meson setup \
     -Dglx-read-only-text=true \
     -Dplatforms="${platforms:-x11}" \
     -Dgallium-drivers=radeonsi \
-    -Dvulkan-drivers='' \
+    -Dvulkan-drivers=amd \
+    -Dvulkan-layers=device-select,intel-nullhw,overlay \
     -Dglx=auto \
     -Degl=enabled \
     -Dvalgrind="${valgrind:-false}" \
