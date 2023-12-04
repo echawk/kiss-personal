@@ -1,6 +1,7 @@
 bison        make
 expat
 flex         make
+glslang
 libX11
 libXdamage
 libXext
@@ -15,10 +16,13 @@ linux-headers make
 llvm
 m4            make
 meson         make
-meson make
 pkgconf       make
 python        make
 python-mako   make
 samurai make
+vulkan-headers
+vulkan-loader
+wayland
+wayland-protocols
 xorgproto
 zlib
