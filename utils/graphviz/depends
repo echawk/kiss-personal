@@ -1,0 +1,16 @@
+cairo
+cmake make
+expat
+fontconfig
+freetype-harfbuzz
+gd
+ghostscript
+glib
+libX11
+libXaw
+libXmu
+libXt
+libtool make
+libwebp
+pango
+poppler
