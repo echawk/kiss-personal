@@ -1,0 +1,15 @@
+cmake make
+gdk-pixbuf
+glib
+libICE
+libSM
+libX11
+libXext
+libXi
+libXinerama
+libXrandr
+libXtst
+libnotify
+libxkbfile
+openssl
+qt5
