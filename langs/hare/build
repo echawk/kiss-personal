@@ -10,7 +10,7 @@ cd "$OLDPWD"
 
 export PATH="$1/usr/bin/:$PATH"
 
-sed "s:/usr/local:/usr:" config.example.mk > config.mk
+sed "s:/usr/local:/usr:" configs/linux.mk > config.mk
 
 LOCALVER=arch make -j1
 
