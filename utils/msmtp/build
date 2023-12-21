@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 ./configure \
     --prefix=/usr \
     --with-tls=libtls \
@@ -7,3 +9,6 @@
 
 make
 make install
+
+cd "$1/usr/bin/"
+ln -s msmtp sendmail
