@@ -1,8 +1,9 @@
 #!/bin/sh -e
 
 cd harec
-./configure \
-    --prefix=/usr
+cp configs/linux.mk config.mk
+sed "s~/local~~" config.mk > _
+mv -f _ config.mk
 
 make
 make install
