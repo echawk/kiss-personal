@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+cd generator
+go build --ldflags="-X main.imageModulesDir=/lib/modules/ \
+    -X main.firmwareDir=/lib/firmware/ "
+cd "$OLDPWD"
+
+cd init
+CGO_ENABLED=0 go build -buildmode=default
+cd "$OLDPWD"
+
+mkdir -p "$1/etc/" "$1/usr/bin/" "$1/usr/lib/booster/"
+cat > "$1/etc/booster.yaml" << EOF
+compression: gzip
+EOF
+cp generator/generator "$1"/usr/bin/booster
+cp init/init "$1"/usr/lib/booster/init
