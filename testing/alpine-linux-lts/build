@@ -15,6 +15,9 @@ fi
 # This is safe to do, even with all the warnings about headers.
 tar xvf ./linux-lts.apk
 
+# Uncompress all of the modules, just to see what happens I suppose.
+find lib/ -name '*.gz' | xargs -I{} gzip -d {}
+
 # Finally install the contents of the tarball.
 rm -- ./.PKGINFO ./.SIGN*
 cp -r . "$1"
