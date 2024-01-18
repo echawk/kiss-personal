@@ -1,3 +1,2 @@
 https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.1.73.tar.xz
 https://src.fedoraproject.org/rpms/kernel/raw/df63b871122d9adf95ed96896ece3003ad7df782/f/kernel-x86_64-fedora.config
-patches/kernel-no-perl.patch
