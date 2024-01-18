@@ -2,3 +2,4 @@ bash
 dosfstools
 efibootmgr
 gnu-efi
+util-linux
