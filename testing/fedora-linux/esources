@@ -1,2 +1,3 @@
 https://cdn.kernel.org/pub/linux/kernel/vMAJOR.x/linux-VERSION.tar.xz
 https://src.fedoraproject.org/rpms/kernel/raw/IDENT/f/kernel-x86_64-fedora.config
+patches/kernel-no-perl.patch

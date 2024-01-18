@@ -8,6 +8,12 @@ if command -v ccache; then
     export PATH="/usr/lib/ccache/bin:$PATH"
 fi
 
+# Remove pahole dependency
+sed "/CONFIG_DEBUG_INFO_BTF/d" .config > _
+mv -f _ .config
+
+patch -p1 < kernel-no-perl.patch
+
 make olddefconfig
 make -j "$(nproc)"
 make INSTALL_MOD_PATH="$1/usr" modules_install
