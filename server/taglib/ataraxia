@@ -1,0 +1,23 @@
+# Description: A Library for reading and editing the meta-data of several popular audio formats
+# URL:         https://taglib.github.io/
+# Maintainer:  protonesso, nagakamira at gmail dot com
+# Depends on:  cmake samurai libz
+# Section:     libs
+
+name=taglib
+version=1.12
+release=2
+source=("https://taglib.github.io/releases/$name-$version.tar.gz")
+
+build() {
+	cd "$SRC"/$name-$version
+	mkdir -p build
+	cd build
+	cmake "$SRC"/$name-$version $CMAKEFLAGS \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=MinSizeRel \
+		-DBUILD_SHARED_LIBS=ON \
+		-Wno-dev -G Ninja
+	samu
+	DESTDIR="$PKG" samu install
+}
