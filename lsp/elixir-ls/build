@@ -12,7 +12,7 @@ mix compile
 
 mkdir -p "$1/usr/lib/" "$1/usr/bin/"
 
-mix elixir_ls.release -o "$1/usr/lib/elixir_ls"
+mix elixir_ls.release2 -o "$1/usr/lib/elixir_ls"
 
 cat <<EOF > "$1/usr/bin/elixir-ls"
 #!/bin/sh
