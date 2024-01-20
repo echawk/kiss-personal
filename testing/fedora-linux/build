@@ -2,6 +2,10 @@
 
 ver="$(echo "$2" | cut -d'+' -f1)"
 
+mkdir -p path
+ln -s "$(command -v gtar)" "$PWD/path/tar"
+export PATH="$PWD/path:$PATH"
+
 mv kernel-x86_64-fedora.config .config
 
 if command -v ccache; then
