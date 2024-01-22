@@ -1,4 +1,1 @@
-https://github.com/void-linux/musl-fts/archive/vVERSION.tar.gz
-files/config.h
-files/musl-fts.pc
-files/Makefile
+git+https://github.com/chimera-linux/musl-fts/
