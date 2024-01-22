@@ -259,7 +259,7 @@ checkpkg() {
             esac
         else
             case "$f" in
-                version | build | sources) err "'$f' does not exist" ;;
+                version | build ) err "'$f' does not exist" ;;
                 meta) warn "'$f' does not exist" ;;
                 checksums)
                     ! [ "$VER" = "git" ] && [ -e "sources" ] && ! [ $(wc -l < "sources") -ge 1 ] && err "'$f' does not exist" &
