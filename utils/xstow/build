@@ -2,6 +2,8 @@
 
 export DESTDIR="$1"
 
+export CXXFLAGS="$CXXFLAGS -DPATH_MAX=4096"
+
 ./configure \
     --prefix=/usr
 
