@@ -1,3 +1,4 @@
 gtar make
 libelf
+linux-firmware
 perl make
