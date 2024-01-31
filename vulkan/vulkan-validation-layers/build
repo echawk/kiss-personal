@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 #git clone https://github.com/martinus/robin-hood-hashing external/robin-hood-hashing
 
 : > nostrip
