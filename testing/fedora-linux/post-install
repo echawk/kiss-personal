@@ -4,4 +4,40 @@ cat << EOF
 
 You'll likely want to setup tinyramfs...
 
+This (example) config should get you started:
+EOF
+
+cat << EOF
+'''
+hooks="mdevd" # configure this to be whatever your device manager is
+
+compress="gzip"
+
+$(awk '$2~/^\/$/{print "root=\"" $1 "\"\nroot_type=\"" $3 "\""}' < /etc/fstab)
+
+hostonly=true
+'''
+
+EOF
+
+ver=$(cut -d' ' -f1 < /var/db/kiss/installed/fedora-linux/version | cut -d'+' -f1)
+
+cat << EOF
+Once you get a configuration file created, you'll want to run the following:
+
+'''
+tinyramfs -f -k $ver -c /path/to/config /boot/initrd-$ver.img
+'''
+
+Then, you will need to update your boot managers configuration.
+
+grub: grub-mkconfig -o /boot/grub/grub.cfg
+efibootmgr: see ~ http://kisscommunity.org/boot/efistub/
+EOF
+
+cat << EOF
+
+Additionally, you may want to edit this package's build file, since you can
+force certain modules to be built into the kernel.
+
 EOF
