@@ -17,6 +17,10 @@ sed "/CONFIG_DEBUG_INFO_BTF/d" .config > _
 mv -f _ .config
 
 make olddefconfig
+# If we have modules loaded, bake them in if we can.
+#if [ $(wc -l /proc/modules) -gt 0 ]; then
+#    make localyesconfig
+#fi
 make -j "$(nproc)"
 make INSTALL_MOD_PATH="$1/usr" modules_install
 
