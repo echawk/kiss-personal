@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+go generate ./...
+
+go build .
+
+mkdir -p "$1/usr/bin/"
+cp ollama "$1/usr/bin/"
