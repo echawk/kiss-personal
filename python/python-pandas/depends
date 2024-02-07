@@ -1,5 +1,7 @@
 #python-PyQt5
 #python-SQLAlchemy
+#python-adbc-driver-postgresql
+#python-adbc-driver-sqlite
 #python-beautifulsoup4
 #python-bottleneck
 #python-dataframe-api-compat
@@ -23,6 +25,7 @@
 #python-pyreadstat
 #python-pytest
 #python-pytest-xdist
+#python-python-calamine
 #python-python-dateutil
 #python-pytz
 #python-pyxlsb
