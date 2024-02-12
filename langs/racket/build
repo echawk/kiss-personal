@@ -9,7 +9,10 @@ cd src
 ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
-    --enable-shared
+    --enable-shared \
+    --disable-strip \
+    --disable-docs \
+    --enable-jit
 
 make
 make install
