@@ -2,17 +2,16 @@
 
 : > nostrip
 
-for p in *.patch; do
-    patch -p1 < "$p"
-done
-
 ./configure \
     --prefix=/usr \
     --program-suffix=3 \
     --enable-posix \
     --disable-error-on-warning \
-    --disable-lto \
-    --disable-rpath
+    --enable-jit \
+    --enable-netowrking \
+    --disable-nls \
+    --enable-regex \
+    --with-threads
 
-make
-make install
+make -j1
+make -j1 install
