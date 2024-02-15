@@ -12,10 +12,9 @@ mkdir -p "$1/usr/lib/j9/bin/"
 mkdir -p "$1/usr/lib/j9/system/"
 mkdir -p "$1/usr/lib/j9/addons/"
 
-
-# TODO: add custom wrapper script
 cp -a "./jlibrary/bin/"* "$1/usr/lib/j9/bin/"
 cp -a "./bin/linux/"*/* "$1/usr/lib/j9/bin/"
 cp -a "./jlibrary/system/"* "$1/usr/lib/j9/system/"
 cp -a "./jlibrary/addons/"* "$1/usr/lib/j9/addons/"
-#ln -s /usr/lib/j9/bin/jconsole "$1/usr/bin/jconsole"
+ln -s /usr/lib/j9/bin/jconsole "$1/usr/bin/jconsole"
+ln -s /usr/lib/j9/bin/jconsole "$1/usr/bin/J"
