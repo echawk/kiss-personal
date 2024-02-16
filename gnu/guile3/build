@@ -2,6 +2,8 @@
 
 : > nostrip
 
+export DESTDIR="$1"
+
 ./configure \
     --prefix=/usr \
     --program-suffix=3 \
