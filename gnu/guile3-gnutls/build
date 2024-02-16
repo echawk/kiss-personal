@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+: > nostrip
+
+mkdir -p path
+ln -s "$(command -v guile-snarf3)" path/guile-snarf
+
+export PATH="$PWD/path:$PATH"
+
+export DESTDIR="$1"
+
+./bootstrap
+
+./configure \
+    --prefix=/usr \
+    --disable-srp-authentication
+
+make
+make install

@@ -1,0 +1,49 @@
+#!/bin/sh -e
+
+: > nostrip
+
+export DESTDIR="$1"
+
+for p in *.patch; do
+    patch -p1 < "$p"
+done
+
+autoreconf -vif
+
+./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --with-system="$(cc -dumpmachine | sed "s/-pc//;s/-musl//")" \
+    --with-bash-completion-dir=/usr/share/bash-completion \
+    --disable-silent-rules \
+    --disable-dependency-tracking \
+    --disable-rpath \
+    --disable-nls \
+    --disable-docs
+
+make LIBS="-lintl -largp"
+make install
+
+rm -rf \
+    "$1/usr/lib/upstart" \
+    "$1/etc/init.d" \
+    "$1/etc/openrc" \
+    "$1/usr/lib/systemd" \
+    "$1/usr/share/selinux"
+
+mkdir -p "$1/etc/sv/guix"
+cp run "$1/etc/sv/guix"
+
+mkdir -p "$1/etc/profile.d/"
+cp guix_env.sh "$1/etc/profile.d/"
+
+mkdir -p "$1/etc/guix"
+{
+    printf '(acl\n (entry\n'
+    sed -e 's,^,  ,g' -e 's, $$,,g' etc/substitutes/ci.guix.gnu.org.pub
+    printf '  (tag\n   (guix import)\n   )\n  )\n (entry\n'
+    sed -e 's,^,  ,g' -e 's, $$,,g' etc/substitutes/bordeaux.guix.gnu.org.pub
+    printf '  (tag\n   (guix import)\n   )\n  )\n )\n'
+} > "$1/etc/guix/acl"

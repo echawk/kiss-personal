@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+if ! getent group guixbuild; then
+    addgroup -S guixbuild
+fi
+for n in $(seq -w 1 10); do
+    user="guixbuilder${n}"
+    if ! grep "$user" /etc/passwd; then
+        adduser -S -D -H -h /var/empty -s /sbin/nologin -G guixbuild "$user"
+    fi
+done
+
+cat <<EOF
+
+Now you should be able to run the following (as root):
+
+# guix pull
+
+Read the rest of the guide here:
+
+https://guix.gnu.org/manual/en/html_node/Application-Setup.html
+
+EOF

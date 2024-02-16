@@ -1,0 +1,6 @@
+autoconf make
+automake make
+gc
+guile3
+libgcrypt
+sqlite

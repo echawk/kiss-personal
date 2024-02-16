@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+: > nostrip
+
+for p in *.patch; do
+    patch -p1 < "$p"
+done
+
+./configure \
+    --prefix=/usr \
+    --program-suffix=2 \
+    --enable-posix \
+    --disable-error-on-warning \
+    --disable-lto \
+    --disable-rpath
+
+make
+make install

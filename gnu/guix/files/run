@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Set environment variables for locales.
+# Taken from the default Guix OpenRC services provided by upstream.
+export GUIX_LOCPATH=/var/guix/profiles/per-user/root/guix-profile/lib/locale
+export LC_ALL=en_US.utf8
+
+
+
+command=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon
+if ! [ -x "$command" ]; then
+    command=/usr/bin/guix-daemon
+fi
+
+exec $command --build-users-group=guixbuild --discover=no 2>&1
