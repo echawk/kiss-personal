@@ -12,10 +12,10 @@
 #python-pip
 #python-pygments-github-lexers==0.0.5
 #python-pytest
-#python-pytest-black
 #python-pytest-checkdocs
 #python-pytest-cov
 #python-pytest-enabler
+#python-pytest-home
 #python-pytest-mypy
 #python-pytest-perf
 #python-pytest-ruff
