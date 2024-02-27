@@ -7,8 +7,8 @@ export DESTDIR="$1"
     --libdir=/usr/lib/lighttpd \
     --sbindir=/usr/bin \
     --sysconfdir=/etc/lighttpd \
-    --with-attr \
-    --with-gdbm \
+    --without-attr \
+    --without-gdbm \
     --with-openssl \
     --with-lua
 
