@@ -1,1 +1,2 @@
-https://github.com/djcb/mu/releases/download/v1.10.8/mu-1.10.8.tar.xz
+https://github.com/djcb/mu/releases/download/v1.12.0/mu-1.12.0.tar.xz
+patches/mu-utils-stdout.patch
