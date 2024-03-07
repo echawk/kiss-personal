@@ -1,5 +1,5 @@
 diff --git a/spa/plugins/alsa/alsa-udev.c b/spa/plugins/alsa/alsa-udev.c
-index 3048d73..8792a5c 100644
+index 58ff503..fdefd4e 100644
 --- a/spa/plugins/alsa/alsa-udev.c
 +++ b/spa/plugins/alsa/alsa-udev.c
 @@ -162,9 +162,6 @@ static unsigned int get_card_nr(struct impl *this, struct udev_device *udev_devi
@@ -12,7 +12,7 @@ index 3048d73..8792a5c 100644
  	if ((str = udev_device_get_property_value(udev_device, "DEVPATH")) == NULL)
  		return SPA_ID_INVALID;
  
-@@ -891,7 +888,7 @@ static void impl_on_fd_events(struct spa_source *source)
+@@ -915,7 +912,7 @@ static void impl_on_fd_events(struct spa_source *source)
  
  	start_inotify(this);
  
@@ -21,7 +21,7 @@ index 3048d73..8792a5c 100644
  		process_card(this, ACTION_ADD, udev_device);
  	} else if (spa_streq(action, "remove")) {
  		process_card(this, ACTION_REMOVE, udev_device);
-@@ -958,7 +955,7 @@ static int enum_cards(struct impl *this)
+@@ -982,7 +979,7 @@ static int enum_cards(struct impl *this)
  
  	for (udev_devices = udev_enumerate_get_list_entry(enumerate); udev_devices;
  			udev_devices = udev_list_entry_get_next(udev_devices)) {
@@ -30,13 +30,16 @@ index 3048d73..8792a5c 100644
  
  		udev_device = udev_device_new_from_syspath(this->udev,
  		                                           udev_list_entry_get_name(udev_devices));
-@@ -967,6 +964,10 @@ static int enum_cards(struct impl *this)
+@@ -991,6 +988,13 @@ static int enum_cards(struct impl *this)
  
  		process_card(this, ACTION_ADD, udev_device);
  
 +		pdev = udev_device_get_parent(udev_device);
++
 +		if (pdev)
 +			process_card(this, ACTION_ADD, pdev);
++
++		/* no need to unref pdev as udev_device_unref will free the parent as well */
 +
  		udev_device_unref(udev_device);
  	}
