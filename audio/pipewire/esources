@@ -2,3 +2,4 @@ https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/MAJOR.MINOR.PATCH/pip
 https://gitlab.freedesktop.org/pipewire/wireplumber/-/archive/IDENT/wireplumber-IDENT.tar.gz subprojects/wireplumber
 patches/autostart-session-manager.patch
 patches/libudev-zero.patch
+patches/no-dbus.patch
