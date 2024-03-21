@@ -8,4 +8,4 @@ gnuplot
 lapack
 libtool 	make
 ncurses
-pcre
+pcre2
