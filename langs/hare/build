@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 cd harec
 cp configs/linux.mk config.mk
 sed "s~/local~~" config.mk > _
