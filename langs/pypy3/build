@@ -5,6 +5,10 @@ export DESTDIR="$1"
 export CFLAGS="$CFLAGS -D_LARGEFILE64_SOURCE"
 export CXXFLAGS="$CXXFLAGS -D_LARGEFILE64_SOURCE"
 
+mkdir -p path
+cp $(command -v gtar) path/tar
+export PATH="$PWD/path:$PATH"
+
 case "$(uname)" in
     Linux) JOBS="$(nproc)" ;;
     FreeBSD | Darwin | OpenBSD) JOBS="$(sysctl -n hw.ncpu)" ;;

@@ -1,6 +1,7 @@
 bzip2
 expat
 gdbm
+gtar make
 libffi
 ncurses
 python2
