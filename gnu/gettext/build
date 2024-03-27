@@ -6,7 +6,7 @@ cd libtextstyle
 ./configure --prefix=/usr
 make
 make install
-cd $OLDPWD
+cd "$OLDPWD"
 
 export CFLAGS="$CFLAGS -I$1/usr/include"
 export CXXFLAGS="$CXXFLAGS -I$1/usr/include"
