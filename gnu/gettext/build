@@ -1,0 +1,31 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+cd libtextstyle
+./configure --prefix=/usr
+make
+make install
+cd $OLDPWD
+
+export CFLAGS="$CFLAGS -I$1/usr/include"
+export CXXFLAGS="$CXXFLAGS -I$1/usr/include"
+export LDFLAGS="$LDFLAGS -L$1/usr/lib"
+
+./configure \
+    --prefix=/usr \
+    --without-included-gettext \
+    --disable-dependency-tracking \
+    --disable-csharp \
+    --disable-java \
+    --disable-c++ \
+    --disable-nls \
+    --disable-rpath \
+    --disable-acl \
+    --disable-openmp \
+    --without-emacs \
+    --without-bzip2 \
+    --without-xz
+
+make
+make install
