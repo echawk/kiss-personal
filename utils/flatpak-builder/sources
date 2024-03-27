@@ -1,4 +1,4 @@
-https://github.com/flatpak/flatpak-builder/releases/download/1.4.0/flatpak-builder-1.4.0.tar.xz
+https://github.com/flatpak/flatpak-builder/releases/download/1.4.2/flatpak-builder-1.4.2.tar.xz
 patches/hard-disable-rofiles-fuse.patch
 patches/musl-fixes-error.patch
 patches/musl-fixes.patch
