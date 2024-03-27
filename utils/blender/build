@@ -3,7 +3,7 @@
 export DESTDIR="$1"
 
 patch -p1 < 0001-musl-fixes.patch
-patch -p1 < 0002-increase-thread-stack-size-for-musl.patch
+patch -p1 < 0002-fix-includes.patch
 
 export CFLAGS="$CFLAGS -D__MUSL__"
 export CXXFLAGS="$CXXFLAGS -D__MUSL__"
