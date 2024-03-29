@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+export CFLAGS="$CFLAGS -fPIC"
+
+autoreconf -vif
+./configure \
+    --prefix=/usr
+
+make
+# `make install` does nothing.
+mkdir -p "$1/usr/include"
+cp argp.h "$1/usr/include"
+mkdir -p "$1/usr/lib"
+cp libargp.a "$1/usr/lib"
