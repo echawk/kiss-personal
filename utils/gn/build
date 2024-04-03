@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+export CFLAGS="$CFLAGS -D_LARGEFILE64_SOURCE"
+export CXXFLAGS="$CXXFLAGS -D_LARGEFILE64_SOURCE"
+
 python3 ./build/gen.py --no-last-commit-position
 
 # This is hacky, but gn expects the build to occur in a full checkout.
