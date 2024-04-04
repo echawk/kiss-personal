@@ -1,4 +1,7 @@
 #!/bin/sh -e
+
+export DESTDIR="$1"
+
 git submodule update --init --recursive
 sed 's/bool warn = true/bool warn = false/' \
     src/main.cpp > _
