@@ -1,2 +1,4 @@
 libcap
 libseccomp
+meson make
+samurai make
