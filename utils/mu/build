@@ -2,8 +2,6 @@
 
 export DESTDIR="$1"
 
-patch -p1 < mu-utils-stdout.patch
-
 # Disable tests.
 find . -type f -name meson.build -exec sed -i "/subdir('tests')/d" {} \;
 
