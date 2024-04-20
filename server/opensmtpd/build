@@ -1,4 +1,7 @@
 #!/bin/sh -e
+
+export DESTDIR="$1"
+
 export CFLAGS="$CFLAGS -w"
 
 sed "s,/etc/mail,/etc/smtpd,g" usr.sbin/smtpd/smtpd.conf > _
