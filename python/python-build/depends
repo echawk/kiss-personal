@@ -1,8 +1,10 @@
+#python-build[uv, virtualenv] 
+#python-build[uv] 
 #python-colorama
 #python-filelock 
 #python-furo 
 #python-importlib-metadata 
-#python-mypy ~= 1.5.0 
+#python-mypy ~= 1.9.0 
 #python-packaging 
 #python-pyproject_hooks
 #python-pytest 
@@ -17,5 +19,6 @@
 #python-sphinx-issues 
 #python-tomli 
 #python-typing-extensions 
+#python-uv 
 #python-virtualenv 
 #python-wheel 
