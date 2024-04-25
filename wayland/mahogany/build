@@ -30,6 +30,11 @@
                     (uiop:native-namestring ql-local-proj-dir)
                     " " "https://github.com/" repo)))))
 
+;; Download the rest of the quicklisp dependencies.
+(ql:quickload '(:alexandria :cl-ansi-text :terminfo
+                :snakes :iterate :cffi :cffi-grovel :closer-mop)
+              :silent t)
+
 (mapc
  ;; Ideally this would be a 'dolist' however uiop:run-program was
  ;; giving errors, which is odd to say the least.
@@ -38,7 +43,7 @@
   (lambda (cmd-lst)
     (if (= (length cmd-lst) 1)
         (car cmd-lst)
-      (format nil "~{~a~}" cmd-lst)))
+        (format nil "~{~a~}" cmd-lst)))
   `(
     ;; Don't clone wlroots...
     ("rm -rf heart/subprojects/")
