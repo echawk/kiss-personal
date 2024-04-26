@@ -8,10 +8,13 @@ export DESTDIR="$1"
 unzip ./*.zip
 cd "S$2/"
 
-patch -p1 < ../ccl-and-ecl-support.patch
+git init 
+git add .
+git commit -m "init"
+git apply ../0001-Support-CCL-ECL.patch
 
 mkdir -p "$1/usr/bin/"
-for lisp in sbcl ccl clisp; do
+for lisp in sbcl ccl; do
     if command -v "$lisp"; then
         case "$lisp" in
             clisp)
@@ -24,3 +27,9 @@ for lisp in sbcl ccl clisp; do
         cp "$lisp-shen.exe" "$1/usr/bin/shen-$lisp"
     fi
 done
+rm -rf .git/
+
+cd "$OLDPWD"
+mkdir -p "$1/usr/share/shen/"
+cp -r "S$2" "$1/usr/share/shen/"
+

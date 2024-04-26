@@ -1,3 +1,14 @@
+From fc0c55115dfccb802953cfb38aa4d32dbf7cd251 Mon Sep 17 00:00:00 2001
+From: Ethan <ethan.hawk@valpo.edu>
+Date: Thu, 25 Apr 2024 22:02:38 -0500
+Subject: [PATCH] Support CCL & ECL
+
+---
+ Primitives/char-stinput.lsp | 7 +++++++
+ Primitives/globals.lsp      | 8 +++++++-
+ install.lsp                 | 8 +++++++-
+ 3 files changed, 21 insertions(+), 2 deletions(-)
+
 diff --git a/Primitives/char-stinput.lsp b/Primitives/char-stinput.lsp
 index d0c7cab..9b09019 100644
 --- a/Primitives/char-stinput.lsp
@@ -14,7 +25,7 @@ index d0c7cab..9b09019 100644
 +#+ECL 
 +(DEFUN shen.char-stinput? (Stream) 'false)
 diff --git a/Primitives/globals.lsp b/Primitives/globals.lsp
-index b3b52b3..e4ffbaf 100644
+index b3b52b3..268b770 100644
 --- a/Primitives/globals.lsp
 +++ b/Primitives/globals.lsp
 @@ -14,4 +14,10 @@
@@ -26,25 +37,27 @@ index b3b52b3..e4ffbaf 100644
 +(SETQ *release* "2.49")
 +
 +#+CCL
-+(SETQ *release* "1.12.1")      
++(SETQ *release* "1.12.1")
 +
 +#+ECL
-+(SETQ *release* "21.2.1")
++(SETQ *release* "23.9.9")
 diff --git a/install.lsp b/install.lsp
-index aa88b03..7950209 100644
+index ba74e45..00947ef 100644
 --- a/install.lsp
 +++ b/install.lsp
-@@ -109,4 +109,11 @@
+@@ -109,4 +109,10 @@
  (EXT:SAVEINITMEM "clisp-shen.exe" :EXECUTABLE 0 :QUIET T :INIT-FUNCTION 'shen.shen)
  
  #+CLISP
 -(BYE)   
 \ No newline at end of file
-+(BYE)
++(BYE)   
 +
 +#+CCL
 +(CCL:SAVE-APPLICATION "ccl-shen.exe" :PREPEND-KERNEL T :TOPLEVEL-FUNCTION 'shen.shen)
 +
 +#+CCL
 +(QUIT)
-+
+-- 
+2.42.0
+
