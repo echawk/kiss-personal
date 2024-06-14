@@ -2,6 +2,11 @@
 
 export DESTDIR="$1"
 
+if ldd 2>&1 | grep musl; then
+    echo "You need to install 'musl-fts' !"
+    exit 1
+fi
+
 cd make2
 export CC=clang
 sh "$PWD/build_all.sh"
