@@ -6,6 +6,7 @@
 #python-nbsphinx
 #python-nbval
 #python-numpy
+#python-packaging
 #python-ply
 #python-scipy
 #python-setuptools

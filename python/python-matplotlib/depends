@@ -3,8 +3,12 @@
 #python-fonttools
 #python-importlib-resources
 #python-kiwisolver
+#python-meson-python
 #python-numpy
 #python-packaging
 #python-pillow
+#python-pybind11
 #python-pyparsing
 #python-python-dateutil
+#python-setuptools
+#python-setuptools_scm
