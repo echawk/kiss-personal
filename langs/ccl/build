@@ -23,7 +23,7 @@ done
 
 case "$(uname)" in
     Linux)
-        kiss list glibc || {
+        if ldd 2>&1 | grep musl; then
             # Fixes for musl.
             # Define _libc_xmmreg if we are not on glibc.
             sed '/#include <fcntl.h>/a\#ifndef __GLIBC__\nstruct _libc_xmmreg {\nunsigned int element[4];\n};\n#endif\n' \
@@ -41,7 +41,7 @@ case "$(uname)" in
             # Delete include of fpu_control.h as musl doesn't have this header.
             sed "/#include <fpu_control.h>/d" lisp-kernel/x86-exceptions.c > _
             mv -f _ lisp-kernel/x86-exceptions.c
-        }
+	fi
         cd lisp-kernel/linuxx8664
         lsp=lx86cl64
         ;;
