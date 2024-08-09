@@ -15,5 +15,5 @@ export DESTDIR="$1"
     --enable-regex \
     --with-threads
 
-make -j1
-make -j1 install
+make
+make install
