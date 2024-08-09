@@ -10,11 +10,6 @@ mv -f _ gcc/gcc/config/i386/t-linux64
 sed 's/lib64/lib/' gcc/gcc/config/i386/linux64.h > _
 mv -f _ gcc/gcc/config/i386/linux64.h
 
-case "$sys_arch" in
-    i*86)   archopts="--build=i686-pc-linux-musl" ;;
-    x86_64) archopts="--build=x86_64-pc-linux-musl" ;;
-esac
-
 # Build must happen outside of gcc source.
 mkdir -p gcc-build
 cd gcc-build
