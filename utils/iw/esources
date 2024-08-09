@@ -1,3 +1,0 @@
-git+https://git.sipsolutions.net/iw.git
-https://github.com/sabotage-linux/libnl-tiny/archive/4225e93bec5304abee3386213213718367e54a93.tar.gz libnl
-patches/nl.patch
