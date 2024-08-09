@@ -4,15 +4,11 @@ export DESTDIR="$1"
 
 # TODO Cleanup non-libgccjit items.
 
-sys_arch=${3:-$(uname -m)}
-
-if [ "${sys_arch#i*86}" ]; then
-    # Do not use lib64 by default.
-    sed '/m64=/s/lib64/lib/' gcc/gcc/config/i386/t-linux64 > _
-    mv -f _ gcc/gcc/config/i386/t-linux64
-    sed 's/lib64/lib/' gcc/gcc/config/i386/linux64.h > _
-    mv -f _ gcc/gcc/config/i386/linux64.h
-fi
+# Do not use lib64 by default.
+sed '/m64=/s/lib64/lib/' gcc/gcc/config/i386/t-linux64 > _
+mv -f _ gcc/gcc/config/i386/t-linux64
+sed 's/lib64/lib/' gcc/gcc/config/i386/linux64.h > _
+mv -f _ gcc/gcc/config/i386/linux64.h
 
 case "$sys_arch" in
     i*86)   archopts="--build=i686-pc-linux-musl" ;;
@@ -23,12 +19,11 @@ esac
 mkdir -p gcc-build
 cd gcc-build
 
-export libat_cv_have_ifunc=no
-
 ../gcc/configure \
+    libat_cv_have_ifunc=no \
     --prefix=/usr \
-    "$archopts" \
-    --disable-bootstrap \
+    --libexecdir=/usr/lib \
+    --mandir=/usr/share/man \
     --disable-fixed-point \
     --disable-libada \
     --disable-libquadmath \
@@ -45,13 +40,15 @@ export libat_cv_have_ifunc=no
     --enable-default-pie \
     --enable-default-ssp \
     --enable-host-shared \
-    --enable-languages=jit \
     --enable-shared \
     --enable-threads \
     --enable-tls \
-    --mandir=/usr/share/man \
+    --enable-languages=jit \
+    --without-included-gettext \
+    --with-zstd=no \
     --with-system-zlib \
-    --without-included-gettext
+    --build=x86_64-pc-linux-musl \
+    --disable-bootstrap
 
 make
 make -C gcc install
