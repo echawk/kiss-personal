@@ -8,4 +8,10 @@
 sed -e 's/unknown/pc/g' llvm-targets > _
 mv -f _ llvm-targets
 
+# FIXME: currently this package is broken, since we cannot specify
+# the DESTDIR. prefix here is meant to just be '/usr/' not
+# the hack we currently have.
+
+# I think that it should be possible to create a bindist, then copy
+# said bindist over to the appropriate directory
 ./hadrian/build install --prefix="$1/usr" -j --flavour=quickest+no_profiled_libs --docs=none --skip-depends
