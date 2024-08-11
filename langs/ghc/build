@@ -10,4 +10,13 @@ export DESTDIR="$1"
 sed -e 's/unknown/pc/g' llvm-targets > _
 mv -f _ llvm-targets
 
-./hadrian/build install --prefix="/usr" -j --flavour=quickest+no_profiled_libs --docs=none --skip-depends
+# for the fastest haskell impl, change flavour to:
+# perf+llvm
+# can also add '+fully_static' for a static haskell.
+# https://gitlab.haskell.org/ghc/ghc/blob/master/hadrian/doc/flavours.md
+./hadrian/build \
+    install --prefix="/usr" \
+    -j \
+    --flavour=quickest+no_profiled_libs+omit_pragmas \
+    --docs=none \
+    --skip-depends
