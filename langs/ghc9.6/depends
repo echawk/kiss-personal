@@ -1,0 +1,8 @@
+bash make
+gmp
+gnugrep make
+libffi
+llvm make
+ncurses
+pkgconf make
+xz make

@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+./configure \
+    --prefix="/usr" \
+    --with-system-libffi \
+    --disable-ld-override
+
+sed -e 's/unknown/pc/g' llvm-targets > _
+mv -f _ llvm-targets
+
+# for the fastest haskell impl, change flavour to:
+# perf+llvm
+# can also add '+fully_static' for a static haskell.
+# https://gitlab.haskell.org/ghc/ghc/blob/master/hadrian/doc/flavours.md
+#    --flavour=quickest+no_profiled_libs+omit_pragmas \
+./hadrian/build \
+    install --prefix="/usr" \
+    -j \
+    --flavour=perf \
+    --docs=none \
+    --skip-depends
