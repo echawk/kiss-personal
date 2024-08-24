@@ -1,0 +1,2 @@
+https://github.com/llvm/llvm-project/releases/download/llvmorg-VERSION/llvm-project-VERSION.src.tar.xz
+patches/musl-stack-size.patch

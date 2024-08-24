@@ -1,0 +1,128 @@
+#!/bin/sh -ex
+
+export DESTDIR="$1"
+
+patch -p1 < musl-stack-size.patch
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    \
+    -DLLVM_ENABLE_PROJECTS='clang;lld' \
+    -DLLVM_ENABLE_RUNTIMES='compiler-rt;libcxx;libcxxabi;libunwind;polly;bolt;openmp' \
+    \
+    -DLLVM_ENABLE_RTTI=ON \
+    -DLLVM_CCACHE_BUILD=ON \
+    -DLLVM_BUILD_LLVM_DYLIB=ON \
+    -DLLVM_LINK_LLVM_DYLIB=ON \
+    -DLLVM_INSTALL_UTILS=ON \
+    -DLLVM_HOST_TRIPLE="$(cc -dumpmachine)" \
+    \
+    -DLLVM_BUILD_BENCHMARKS=OFF \
+    -DLLVM_BUILD_EXAMPLES=OFF \
+    -DLLVM_BUILD_DOCS=OFF \
+    -DLLVM_BUILD_TESTS=OFF \
+    \
+    -DLLVM_ENABLE_TERMINFO=OFF \
+    -DLLVM_ENABLE_LIBXML2=OFF \
+    -DLLVM_ENABLE_LIBEDIT=OFF \
+    -DLLVM_ENABLE_ZSTD=OFF \
+    -DLLVM_ENABLE_ZLIB=ON \
+    -DLLVM_INCLUDE_BENCHMARKS=OFF \
+    -DLLVM_INCLUDE_EXAMPLES=OFF \
+    -DLLVM_INCLUDE_DOCS=OFF \
+    -DLLVM_INCLUDE_TESTS=OFF \
+    \
+    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+    -DCLANG_DEFAULT_RTLIB=compiler-rt \
+    -DCLANG_DEFAULT_UNWINDLIB=libunwind \
+    -DCLANG_INCLUDE_DOCS=OFF \
+    -DCLANG_INCLUDE_TESTS=OFF \
+    -DCLANG_BUILD_EXAMPLES=OFF \
+    \
+    -DLIBCXX_CXX_ABI=libcxxabi \
+    -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=NO \
+    -DLIBCXX_HAS_MUSL_LIBC=YES \
+    -DLIBCXX_INCLUDE_DOCS=OFF \
+    -DLIBCXX_INCLUDE_TESTS=OFF \
+    -DLIBCXX_USE_COMPILER_RT=YES \
+    \
+    -DLIBCXXABI_ENABLE_STATIC_UNWINDER=OFF \
+    -DLIBCXXABI_USE_COMPILER_RT=ON \
+    -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+    \
+    -DLIBUNWIND_INCLUDE_DOCS=OFF \
+    -DLIBUNWIND_INCLUDE_TESTS=OFF \
+    -DLIBUNWIND_USE_COMPILER_RT=ON \
+    \
+    -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+    -DCOMPILER_RT_BUILD_MEMPROF=OFF \
+    -DCOMPILER_RT_BUILD_PROFILE=OFF \
+    -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+    -DCOMPILER_RT_BUILD_XRAY=OFF \
+    -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+    -DCOMPILER_RT_INCLUDE_TESTS=OFF \
+    -DCOMPILER_RT_USE_BUILTINS_LIBRARY=YES \
+    \
+    -Wno-dev llvm
+
+cmake --build   build
+cmake --install build
+
+PATH="$1/usr/bin:$PATH"
+mkdir -p "$1/usr/lib/pkgconfig"
+
+# shellcheck disable=2016
+sed -e "s|$1||" -e 's|/usr/include|\${includedir}|' \
+    > "$1/usr/lib/pkgconfig/llvm.pc" <<EOF
+prefix=/usr
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
+has_rtti=$(llvm-config --has-rtti)
+
+Name: LLVM
+Description: LLVM compiler infrastructure
+URL: https://llvm.org
+Version: $(llvm-config --version)
+Requires:
+Requires.private: zlib
+Libs: -L\${libdir} $(llvm-config --libs)
+Libs.private: -lstdc++ $(llvm-config --libs --link-static)
+Cflags: $(llvm-config --cflags)
+EOF
+
+ln -s ld.lld "$1/usr/bin/ld"
+
+ln -s clang     "$1/usr/bin/cc"
+ln -s clang++   "$1/usr/bin/c++"
+ln -s clang-cpp "$1/usr/bin/cpp"
+
+cat > "$1/usr/bin/c99" <<EOF
+#!/bin/sh
+exec cc -std=c99 "$@"
+EOF
+chmod 755 "$1/usr/bin/c99"
+
+cd "$1/usr/bin/"
+ln -sf llvm-readobj readelf
+ln -sf llvm-objcopy strip
+ln -sf llvm-ar      ar
+ln -sf llvm-objcopy objcopy
+ln -sf llvm-objdump objdump
+ln -sf llvm-strings strings
+ln -sf llvm-objcopy otool
+ln -sf llvm-ranlib  ranlib
+ln -sf llvm-as      as
+
+cd "$1/usr/lib/clang"
+ln -s "${2%%.*}" system
+cd "$1/usr/lib"
+ln -s clang/system/lib/linux/clang_rt.crtbegin-$libname.o    crtbegin.o
+ln -s clang/system/lib/linux/clang_rt.crtbegin-$libname.o    crtbeginS.o
+ln -s clang/system/lib/linux/clang_rt.crtend-$libname.o      crtend.o
+ln -s clang/system/lib/linux/clang_rt.crtend-$libname.o      crtendS.o
+ln -s clang/system/lib/linux/libclang_rt.builtins-$libname.a libatomic.a
