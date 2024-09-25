@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+for p in *.patch; do
+    patch -p1 < "$p"
+done
+
+./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --disable-nfsv4 \
+    --disable-gss \
+    --disable-uuid \
+    --sbindir=/usr/bin
+
+sed "s|sbindir = /sbin|sbindir = /usr/bin|" ./utils/mount/Makefile > _
+mv -f _ ./utils/mount/Makefile
+
+make
+make install

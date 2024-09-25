@@ -1,0 +1,5 @@
+https://www.kernel.org/pub/linux/utils/nfs-utils/VERSION/nfs-utils-VERSION.tar.xz
+patches/musl-getservbyport.patch
+patches/musl-stat64.patch
+patches/include-unistd.patch
+patches/musl-svcgssd-sysconf.patch
