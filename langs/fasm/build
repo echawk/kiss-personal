@@ -16,7 +16,7 @@ case $arch in
         ;;
 esac
 
-${_fasm} ${_source} fasm.out
+${_fasm} "${_source}" fasm.out
 
 mkdir -p "$1/usr/bin/"
 cp fasm.out "$1/usr/bin/fasm"
