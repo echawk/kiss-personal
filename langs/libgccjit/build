@@ -19,19 +19,20 @@ cd gcc-build
     --prefix=/usr \
     --libexecdir=/usr/lib \
     --mandir=/usr/share/man \
-    --disable-fixed-point \
-    --disable-libada \
-    --disable-libquadmath \
-    --disable-libsanitizer \
-    --disable-libssp \
-    --disable-libvtv \
-    --disable-lto \
+    --infodir=/usr/share/info \
     --disable-multilib \
-    --disable-nls \
     --disable-symvers \
+    --disable-libmpx \
+    --disable-libmudflap \
+    --disable-libsanitizer \
     --disable-werror \
-    --enable-__cxa_atexit \
+    --disable-fixed-point \
+    --disable-libstdcxx-pch \
+    --disable-libada \
+    --disable-nls \
+    --disable-lto \
     --enable-checking=release \
+    --enable-__cxa_atexit \
     --enable-default-pie \
     --enable-default-ssp \
     --enable-host-shared \
