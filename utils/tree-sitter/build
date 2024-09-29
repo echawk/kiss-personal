@@ -5,7 +5,7 @@ export DESTDIR="$1"
 make
 (
     cd cli
-    cargo build --release --locked --all-features
+    cargo build --release --locked --offline
 )
 make PREFIX=/usr install
 mkdir -p "$1/usr/bin/"
