@@ -1,2 +1,2 @@
-fontforge make
+fontforge-git make
 otf-apple-fonts make
