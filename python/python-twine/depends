@@ -1,9 +1,0 @@
-#python-importlib-metadata
-#python-keyring
-#python-pkginfo
-#python-readme-renderer
-#python-requests
-#python-requests-toolbelt!=0.9.0,
-#python-rfc3986
-#python-rich
-#python-urllib3
