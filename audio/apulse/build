@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+patch -p1 < musl.patch
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release
+
+cmake --build   build
+cmake --install build
+
+# Allow for apulse libs to actually supplant pulseaudio ones.
+mkdir -p "$1/usr/lib"
+for lib in libpulse-mainloop-glib.so libpulse-simple.so libpulse.so; do
+    ln -s "apulse/${lib}"   "$1/usr/lib/${lib}"
+    ln -s "apulse/${lib}.0" "$1/usr/lib/${lib}.0"
+done
