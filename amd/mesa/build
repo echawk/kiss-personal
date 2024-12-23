@@ -4,15 +4,15 @@ export DESTDIR="$1"
 
 # rust_std is not (yet?) supported by muon, and we should try
 # to avoid a hard rust dependency here if possible.
-sed "s/, 'rust_std=2021'//" meson.build > _
+sed "/rust_std=2021/d" meson.build > _
 mv -f _ meson.build
 
 # To prevent the need for users to fork the mesa package to add
 # libglvnd support, the below code checks for its availability
 # and enables it if present. ie: install glvnd, rebuild mesa.
-pkg-config --exists libglvnd > /dev/null 2>&1 || glvnd_enabled=false
+pkg-config --exists libglvnd || glvnd_enabled=false
 
-pkg-config --exists valgrind > /dev/null 2>&1 || valgrind=false
+pkg-config --exists valgrind || valgrind=false
 
 pkg-config --exists wayland-protocols && platforms=x11,wayland
 
