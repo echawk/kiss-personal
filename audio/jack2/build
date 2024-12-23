@@ -1,9 +1,0 @@
-#!/bin/sh -e
-
-./waf configure \
-    --prefix=/usr \
-    --doxygen=no \
-    --classic
-
-./waf build
-./waf install --destdir="$1"
