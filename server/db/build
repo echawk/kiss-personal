@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export DESTDIR="$1"
+
 sed \
     -e "s/__atomic_compare_exchange((p), (o), (n))/__atomic_compare_exchange_db((p), (o), (n))/" \
     -e "s/static inline int __atomic_compare_exchange(/static inline int __atomic_compare_exchange_db(/" \
@@ -14,8 +16,13 @@ cd build_unix
     --enable-static \
     --enable-cxx \
     --enable-dbm \
-    --enable-stl
+    --disable-stl \
+    --disable-tcl \
+    --disable-gui \
+    --disable-slices \
+    --disable-test \
+    --disable-localization
 
-make LIBSO_LIBS=-lpthread
+make LIBSO_LIBS=-lpthread DESTDIR="$1"
 
-make install
+make DESTDIR="$1" install
