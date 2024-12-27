@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+mkdir -p junk
+ln -s /usr/bin/pigz "$PWD/junk/gunzip"
+export PATH="$PWD/junk:$PATH"
+
+./configure \
+    --prefix=/usr \
+    --with-vendored-deps
+
+make
+make install
