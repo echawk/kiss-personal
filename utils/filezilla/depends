@@ -1,0 +1,13 @@
+cairo
+freetype-harfbuzz
+gdk-pixbuf
+glib
+gnutls
+gtk+3
+libfilezilla
+libidn
+nettle
+pango
+pugixml
+sqlite
+wxWidgets

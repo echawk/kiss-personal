@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --with-wx-config=/usr/bin/wx-config-gtk3 \
+    --disable-autoupdatecheck \
+    --disable-manualupdatecheck \
+    --disable-locales \
+    --without-dbus
+
+make
+make install
