@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --disable-locales
+
+make
+make install
