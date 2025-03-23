@@ -1,18 +1,12 @@
 #!/bin/sh
 
-
-
-# FIXME: figure out why this errors out.
-pkg_a=$1
-pkg_b=$2
-
-[ "$pkg_a" ] || exit 1
-[ "$pkg_b" ] || exit 1
+[ "$1" ] || exit 1
+[ "$2" ] || exit 1
 
 kiss preferred \
-    | sort -u \
-    | awk "/$pkg_a/ { print \$2 } " \
-    | xargs -P0 -I{} \
-    sh -c "kiss alternatives | grep {}" \
-    | grep "$pkg_b" \
-    | kiss alternatives -
+    | awk "\$1 ~ /$1/ { print \$2}" \
+    | sed -e 's~/~\\\\/~g' \
+          -e 's~ ~\\\\ ~g' \
+    | xargs -I{} \
+            sh -c "kiss a | awk '\$1 ~ /$2/ && \$2 ~ /{}/'"
+    | kiss a -
