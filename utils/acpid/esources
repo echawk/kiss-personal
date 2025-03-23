@@ -1,2 +1,3 @@
 https://downloads.sourceforge.net/sourceforge/acpid2/acpid-VERSION.tar.xz
+patches/lfs64.patch
 files/acpid.run
