@@ -8,5 +8,5 @@ kiss preferred \
     | sed -e 's~/~\\\\/~g' \
           -e 's~ ~\\\\ ~g' \
     | xargs -I{} \
-            sh -c "kiss a | awk '\$1 ~ /$2/ && \$2 ~ /{}/'"
+            sh -c "kiss a | awk '\$1 ~ /$2/ && \$2 ~ /{}/'" \
     | kiss a -
