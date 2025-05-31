@@ -1,7 +1,0 @@
-gcc
-glib
-gmime
-gnupg2 make
-talloc
-xapian
-zlib
