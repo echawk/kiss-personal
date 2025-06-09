@@ -1,2 +1,2 @@
-https://download.mono-project.com/sources/mono/mono-6.12.0.182.tar.xz
+https://dl.winehq.org/mono/sources/mono/mono-6.14.1.tar.xz
 patches/mono-try-catch.patch

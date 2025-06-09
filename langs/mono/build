@@ -2,10 +2,6 @@
 
 export DESTDIR="$1"
 
-for patch in *.patch; do
-    patch -p1 < "$patch"
-done
-
 export CFLAGS="$CFLAGS -fno-strict-aliasing"
 
 ./configure \
