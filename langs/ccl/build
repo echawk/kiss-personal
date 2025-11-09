@@ -2,6 +2,10 @@
 
 export DESTDIR="$1"
 
+export CC=clang # gcc currently can't build this.
+
+export CFLAGS="$CFLAGS -w"
+
 : > nostrip
 
 # CCL segfaults when linked with ld.gold
@@ -18,6 +22,10 @@ for f in lisp-kernel/*/Makefile; do
     sed -E "s/^(OSLIBS .*)/\1 -no-pie/" "$f" > _
     mv -f _ "$f"
     sed "/^CDEFINES/s/-DLINUX/-DLINUX -D_LARGEFILE64_SOURCE/" "$f" > _
+    mv -f _ "$f"
+    sed -E "s/^(COPT .*)/\1 $CFLAGS/" "$f" > _
+    mv -f _ "$f"
+    sed -E "s/^(WFORMAT .*)/\1 -w/" "$f" > _
     mv -f _ "$f"
 done
 
