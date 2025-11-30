@@ -39,9 +39,9 @@ cd "$OLDPWD"
 
 # _ssl is currently broken
 if command -v pypy2; then
-    pypy2 pypy/tool/release/package.py --without-_ssl --archive-name pypy3 --targetdir .
+    pypy2 pypy/tool/release/package.py --without-_ssl --without-_tkinter --without-sqlite3 --archive-name pypy3 --targetdir .
 else
-    python2 pypy/tool/release/package.py --without-_ssl --archive-name pypy3 --targetdir .
+    python2 pypy/tool/release/package.py --without-_ssl --without-_tkinter --without-sqlite3 --archive-name pypy3 --targetdir .
 fi
 mkdir -p "$1/opt"
 tar xvf pypy3.tar.bz2 -C "$1/opt"
