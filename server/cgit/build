@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+makeopts="
+NO_GETTEXT=YesPlease
+NO_SVN_TESTS=YesPlease
+NO_TCLTK=YesPlease
+NO_EXPAT=YesPlease
+NO_NSEC=YesPlease
+NO_PYTHON=YesPlease
+NO_PERL=YesPlease
+NO_SYS_POLL_H=1
+NO_CROSS_DIRECTORY_HARDLINKS=1
+NO_INSTALL_HARDLINKS=1
+NO_OPENSSL=YesPlease
+NO_LUA=1
+"
+
+make get-git
+make "$makeopts"
+make CGIT_SCRIPT_PATH=/usr/share/webapps/cgit prefix=/usr install
