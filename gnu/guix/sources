@@ -1,4 +1,4 @@
-https://ftpmirror.gnu.org/gnu/guix/guix-1.4.0.tar.gz
+https://ftpmirror.gnu.org/gnu/guix/guix-1.5.0.tar.gz
 patches/0001-daemon-Fix-build-with-GCC13.patch
 patches/0002-syscalls-Consistently-use-existing-linux-definition.patch
 patches/0003-syscalls-Add-support-for-musl-libc.patch
