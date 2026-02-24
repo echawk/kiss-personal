@@ -5,6 +5,7 @@ export DESTDIR="$1"
 make
 (
     cd cli
+    cargo fetch
     cargo build --release --locked --offline
 )
 make PREFIX=/usr install
