@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+export CHPL_HOST_CC="$CC"
+export CHPL_HOST_CXX="$CXX"
+export CHPL_LLVM="system"
+
+export CHPL_HOME="$PWD"
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr
+
+
+cmake --build   build
+cmake --install build
