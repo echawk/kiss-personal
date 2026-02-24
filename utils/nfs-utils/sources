@@ -1,4 +1,4 @@
-https://www.kernel.org/pub/linux/utils/nfs-utils/2.8.3/nfs-utils-2.8.3.tar.xz
+https://www.kernel.org/pub/linux/utils/nfs-utils/2.8.5/nfs-utils-2.8.5.tar.xz
 patches/musl-getservbyport.patch
 patches/musl-stat64.patch
 patches/include-unistd.patch
