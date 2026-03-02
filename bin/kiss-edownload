@@ -1,4 +1,4 @@
-#!/usr/bin/env sh -e
+#!/usr/bin/env sh
 
 # _e_xtended download - implements the 'variables' that so many in the
 # kiss community seem to hate.
@@ -12,6 +12,7 @@
 # It generates a 'sources' file from 'esources' with all of the variables
 # removed, then uses 'kiss download' to download the new sources.
 
+set -e
 
 [ -e esources ] && {
     read V _ < version
