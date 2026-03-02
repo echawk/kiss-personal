@@ -1,0 +1,44 @@
+#!/usr/bin/env sh -e
+
+# _e_xtended download - implements the 'variables' that so many in the
+# kiss community seem to hate.
+
+# You need one extra file in your package repo:
+# - esources
+
+# Which is essentially the same as your regular sources but with the
+# previously valid package markers.
+
+# It generates a 'sources' file from 'esources' with all of the variables
+# removed, then uses 'kiss download' to download the new sources.
+
+
+[ -e esources ] && {
+    read V _ < version
+
+    VERSION=${V%+*}
+    IDENT=${V#*+}
+    MAJOR=${VERSION%%.*}
+    MINOR=${VERSION#*.}
+    MINOR=${MINOR%%.*}
+    PATCH=${VERSION#*.}
+    PATCH=${PATCH##*.} # I think?
+    PACKAGE=$(basename "$PWD")
+
+    sed -E \
+        -e "s/([^\\])VERSION/\1$VERSION/g" \
+        -e "s/([^\\])IDENT/\1$IDENT/g" \
+        -e "s/([^\\])MAJOR/\1$MAJOR/g" \
+        -e "s/([^\\])MINOR/\1$MINOR/g" \
+        -e "s/([^\\])PATCH/\1$PATCH/g" \
+        -e "s/([^\\])PACKAGE/\1$PACKAGE/g" \
+        -e "s/\\VERSION/VERSION/g" \
+        -e "s/\\IDENT/IDENT/g" \
+        -e "s/\\MAJOR/MAJOR/g" \
+        -e "s/\\MINOR/MINOR/g" \
+        -e "s/\\PATCH/PATCH/g" \
+        -e "s/\\PACKAGE/PACKAGE/g" \
+        esources > sources
+}
+
+kiss download
