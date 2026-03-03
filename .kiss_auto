@@ -1,7 +1,10 @@
-amd/,radeontop
-flatpak/,gpgme ostree
-gnu/,guile3 libunistring source-highlight
-langs/,chez-scheme ecl elixir erlang fennel fsharp gc gdbm go moarvm nqp rakudo ruby R sbcl typescript vala
-lsp/,acorn bash-language-server erlang_ls gopls pyright rebar3 terraform-ls texlab typescript-language-server vim-language-server
-server/,darkhttpd i2pd postgresql ragel terraform tor torsocks
-utils/,acpi acpid aria2 coreutils diffutils entr git-extras htop imagemagick libmupdf lowdown mercurial msmtp notmuch pcre2 pv shellcheck-bin shfmt ucl valgrind yash
+amd/,radeontop mesa ocl-icd
+audio/,apulse id3 ladspa libao libmpdclient mpd ncmpcpp pulseaudio sndio tinyalsa vamp-plugin-sdk
+fonts/,ttf-openmoji
+gnu/,coreutils diffutils ed findutils gawk gettext gtar guix inetutils libiconv mcron parallel screen source-highlight stow
+langs/,abcl byacc chapel chez-scheme chuck clisp cxprolog distcc dmd dub elixir fasm fennel fricas gauche gdbm gforth glpk gnucobol gore gprolog idris2 lapack libbsd libevent libgccjit libmd libtirpc libunwind libuv libyaml logtalk mit-scheme mlkit moarvm mono mosml nqp ocaml octave opam openblas openmpi pcre polyml R racket rakudo regina-rexx ruby scheme48 scratch scryer-prolog snobol4 squeak-vm stklos swi-prolog txr typescript vala yasm
+lsp/,bash-language-server elixir-ls erlang_ls fortls gopls pyright python-json5 rebar3 terraform-ls typescript-language-server vim-language-server
+server/,cgit darkhttpd db dovecot geoip i2pd icecast libshout lighttpd mariadb microsocks nginx opensmtpd php postgresql quark ragel redis rspamd taglib terraform tor torsocks
+utils/,acpi acpid argp-standalone aria2 aspell-en aspell blender bmake booster btpd bzip3 cabextract capstone chafa debootstrap dictd dmg2img embree enchant filezilla flatpak-builder fzy gcompat git-extras glow gmime gnu-efi goredo grap graphviz hdparm hunspell-en iproute2 imapfilter irssi leptonica libgrapheme libidn libmaa libfilezilla libxls libxlsxwriter libzip lilypond lowdown lxc mercurial minizip-ng mpop mu musl-obstack ncompress nfs-utils ntp nullmailer opencolorio openexr openimagedenoise openimageio opensubdiv p7zip peg plzip podofo proot pugixml pv pystring qtspell quazip re2c readability-cli refind shellcheck-bin talloc tex-gyre-fonts texinfo tigervnc tlp tree-sitter ucl ungit vale-bin valgrind wireless_tools xbps xorriso xstow yash zathura-ps
+vulkan/,glslang vulkan-headers vulkan-loader vulkan-tools vulkan-utility-libraries vulkan-validation-layers
+wayland/,bemenu wdisplays
