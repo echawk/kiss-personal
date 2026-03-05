@@ -1,0 +1,155 @@
+#!/bin/sh
+set -eu
+
+# In service of eventually getting to a docker compose file like below:
+
+# services:
+#   kiss-xorg-builder:
+#     image: kisslinux
+#     conatainer_name: kisslinux-xorg
+#     restart: unless-stopped
+#     environment:
+#       KISS_BUILDFARM_REPO: "https://github.com/echawk" # Upstream git repository to watch
+#       KISS_BUILDFARM_REPO_DEPENDS: "https://github.com/kiss-community/community:https://github.com/echawk/kiss-personal" # Repos where *some* software is needed for building the software in ^^ but is not the principle target of the buildfarm script.
+#       KISS_BUILDFARM_EXCL: "" # Excluded packages
+#       KISS_BUILDFARM_SUBD: "extra:xorg:xwayland"
+#     volumes:
+#       - ${BASE_DIR}/kiss-xorg-builder/bin:/home/root/.cache/kiss/bin/
+
+: "${KISS_BUILDFARM_REPO:?Need KISS_BUILDFARM_REPO}"
+WORKDIR="${WORKDIR:-/tmp/kiss-buildfarm-work}"
+OUT_ENV="${OUT_ENV:-./kiss-buildfarm.env}"
+SUBD_RAW="${KISS_BUILDFARM_SUBD:-}"
+REPO_DEPENDS_RAW="${KISS_BUILDFARM_REPO_DEPENDS:-}"
+
+colon_to_space() {
+  echo "$1" | tr ':' ' ' | tr '\n' ' '
+}
+
+mkdir -p "$WORKDIR"
+cd "$WORKDIR"
+
+# clone primary repo
+prim_url="$KISS_BUILDFARM_REPO"
+prim_name="$(basename "$prim_url" .git)"
+prim_dir="$WORKDIR/$prim_name"
+if [ -d "$prim_dir/.git" ]; then
+  (cd "$prim_dir" && git fetch --all --prune && git reset --hard origin/HEAD)
+else
+  git clone --depth 1 "$prim_url" "$prim_dir"
+fi
+
+# list packages in primary repo, restricted to subdirs if requested
+pkgs_file="$(mktemp)"
+: > "$pkgs_file"
+
+SUBD="$(colon_to_space "$SUBD_RAW")"
+if [ -n "$SUBD" ]; then
+  for d in $SUBD; do
+    find "$prim_dir/$d" -maxdepth 2 -type f -name 'build' -print 2>/dev/null | while IFS= read -r b; do
+      printf '%s\n' "$(basename "$(dirname "$b")")" >> "$pkgs_file"
+    done
+  done
+else
+  find "$prim_dir" -maxdepth 3 -type f -name 'build' -print 2>/dev/null | while IFS= read -r b; do
+    printf '%s\n' "$(basename "$(dirname "$b")")" >> "$pkgs_file"
+  done
+fi
+# dedupe
+pkgs="$(awk '!x[$0]++{print}' "$pkgs_file")"
+
+# determine full dependency closure of pkgs using kiss pkgdepends
+# collect deps into deps_file
+deps_file="$(mktemp)"
+: > "$deps_file"
+for p in $pkgs; do
+  kiss pkgdepends "$p" 2>/dev/null | tr ' ' '\n' >> "$deps_file" || :
+done
+# include pkgs themselves
+printf '%s\n' $pkgs >> "$deps_file"
+deps="$(awk '!x[$0]++{print}' "$deps_file")"
+
+# Now prepare repo-depends dir
+repo_depends_dir="$WORKDIR/repo-depends"
+rm -rf "$repo_depends_dir"
+mkdir -p "$repo_depends_dir"
+
+# Build search path starting with primary repo subdirs (explicit paths)
+kiss_path_parts=""
+if [ -n "$SUBD" ]; then
+  for d in $SUBD; do
+    dir="$prim_dir/$d"
+    if [ -d "$dir" ]; then
+      kiss_path_parts="${kiss_path_parts}${dir}:"
+    fi
+  done
+else
+  kiss_path_parts="${kiss_path_parts}${prim_dir}:"
+fi
+
+# Helper to find and copy a package dir from a repo into repo-depends
+copy_pkg_from_repo() {
+  repo_dir="$1"
+  pkgname="$2"
+  # repository may have layout like <repo>/<subdir>/<pkg>/build
+  found="$(find "$repo_dir" -type d -name "$pkgname" -print 2>/dev/null | sed -n '1p' || true)"
+  if [ -n "$found" ]; then
+    # copy the package dir (parent) into repo-depends preserving basename
+    target="$repo_depends_dir/$(basename "$found")"
+    if [ ! -d "$target" ]; then
+      cp -a "$found" "$target" || true
+    fi
+    return 0
+  fi
+  return 1
+}
+
+# Iterate dependencies; if package exists in primary repo already, skip.
+for pkg in $deps; do
+  # check primary repo
+  if find "$prim_dir" -type d -name "$pkg" -print -quit 2>/dev/null >/dev/null; then
+    continue
+  fi
+  # search repo-depends already copied
+  if [ -d "$repo_depends_dir/$pkg" ]; then
+    continue
+  fi
+  # search through REPO_DEPENDS in order
+  for rd in $(colon_to_space "$REPO_DEPENDS_RAW"); do
+    repourl="$rd"
+    repodir="$WORKDIR/$(basename "$repourl" .git)"
+    if [ ! -d "$repodir/.git" ]; then
+      git clone --depth 1 "$repourl" "$repodir"
+    else
+      (cd "$repodir" && git fetch --all --prune && git reset --hard origin/HEAD)
+    fi
+    if copy_pkg_from_repo "$repodir" "$pkg"; then
+      # ensure that repo_depends_dir is later in path; we'll add full dir later
+      break
+    fi
+  done
+done
+
+# Finally, append repo-depends dir to kiss_path_parts if non-empty
+if [ -d "$repo_depends_dir" ] && [ "$(ls -A "$repo_depends_dir" 2>/dev/null || true)" ]; then
+  kiss_path_parts="${kiss_path_parts}${repo_depends_dir}:"
+fi
+
+# Also append any remaining repo_depends urls themselves (their top-level dirs) to KISS_PATH in order
+for rd in $(colon_to_space "$REPO_DEPENDS_RAW"); do
+  repodir="$WORKDIR/$(basename "$rd" .git)"
+  if [ -d "$repodir" ]; then
+    kiss_path_parts="${kiss_path_parts}${repodir}:"
+  fi
+done
+
+# Trim trailing colon
+kiss_path="$(echo "$kiss_path_parts" | sed 's/:$//')"
+
+# Write env file
+printf 'export KISS_PATH=%s\n' "$kiss_path" > "$OUT_ENV"
+echo "Wrote KISS_PATH to $OUT_ENV"
+echo "KISS_PATH=$kiss_path"
+
+# cleanup temp files
+rm -f "$pkgs_file" "$deps_file"
