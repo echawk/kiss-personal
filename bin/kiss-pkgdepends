@@ -1,3 +1,5 @@
 #!/bin/sh
 
-cut -d' ' -f1 < "$(kiss search $1)/depends"
+df="$(kiss search $1)/depends"
+! [ -e "$df" ] && exit 0
+cut -d' ' -f1 < "$df"
