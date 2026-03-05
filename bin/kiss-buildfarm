@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# Prepare outputs
+: > success
+: > failed
+: > aborted
+
+# Record initially installed packages
+initial_installed="$(mktemp)" || exit 1
+trap 'rm -f "$initial_installed"' EXIT
+ls /var/db/kiss/installed/ > "$initial_installed" 2>/dev/null || :
+
+# Build list: all packages known, then ordering via kiss-pkgorder
+pkgs="$(kiss search \* | sed -E 's~.*/([^/]+)~\1~' | tr '\n' ' ')"
+order_file="$(mktemp)" || exit 1
+trap 'rm -f "$initial_installed" "$order_file"' EXIT
+
+kiss-pkgorder $pkgs > "$order_file"
+
+# Track failed packages in a temporary file for fast lookup
+failed_tmp="$(mktemp)" || exit 1
+touch "$failed_tmp"
+trap 'rm -f "$initial_installed" "$order_file" "$failed_tmp"' EXIT
+
+while IFS= read -r pkg; do
+    [ -z "$pkg" ] && continue
+
+    # If any dependency failed, mark aborted
+    deps="$(kiss pkgdepends "$pkg" 2>/dev/null)"
+    dep_failed=0
+    for d in $deps; do
+        if grep -xq "$d" "$failed_tmp" 2>/dev/null; then
+            dep_failed=1
+            break
+        fi
+    done
+
+    if [ "$dep_failed" -eq 1 ]; then
+        printf '%s\n' "$pkg" >> aborted
+        continue
+    fi
+
+    # Clean environment: remove any package not present at start
+    # (list currently installed and remove those not in initial_installed)
+    for cur in $(ls /var/db/kiss/installed 2>/dev/null); do
+        if ! grep -xq "$cur" "$initial_installed" 2>/dev/null; then
+            kiss remove "$cur" || true
+        fi
+    done
+
+    # Attempt build
+    if kiss build "$pkg"; then
+        printf '%s\n' "$pkg" >> success
+    else
+        printf '%s\n' "$pkg" >> failed
+        printf '%s\n' "$pkg" >> "$failed_tmp"
+    fi
+
+done < "$order_file"
+
+# Summary
+echo "Built: $(wc -l < success 2>/dev/null || echo 0)"
+echo "Failed: $(wc -l < failed 2>/dev/null || echo 0)"
+echo "Aborted: $(wc -l < aborted 2>/dev/null || echo 0)"
