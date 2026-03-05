@@ -40,13 +40,26 @@ while IFS= read -r pkg; do
         continue
     fi
 
-    # Clean environment: remove any package not present at start
-    # (list currently installed and remove those not in initial_installed)
+    # Build allowed set: initial installed + current pkg's dependencies + the pkg itself
+    allowed="$(mktemp)" || exit 1
+    # copy initial installed names
+    cat "$initial_installed" > "$allowed"
+    # add deps and pkg (one per line), avoiding duplicates by grep check
+    for x in $deps $pkg; do
+        [ -z "$x" ] && continue
+        if ! grep -xq "$x" "$allowed" 2>/dev/null; then
+            printf '%s\n' "$x" >> "$allowed"
+        fi
+    done
+
+    # Remove installed packages not in allowed
     for cur in $(ls /var/db/kiss/installed 2>/dev/null); do
-        if ! grep -xq "$cur" "$initial_installed" 2>/dev/null; then
+        if ! grep -xq "$cur" "$allowed" 2>/dev/null; then
             kiss remove "$cur" || true
         fi
     done
+
+    rm -f "$allowed"
 
     # Attempt build
     if kiss build "$pkg"; then
