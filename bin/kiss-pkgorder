@@ -1,7 +1,36 @@
 #!/bin/sh
 
-# Prints out the order to build the dependencies of a package.
+# Usage: kiss-pkgorder <pkg>...
+# Prints a tsort-compatible edge list for all args, computing each package's
+# dependency tree at most once, and pipes through tsort.
 
-for pkg in $@; do
-    kiss-pkggraph "$pkg"
-done | tsort
+seen="$(mktemp)" || exit 1
+queue="$(mktemp)" || { rm -f "$seen"; exit 1; }
+trap 'rm -f "$seen" "$queue"' EXIT
+
+# initialize queue with all arguments (preserve order)
+for p; do
+    printf '%s\n' "$p" >> "$queue"
+done
+
+# process queue breadth-first; avoid re-traversing seen packages
+while IFS= read -r curpkg; do
+    [ -z "$curpkg" ] && continue
+    # skip if already seen
+    if grep -xq "$curpkg" "$seen" 2>/dev/null; then
+        continue
+    fi
+    printf '%s\n' "$curpkg" >> "$seen"
+
+    # find depends file (same approach as original kiss-pkggraph)
+    depsfile="$(kiss search "$curpkg" | sed q)/depends"
+    if [ -e "$depsfile" ]; then
+        # for each dependency, emit edge and enqueue if unseen
+        awk '{print $1}' < "$depsfile" | while IFS= read -r dep; do
+            [ -z "$dep" ] && continue
+            printf '%s %s\n' "$dep" "$curpkg"
+            # enqueue regardless — duplicate enqueues are filtered by seen check
+            printf '%s\n' "$dep" >> "$queue"
+        done
+    fi
+done < "$queue" | tsort
