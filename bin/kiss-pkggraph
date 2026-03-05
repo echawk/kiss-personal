@@ -2,22 +2,35 @@
 
 # Usage: kiss-pkggraph <pkg>
 
-seen_file="$(mktemp)"
+seen="$(mktemp)" || exit 1
+trap 'rm -f "$seen"' EXIT
 
-get_pkg_and_deps() {
-    # Will print out a tsort-compatible graph of the pkg and its dependencies.
-    depsfile="$(kiss search "$1" | sed q)/depends"
+pkg="$1"
+printf '%s\n' "$pkg" > /dev/null
 
-    if [ -e "$depsfile" ] && ! grep -q "$1" "$seen_file"; then
-        echo "$1" >> "$seen_file"
-        deps="$(awk '{print $1}' < "$depsfile")"
-        for dep in $deps; do
-            echo "$dep $1"
-            # Recursively call on each of the dependencies.
-            get_pkg_and_deps "$dep"
+# queue: newline-separated package names to process
+printf '%s\n' "$pkg" > /tmp/kpg_queue_$$
+
+while IFS= read -r curpkg; do
+    # skip empty lines
+    [ -z "$curpkg" ] && continue
+    # skip if already seen
+    if grep -xq "$curpkg" "$seen" 2>/dev/null; then
+        continue
+    fi
+    # mark seen
+    printf '%s\n' "$curpkg" >> "$seen"
+
+    depsfile="$(kiss search "$curpkg" | sed q)/depends"
+    if [ -e "$depsfile" ]; then
+        # get first column of depends
+        awk '{print $1}' < "$depsfile" | while IFS= read -r dep; do
+            [ -z "$dep" ] && continue
+            printf '%s %s\n' "$dep" "$curpkg"
+            # enqueue dependency for processing
+            printf '%s\n' "$dep" >> /tmp/kpg_queue_$$
         done
     fi
-}
+done < /tmp/kpg_queue_$$
 
-get_pkg_and_deps "$1"
-rm -- "$seen_file"
+rm -f /tmp/kpg_queue_$$
