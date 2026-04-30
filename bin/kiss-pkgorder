@@ -22,15 +22,10 @@ while IFS= read -r curpkg; do
     fi
     printf '%s\n' "$curpkg" >> "$seen"
 
-    # find depends file (same approach as original kiss-pkggraph)
-    depsfile="$(kiss search "$curpkg" | sed q)/depends"
-    if [ -e "$depsfile" ]; then
-        # for each dependency, emit edge and enqueue if unseen
-        awk '{print $1}' < "$depsfile" | while IFS= read -r dep; do
-            [ -z "$dep" ] && continue
-            printf '%s %s\n' "$dep" "$curpkg"
-            # enqueue regardless — duplicate enqueues are filtered by seen check
-            printf '%s\n' "$dep" >> "$queue"
-        done
-    fi
+    kiss-pkgdepends | while IFS= read -r dep; do
+        [ -z "$dep" ] && continue
+        printf '%s %s\n' "$dep" "$curpkg"
+        printf '%s\n' "$dep" >> "$queue"
+    done
+
 done < "$queue" | tsort
