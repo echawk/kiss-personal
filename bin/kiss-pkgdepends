@@ -2,4 +2,4 @@
 
 df="$(kiss search $1)/depends"
 ! [ -e "$df" ] && exit 0
-cut -d' ' -f1 < "$df"
+cut -d' ' -f1 < "$df" | grep -v '^#'
