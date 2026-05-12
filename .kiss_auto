@@ -6,5 +6,5 @@ langs/,abcl byacc chapel chez-scheme chuck clisp cxprolog distcc dmd dub elixir 
 lsp/,bash-language-server elixir-ls erlang_ls fortls gopls pyright python-json5 rebar3 terraform-ls typescript-language-server vim-language-server
 server/,cgit darkhttpd db dovecot geoip i2pd icecast libshout lighttpd mariadb microsocks nginx opensmtpd php postgresql quark ragel redis rspamd taglib terraform tor torsocks
 utils/,acpi acpid argp-standalone aria2 aspell-en aspell blender bmake booster btpd bzip3 cabextract capstone chafa debootstrap dictd dmg2img embree enchant filezilla flatpak-builder fzy gcompat git-extras glow gmime gnu-efi goredo grap graphviz hdparm hunspell-en iproute2 imapfilter irssi leptonica libgrapheme libidn libmaa libfilezilla libxls libxlsxwriter libzip lilypond lowdown lxc mercurial minizip-ng mpop mu musl-obstack ncompress nfs-utils ntp nullmailer opencolorio openexr openimagedenoise openimageio opensubdiv p7zip peg plzip podofo proot pugixml pv pystring qtspell quazip re2c readability-cli refind shellcheck-bin talloc tex-gyre-fonts texinfo tigervnc tlp tree-sitter ucl ungit vale-bin valgrind wireless_tools xbps xorriso xstow yash zathura-ps
-vulkan/,glslang vulkan-headers vulkan-loader vulkan-tools vulkan-utility-libraries vulkan-validation-layers
+vulkan/,glslang
 wayland/,bemenu wdisplays
