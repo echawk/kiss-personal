@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+make GHC_LDFLAGS='-optl-fuse-ld=bfd -optl-static'
+
+mkdir -p "$1/usr/bin"
+cp hiss "$1/usr/bin"
